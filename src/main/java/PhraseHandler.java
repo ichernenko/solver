@@ -4,15 +4,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class PhraseHandler {
     private String phrase = null;
+    private Map<String, WordProperty> wordPropertyMap = null;
     private List<Lexeme> lexemeList = null;
 
     PhraseHandler(String phrase) {
         this.phrase = phrase;
-        //getAllVerbs();
+        getAllVerbs();
         parseSentence(phrase);
     }
 
@@ -39,14 +42,12 @@ class PhraseHandler {
         boolean sign = false;
         try (Connection con = DriverManager.getConnection("jdbc:sqlite:db\\solverDB.s3db");
              Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("SELECT * FROM verbs")) {
+             ResultSet rs = st.executeQuery("select id,lexeme from bas_main_dictionary where type = 'гл'")) {
+
+            wordPropertyMap = new HashMap<>();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("verb");
-                System.out.println("ID = " + id);
-                System.out.println("name = " + name);
-                System.out.println();
+                wordPropertyMap.put(rs.getString("lexeme"), new WordProperty(rs.getInt("id")));
             }
             sign = true;
         } catch (SQLException e) {
@@ -70,28 +71,41 @@ class PhraseHandler {
                 }
             } else {
                 if (isLexeme) {
-                    lexeme.setEndPosition(i - 1);
+                    lexeme.setEndPosition(i);
                     isLexeme = false;
                 }
             }
         }
 
         if (isLexeme) {
-            lexeme.setEndPosition(phrase.length() - 1);
+            lexeme.setEndPosition(phrase.length());
         }
     }
 
     void printAllLexemes() {
         System.out.println("List of lexemes");
-        for(Lexeme lexeme : lexemeList) {
-            System.out.println(lexeme.getStartPosition() + "," + lexeme.getEndPosition());
-        }
+        lexemeList.forEach(k -> System.out.println(k.getStartPosition() + ", " + k.getEndPosition()));
     }
+
+    void printAllWordProperty() {
+        System.out.println("List of words properties");
+        wordPropertyMap.forEach((k,v) -> System.out.println(k + ", " + v.getId()));
+    }
+
+    void findLexemeInDictionary() {
+        lexemeList.forEach(k -> k.setInDictionary(wordPropertyMap.containsKey(phrase.substring(k.getStartPosition(), k.getEndPosition()))));
+    }
+
+    void printAllFoundLexemes() {
+        lexemeList.forEach(k -> {if (k.isInDictionary())  System.out.println(phrase.substring(k.getStartPosition(), k.getEndPosition()));});
+    }
+
 }
 
 class Lexeme {
     private int startPosition;
     private int endPosition;
+    private boolean isInDictionary = false;
 
     Lexeme(int startPosition) {
         this.startPosition = startPosition;
@@ -107,5 +121,25 @@ class Lexeme {
 
     void setEndPosition(int endPosition) {
         this.endPosition = endPosition;
+    }
+
+    boolean isInDictionary() {
+        return isInDictionary;
+    }
+
+    void setInDictionary(boolean inDictionary) {
+        isInDictionary = inDictionary;
+    }
+}
+
+class WordProperty {
+    private int id;
+
+    WordProperty(int id) {
+        this.id = id;
+    }
+
+    int getId() {
+        return id;
     }
 }
