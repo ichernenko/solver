@@ -3,18 +3,22 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 class PhraseHandler {
     private String phrase = null;
+    private List<Lexeme> lexemeList = null;
 
     PhraseHandler(String phrase) {
         this.phrase = phrase;
-        getAllVerbs();
+        //getAllVerbs();
+        parseSentence(phrase);
     }
 
     private void getAllVerbs() {
-        if(loadDBDriver()) {
-            if(loadAllVerbs()) {
+        if (loadDBDriver()) {
+            if (loadAllVerbs()) {
                 System.out.println("All verbs are loaded!");
             }
         }
@@ -50,5 +54,58 @@ class PhraseHandler {
         }
 
         return sign;
+    }
+
+    private void parseSentence(String phrase) {
+        lexemeList = new ArrayList<>();
+        Lexeme lexeme = null;
+        boolean isLexeme = false;
+
+        for (int i = 0; i < phrase.length(); i++) {
+            if ((phrase.charAt(i) >= 'А' && phrase.charAt(i) <= 'п') || (phrase.charAt(i) >= 'р' && phrase.charAt(i) <= 'ё')) {
+                if (!isLexeme) {
+                    lexeme = new Lexeme(i);
+                    lexemeList.add(lexeme);
+                    isLexeme = true;
+                }
+            } else {
+                if (isLexeme) {
+                    lexeme.setEndPosition(i - 1);
+                    isLexeme = false;
+                }
+            }
+        }
+
+        if (isLexeme) {
+            lexeme.setEndPosition(phrase.length() - 1);
+        }
+    }
+
+    void printAllLexemes() {
+        System.out.println("List of lexemes");
+        for(Lexeme lexeme : lexemeList) {
+            System.out.println(lexeme.getStartPosition() + "," + lexeme.getEndPosition());
+        }
+    }
+}
+
+class Lexeme {
+    private int startPosition;
+    private int endPosition;
+
+    Lexeme(int startPosition) {
+        this.startPosition = startPosition;
+    }
+
+    int getStartPosition() {
+        return startPosition;
+    }
+
+    int getEndPosition() {
+        return endPosition;
+    }
+
+    void setEndPosition(int endPosition) {
+        this.endPosition = endPosition;
     }
 }
