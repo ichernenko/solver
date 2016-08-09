@@ -10,6 +10,6 @@
         <property name="serviceInterface" value="TextParser"/>
         <property name="serviceName" value="TextParserService"/>
         <property name="replaceExistingBinding" value="true"/>
-        <property name="registryPort" value="1099"/>
+        <property name="registryPort" value="48777"/>
     </bean>
 </beans>

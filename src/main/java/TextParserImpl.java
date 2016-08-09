@@ -51,22 +51,21 @@ public class TextParserImpl implements TextParser {
     }
 
     private WordTag[] getWordTagArray(WordProperty[] wordPropertyArray) {
-        if (wordPropertyArray != null) {
-            WordTag[] wordTagArray = new WordTag[wordPropertyArray.length];
-            for (int i = 0; i < wordPropertyArray.length; i++) {
-                String property = wordPropertyArray[i].getPartOfSpeech().getAllProperties();
-                System.out.println(wordPropertyArray[i].getLemmaId()+ "  " + property);
-                String morpheme = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getLemma();
-                String morphemicProperty = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getTag();
-                wordTagArray[i] = new WordTag(property, morpheme, morphemicProperty);
-            }
-            return wordTagArray;
+        if (wordPropertyArray == null)
+            return new WordTag[]{};
+
+        WordTag[] wordTagArray = new WordTag[wordPropertyArray.length];
+        for (int i = 0; i < wordPropertyArray.length; i++) {
+            String property = wordPropertyArray[i].getPartOfSpeech().getAllProperties();
+            String morpheme = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getLemma();
+            String morphemicProperty = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getTag();
+            wordTagArray[i] = new WordTag(property, morpheme, morphemicProperty);
         }
-        return null;
+        return wordTagArray;
     }
 
     public static void main(String[] args){
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        System.out.println("Waiting for requests");
+        System.out.println("Waiting for requests...");
     }
 }

@@ -5,7 +5,7 @@
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="textParserBean" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-        <property name="serviceUrl" value="rmi://localhost:1099/TextParserService"/>
+        <property name="serviceUrl" value="rmi://localhost:48777/TextParserService"/>
         <property name="serviceInterface" value="TextParser"/>
     </bean>
 </beans>

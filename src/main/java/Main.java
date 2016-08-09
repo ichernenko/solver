@@ -7,7 +7,7 @@ public class Main {
     public static void main(String... args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
         TextParser textParser = (TextParser)context.getBean("textParserBean");
-        List<Word> wordList = textParser.getWordList("самое темное время суток перед рассветом");
+        List<Word> wordList = textParser.getWordList("само1е темное время суток перед рассветом");
         wordList.forEach(k-> {System.out.println(k.getWord());
                 for(int i = 0; i < k.getWordTagArray().length; i ++) {
                     System.out.printf("\t%-30s", k.getWordTagArray()[i].getWordTag());
