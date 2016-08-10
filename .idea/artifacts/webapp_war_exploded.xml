@@ -6,8 +6,10 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="webapp" />
+          <element id="module-output" name="solver" />
         </element>
       </element>
+      <element id="module-output" name="solver" />
     </root>
   </artifact>
 </component>
