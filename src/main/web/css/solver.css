@@ -1,0 +1,81 @@
+h1 {
+    color: red;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 100%;
+    text-align: center;
+}
+
+#main-col {
+    width: 50%;
+    height: 88%;
+    position: fixed;
+    margin: auto;
+    margin-top: 35px;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 5px;
+    border: 1px solid black;
+    background: #9FAAA3;
+    overflow:auto;
+}
+
+.task-condition {
+    width: 100%;
+    color: azure;
+    background: #174437;
+    resize: none;
+
+    font-size: 12px;
+}
+
+.task-result {
+    width: 100%;
+    color: azure;
+    background: #174437;
+    outline: none;
+    resize: none;
+
+    font-size: 12px;
+}
+
+.task-solution {
+    width: 100%;
+    color: azure;
+    background: #174437;
+    outline: none;
+    resize: none;
+
+    font-size: 12px;
+}
+
+.task-button {
+    display: inline-block;
+    margin-top: 13px;
+    margin-right: 4px;
+    width: 100px;
+    height: 25px;
+    background: no-repeat 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    font-size: 12px;
+
+    box-shadow: 0 1px 20px #BFBFBF,
+    inset 0 1px 0 #FFFFFF,
+    0 1px 0 #E6E6E6,
+    inset 0 0 20px #E6E6E6;
+}
+.task-button:hover {
+    background: #B0BAB4;
+}
+.task-button:active {
+    background: #D1DBD5;
+}
+
+.task-button-image {
+    vertical-align: bottom;
+    margin-right: 5px
+}
