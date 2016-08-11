@@ -1,3 +1,5 @@
+package dictionary;
+
 import java.util.List;
 
 public interface TextParser {

@@ -4,10 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="textParserBean" class="TextParserImpl"/>
+    <bean id="textParserBean" class="dictionary.TextParserImpl"/>
     <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
         <property name="service" ref="textParserBean"/>
-        <property name="serviceInterface" value="TextParser"/>
+        <property name="serviceInterface" value="dictionary.TextParser"/>
         <property name="serviceName" value="TextParserService"/>
         <property name="replaceExistingBinding" value="true"/>
         <property name="registryPort" value="48777"/>
