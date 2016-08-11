@@ -26,8 +26,10 @@ h1 {
     color: azure;
     background: #174437;
     resize: none;
-
+    overflow:auto;
     font-size: 12px;
+    font-family: "Courier", "Arial", "Times New Roman", "Times";
+    align: left;
 }
 
 .task-result {
@@ -36,23 +38,26 @@ h1 {
     background: #174437;
     outline: none;
     resize: none;
-
+    overflow:auto;
     font-size: 12px;
+    font-family: "Courier", "Arial", "Times New Roman", "Times";
+    align: left;
 }
 
 .task-solution {
     width: 100%;
+    height: 310px;
     color: azure;
     background: #174437;
-    outline: none;
-    resize: none;
-
+    overflow:auto;
     font-size: 12px;
+    font-family: "Courier", "Arial", "Times New Roman", "Times";
+    align: left;
 }
 
 .task-button {
     display: inline-block;
-    margin-top: 16px;
+    margin-top: 15px;
     margin-right: 4px;
     width: 100px;
     height: 25px;
@@ -78,4 +83,8 @@ h1 {
 .task-button-image {
     vertical-align: bottom;
     margin-right: 5px
+}
+
+.noun {
+    color: blue;
 }
