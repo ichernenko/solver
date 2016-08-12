@@ -1,7 +1,7 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ page import="java.util.*, java.text.*" %>
+<%--<%@ page import="java.util.*, java.text.*" %>--%>
 
 <html>
 <head>
@@ -15,7 +15,7 @@
     }
 </style>
 <form method="post">
-    <h1><div align="right">Решебник. Сегодня <%=getFormattedDate()%></div></h1>
+    <%--<h1><div align="right">Решебник. Сегодня <%=getFormattedDate()%></div></h1>--%>
     <fieldset id=main-col>
         <small><b>Задача:</b></small>
         <textarea id="task-condition-id" name=task-condition class=task-condition rows="10" type="html/text" placeholder="Введите условия задачи" autofocus></textarea>
@@ -49,10 +49,10 @@
 </body>
 </html>
 
-<%!
-    String getFormattedDate ()
-    {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-        return sdf.format(new Date());
-    }
-%>
+<%--<%!--%>
+    <%--String getFormattedDate ()--%>
+    <%--{--%>
+        <%--SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");--%>
+        <%--return sdf.format(new Date());--%>
+    <%--}--%>
+<%--%>--%>

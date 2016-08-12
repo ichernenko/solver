@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="textParserBean" class="dictionary.TextParserImpl"/>
+    <bean id="textParserBean" class="dictionary.TextParserImpl" scope="singleton"/>
     <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
         <property name="service" ref="textParserBean"/>
         <property name="serviceInterface" value="dictionary.TextParser"/>

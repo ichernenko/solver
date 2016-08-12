@@ -85,6 +85,10 @@ h1 {
     margin-right: 5px
 }
 
-.noun {
-    color: blue;
+.task-solution-table {
+    width: 100%;
+    color: azure;
+    font-size: 12px;
+    font-family: "Courier", "Arial", "Times New Roman", "Times";
+    align: left;
 }
