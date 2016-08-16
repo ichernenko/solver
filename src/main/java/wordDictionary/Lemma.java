@@ -1,6 +1,6 @@
-package dictionary;
+package wordDictionary;
 
-class Lemma {
+public class Lemma {
     private String lemma, tag;
 
     Lemma(String lemma, String tag) {

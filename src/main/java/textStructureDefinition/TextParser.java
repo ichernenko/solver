@@ -1,4 +1,4 @@
-package dictionary;
+package textStructureDefinition;
 
 import java.util.List;
 

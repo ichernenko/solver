@@ -6,6 +6,6 @@
 
     <bean id="textParserBean" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
         <property name="serviceUrl" value="rmi://localhost:48777/TextParserService"/>
-        <property name="serviceInterface" value="dictionary.TextParser"/>
+        <property name="serviceInterface" value="textStructureDefinition.TextParser"/>
     </bean>
 </beans>

@@ -1,7 +1,7 @@
-package dictionary;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import textStructureDefinition.TextParser;
+import textStructureDefinition.Word;
 
 import java.util.List;
 

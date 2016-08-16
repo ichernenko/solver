@@ -1,12 +1,15 @@
-package dictionary;
+package textStructureDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import wordDictionary.Dictionary;
+import wordDictionary.DictionaryImpl;
+import wordDictionary.WordProperty;
 
 public class TextParserImpl implements TextParser {
-    private DictionaryImpl dictionary;
+    private Dictionary dictionary;
 
     TextParserImpl() {
         // Загружается словарь

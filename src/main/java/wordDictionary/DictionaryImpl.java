@@ -1,4 +1,4 @@
-package dictionary;
+package wordDictionary;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class DictionaryImpl implements Dictionary{
+public class DictionaryImpl implements Dictionary{
     private Map<String, WordProperty[]> wordMap = null;
     private Lemma[] lemmaArray = null;
 
-    DictionaryImpl() {
+    public DictionaryImpl() {
         System.out.println("Dictionary are loading...");
         long startTime = System.currentTimeMillis();
         if (loadDBDriver()) {

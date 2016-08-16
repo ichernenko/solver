@@ -1,8 +1,8 @@
-package dictionary;
+package wordDictionary;
 
 import java.util.Map;
 
-interface Dictionary {
+public interface Dictionary {
     Map<String, WordProperty[]> getWordMap();
     Lemma[] getLemmaArray();
 }

@@ -1,7 +1,7 @@
 package servlets;
 
-import dictionary.TextParser;
-import dictionary.Word;
+import textStructureDefinition.TextParser;
+import textStructureDefinition.Word;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

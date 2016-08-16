@@ -1,9 +1,9 @@
-package dictionary;
+package wordDictionary;
 
 import partsOfSpeech.*;
 
 
-class WordProperty {
+public class WordProperty {
     private int lemmaId;
     private PartOfSpeech partOfSpeech;
 
