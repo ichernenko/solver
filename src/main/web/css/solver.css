@@ -28,8 +28,7 @@ h1 {
     resize: none;
     overflow:auto;
     font-size: 12px;
-    font-family: "Courier", "Arial", "Times New Roman", "Times";
-    align: left;
+    font-family: "Courier", "Arial", "Times New Roman", "Times", serif;
 }
 
 .task-result {
@@ -40,8 +39,7 @@ h1 {
     resize: none;
     overflow:auto;
     font-size: 12px;
-    font-family: "Courier", "Arial", "Times New Roman", "Times";
-    align: left;
+    font-family: "Courier", "Arial", "Times New Roman", "Times", serif;
 }
 
 .task-solution {
@@ -51,8 +49,7 @@ h1 {
     background: #174437;
     overflow:auto;
     font-size: 12px;
-    font-family: "Courier", "Arial", "Times New Roman", "Times";
-    align: left;
+    font-family: "Courier", "Arial", "Times New Roman", "Times", serif;
 }
 
 .task-button {
@@ -89,6 +86,10 @@ h1 {
     width: 100%;
     color: azure;
     font-size: 12px;
-    font-family: "Courier", "Arial", "Times New Roman", "Times";
-    align: left;
+    font-family: "Courier", "Arial", "Times New Roman", "Times", serif;
+}
+
+.task-solution-sentence-font {
+    color: blue;
+    font-weight: bold;
 }
