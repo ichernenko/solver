@@ -8,28 +8,27 @@ public class Noun implements PartOfSpeech {
     private String common;
 
     public Noun(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
-                case "одуш": ;
+                case "одуш":
                 case "неод": animate = grammema; break;
-                case "ед"  : ;
+                case "ед"  :
                 case "мн"  : singular = grammema; break;
-                case "муж" : ;
-                case "жен" : ;
-                case "ср"  : ;
+                case "муж" :
+                case "жен" :
+                case "ср"  :
                 case "общ" : gender = grammema; break;
-                case "им"  : ;
-                case "род" : ;
-                case "дат" : ;
-                case "вин" : ;
-                case "тв"  : ;
-                case "пр"  : ;
-                case "парт": ;
-                case "счет": ;
-                case "мест": ;
+                case "им"  :
+                case "род" :
+                case "дат" :
+                case "вин" :
+                case "тв"  :
+                case "пр"  :
+                case "парт":
+                case "счет":
+                case "мест":
                 case "зват": wordCase = grammema; break;
-                case "нарц": ;
+                case "нарц":
                 case "собс": common = grammema; break;
                 default:
                     throw new RuntimeException("Unknown property of the noun - " + grammema);

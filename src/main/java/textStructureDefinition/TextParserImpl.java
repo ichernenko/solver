@@ -10,13 +10,10 @@ import wordDictionary.DictionaryImpl;
 import wordDictionary.WordProperty;
 
 public class TextParserImpl implements TextParser {
-    private Dictionary dictionary;
+    private Dictionary dictionary = DictionaryImpl.getInstance();
 
     TextParserImpl() {
-        // Загружается словарь
-        dictionary = new DictionaryImpl();
     }
-
 
     // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений
     // Предложением является список лексем, оканчивающийся '.','!','?','¡'(?!)
@@ -65,25 +62,25 @@ public class TextParserImpl implements TextParser {
     // Поиск возвращает список всех совпадений с тегами и лемму с тегом.
     private List<Word> getWordList(String text) {
         List<Word> wordList = new ArrayList<>();
-        int startChar = 0;
+        int beginChar = 0;
         boolean isWord = false;
 
         for (int i = 0; i < text.length(); i++) {
             if ((text.charAt(i) >= 'А' && text.charAt(i) <= 'п') || (text.charAt(i) >= 'р' && text.charAt(i) <= 'ё')) {
                 if (!isWord) {
-                    startChar = i;
+                    beginChar = i;
                     isWord = true;
                 }
             } else {
                 if (isWord) {
-                    addWordToWordList(wordList, text, startChar, i);
+                    addWordToWordList(wordList, text, beginChar, i);
                     isWord = false;
                 }
             }
         }
 
         if (isWord) {
-            addWordToWordList(wordList, text, startChar, text.length());
+            addWordToWordList(wordList, text, beginChar, text.length());
         }
 
         return wordList;
@@ -96,16 +93,17 @@ public class TextParserImpl implements TextParser {
         WordTag[] wordTagArray = new WordTag[wordPropertyArray.length];
         for (int i = 0; i < wordPropertyArray.length; i++) {
             String property = wordPropertyArray[i].getPartOfSpeech().getAllProperties();
-            String morpheme = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getLemma();
-            String morphemicProperty = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getTag();
-            wordTagArray[i] = new WordTag(property, morpheme, morphemicProperty);
+            String lemma = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getLemma();
+            String partOfSpeech = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getPartOfSpeech();
+            String tag = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getTag();
+            wordTagArray[i] = new WordTag(property, lemma, partOfSpeech + (tag == null ? "" : " " + tag));
         }
         return wordTagArray;
     }
 
     // Метод добавляет слово в массив слов
-    private void addWordToWordList(List<Word> wordList, String text, int start, int end) {
-        String word = text.substring(start, end).toLowerCase();
+    private void addWordToWordList(List<Word> wordList, String text, int begin, int end) {
+        String word = text.substring(begin, end).toLowerCase();
         WordProperty[] wordPropertyArray = dictionary.getWordMap().get(word);
         WordTag[] wordTagArray = getWordTagArray(wordPropertyArray);
         wordList.add(new Word(word, wordTagArray));

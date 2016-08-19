@@ -3,8 +3,7 @@ package partsOfSpeech;
 public class Conjunction implements PartOfSpeech {
 
     public Conjunction(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
                 default:
                     throw new RuntimeException("Unknown property of the conjunction - " + grammema);

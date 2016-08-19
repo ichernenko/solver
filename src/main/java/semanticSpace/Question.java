@@ -1,0 +1,5 @@
+package semanticSpace;
+
+
+interface Question {
+}

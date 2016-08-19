@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DictionaryImpl implements Dictionary{
+    private static Dictionary dictionary = new DictionaryImpl();
     private Map<String, WordProperty[]> wordMap = null;
     private Lemma[] lemmaArray = null;
 
-    public DictionaryImpl() {
+    private DictionaryImpl() {
         System.out.println("Dictionary are loading...");
         long startTime = System.currentTimeMillis();
         if (loadDBDriver()) {
@@ -90,10 +91,10 @@ public class DictionaryImpl implements Dictionary{
         Lemma[] lemmaArray = new Lemma[getLemmaCount(con)];
 
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("select lemma_id,word,tag from dictionary where id=base_id")) {
+             ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word,tag from dictionary where id=base_id")) {
 
             while (rs.next()) {
-                lemmaArray[rs.getInt("lemma_id") - 1] = new Lemma(rs.getString("word"), rs.getString("tag"));
+                lemmaArray[rs.getInt("lemma_id") - 1] = new Lemma(rs.getString("word"), rs.getString("part_of_speech"), rs.getString("tag"));
             }
         }
         return lemmaArray;
@@ -111,6 +112,9 @@ public class DictionaryImpl implements Dictionary{
         return lemmaCount;
     }
 
+    public static Dictionary getInstance() {
+        return dictionary;
+    }
     @Override
     public Map<String, WordProperty[]> getWordMap() {
         return wordMap;

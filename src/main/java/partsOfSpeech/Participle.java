@@ -13,36 +13,35 @@ public class Participle implements PartOfSpeech{
     private String animate;
 
     public Participle(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
                 case "крат"  : shortForm = grammema; break;
-                case "сов"   : ;
-                case "несов" : ;
+                case "сов"   :
+                case "несов" :
                 case "2вид"  : type = grammema; break;
-                case "перех" : ;
-                case "непер" : ;
+                case "перех" :
+                case "непер" :
                 case "пер/не": transitivity = grammema; break;
                 case "воз"   : reflexive = grammema; break;
                 case "страд" : passive = grammema; break;
-                case "прош"  : ;
+                case "прош"  :
                 case "наст"  : tense = grammema; break;
-                case "ед"    : ;
+                case "ед"    :
                 case "мн"    : singular = grammema; break;
-                case "муж"   : ;
-                case "жен"   : ;
+                case "муж"   :
+                case "жен"   :
                 case "ср"    : gender = grammema; break;
-                case "им"    : ;
-                case "род"   : ;
-                case "дат"   : ;
-                case "вин"   : ;
-                case "тв"    : ;
-                case "пр"    : ;
-                case "парт"  : ;
-                case "счет"  : ;
-                case "мест"  : ;
+                case "им"    :
+                case "род"   :
+                case "дат"   :
+                case "вин"   :
+                case "тв"    :
+                case "пр"    :
+                case "парт"  :
+                case "счет"  :
+                case "мест"  :
                 case "зват"  : wordCase = grammema; break;
-                case "одуш"  : ;
+                case "одуш"  :
                 case "неод"  : animate = grammema; break;
                 default:
                     throw new RuntimeException("Unknown property of the participle - " + grammema);
@@ -66,7 +65,7 @@ public class Participle implements PartOfSpeech{
 
     @Override
     public String getAllProperties() {
-        return  "прич" +
+        return  "прич " +
                 (shortForm == null ? "" : shortForm + " ") +
                 (type == null ? "" : type + " ") +
                 (transitivity == null ? "" : transitivity + " ") +

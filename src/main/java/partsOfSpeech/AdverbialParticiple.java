@@ -8,16 +8,15 @@ public class AdverbialParticiple implements PartOfSpeech {
     private String tense;
 
     public AdverbialParticiple(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
-                case "сов"   : ;
+                case "сов"   :
                 case "несов" : type = grammema; break;
-                case "перех" : ;
-                case "непер" : ;
+                case "перех" :
+                case "непер" :
                 case "пер/не": transitivity = grammema; break;
                 case "воз"   : reflexive = grammema; break;
-                case "прош"  : ;
+                case "прош"  :
                 case "наст"  : tense = grammema; break;
                 default:
                     throw new RuntimeException("Unknown property of the adverbial participle - " + grammema);

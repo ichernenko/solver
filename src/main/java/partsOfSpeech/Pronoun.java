@@ -8,30 +8,29 @@ public class Pronoun implements PartOfSpeech {
     private String animate;
 
     public Pronoun(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
-                case "сущ"  : ;
-                case "прил" : ;
-                case "числ" : ;
+                case "сущ"  :
+                case "прил" :
+                case "числ" :
                 case "нар"  : type = grammema; break;
-                case "ед"   : ;
+                case "ед"   :
                 case "мн"   : singular = grammema; break;
-                case "муж"  : ;
-                case "жен"  : ;
-                case "ср"   : ;
+                case "муж"  :
+                case "жен"  :
+                case "ср"   :
                 case "общ"  : gender = grammema; break;
-                case "им"   : ;
-                case "род"  : ;
-                case "дат"  : ;
-                case "вин"  : ;
-                case "тв"   : ;
-                case "пр"   : ;
-                case "парт" : ;
-                case "счет" : ;
-                case "мест" : ;
+                case "им"   :
+                case "род"  :
+                case "дат"  :
+                case "вин"  :
+                case "тв"   :
+                case "пр"   :
+                case "парт" :
+                case "счет" :
+                case "мест" :
                 case "зват" : wordCase = grammema; break;
-                case "одуш" : ;
+                case "одуш" :
                 case "неод" : animate = grammema; break;
                 default:
                     throw new RuntimeException("Unknown property of the pronoun - " + grammema);

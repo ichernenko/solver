@@ -1,10 +1,11 @@
 package wordDictionary;
 
 public class Lemma {
-    private String lemma, tag;
+    private String lemma, partOfSpeech, tag;
 
-    Lemma(String lemma, String tag) {
+    Lemma(String lemma, String partOfSpeech, String tag) {
         this.lemma = lemma;
+        this.partOfSpeech = partOfSpeech;
         this.tag = tag;
     }
 
@@ -13,5 +14,8 @@ public class Lemma {
     }
     public String getTag() {
         return tag;
+    }
+    public String getPartOfSpeech() {
+        return partOfSpeech;
     }
 }

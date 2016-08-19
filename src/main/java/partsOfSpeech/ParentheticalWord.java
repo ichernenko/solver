@@ -3,8 +3,7 @@ package partsOfSpeech;
 public class ParentheticalWord implements PartOfSpeech{
 
     public ParentheticalWord(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
                 default:
                     throw new RuntimeException("Unknown property of the parenthetical word - " + grammema);

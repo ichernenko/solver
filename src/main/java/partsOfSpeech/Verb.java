@@ -12,29 +12,28 @@ public class Verb implements PartOfSpeech {
     private String imperative;
 
     public Verb(String[] grammemeArray){
-        for (int i = 0; i < grammemeArray.length; i++) {
-            String grammema = grammemeArray[i];
+        for (String grammema : grammemeArray) {
             switch(grammema) {
-                case "сов"   : ;
-                case "несов" : ;
+                case "сов"   :
+                case "несов" :
                 case "2вид"  : type = grammema; break;
-                case "перех" : ;
-                case "непер" : ;
+                case "перех" :
+                case "непер" :
                 case "пер/не": transitivity = grammema; break;
                 case "воз"   : reflexive = grammema; break;
                 case "инф"   : infinitive = grammema; break;
-                case "прош"  : ;
-                case "наст"  : ;
+                case "прош"  :
+                case "наст"  :
                 case "буд"   : tense = grammema; break;
-                case "ед"    : ;
+                case "ед"    :
                 case "мн"    : singular = grammema; break;
-                case "муж"   : ;
-                case "жен"   : ;
-                case "ср"    : ;
+                case "муж"   :
+                case "жен"   :
+                case "ср"    :
                 case "общ"   : gender = grammema; break;
-                case "1-е"   : ;
-                case "2-е"   : ;
-                case "3-е"   : ;
+                case "1-е"   :
+                case "2-е"   :
+                case "3-е"   :
                 case "безл"  : person = grammema; break;
                 case "пов"   : imperative = grammema; break;
                 default:

@@ -1,0 +1,4 @@
+package semanticSpace;
+
+interface SemanticNode {
+}
