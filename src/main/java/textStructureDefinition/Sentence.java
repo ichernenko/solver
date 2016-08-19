@@ -8,16 +8,16 @@ public class Sentence implements Serializable {
     private char sentenceEnd;
     //TODO: удалить! необходимо только для отображения!
     private String sentence;
-    private List<Word> wordList;
+    private List<Word> words;
 
-    Sentence(String sentence, List<Word> wordList, char sentenceEnd) {
+    Sentence(String sentence, List<Word> words, char sentenceEnd) {
         this.sentence = sentence;
-        this.wordList = wordList;
+        this.words = words;
         this.sentenceEnd = sentenceEnd;
     }
 
-    public List<Word> getWordList() {
-        return wordList;
+    public List<Word> getWords() {
+        return words;
     }
     public char getSentenceEnd() {
         return sentenceEnd;

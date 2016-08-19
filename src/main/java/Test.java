@@ -9,7 +9,7 @@ public class Test {
         String text = "     Пусть бегут 1 1 1 3 ' ( ?   )  . .  И на улице (  привет  }  у нас.И в лесу растет ... Класс  ? ";
 
 //        String text = "  Пусть как   говориться  ..   ";
-        List<Sentence> sentencePropertyList = new ArrayList<>();
+        List<Sentence> sentenceProperties = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
 
         boolean wasSpace = false;
@@ -80,12 +80,12 @@ public class Test {
 //                case '!' : ;
 //                case '?' : ;
 //                case '…':
-//                    sentenceList.add(new Sentence(getWordList(text.substring(sentenceBegin, i)), ch));
+//                    sentences.add(new Sentence(getWords(text.substring(sentenceBegin, i)), ch));
 //                        sentenceBegin = i + 2; // + 2 это пропуск пробела после предложения
 //            }
 //        }
 //
-//        sentencePropertyList.forEach(k -> System.out.println(k.getSentence() + k.getSentenceEnd()));
+//        sentenceProperties.forEach(k -> System.out.println(k.getSentence() + k.getSentenceEnd()));
 
     }
 

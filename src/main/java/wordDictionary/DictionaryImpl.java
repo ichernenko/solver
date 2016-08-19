@@ -9,7 +9,7 @@ import java.util.Map;
 public class DictionaryImpl implements Dictionary{
     private static Dictionary dictionary = new DictionaryImpl();
     private Map<String, WordProperty[]> wordMap = null;
-    private Lemma[] lemmaArray = null;
+    private Lemma[] lemmas = null;
 
     private DictionaryImpl() {
         System.out.println("Dictionary are loading...");
@@ -41,7 +41,7 @@ public class DictionaryImpl implements Dictionary{
 
         try (Connection con = DriverManager.getConnection("jdbc:sqlite:db\\solverDB.s3db")) {
             wordMap = createWordMap(con);
-            lemmaArray = createLemmaArray(con);
+            lemmas = createLemmas(con);
             sign = true;
         } catch (SQLException e) {
             System.out.println("Dictionary wasn't loaded!");
@@ -52,7 +52,7 @@ public class DictionaryImpl implements Dictionary{
     // Метод создает и возвращает Map со словами из словаря (омонимы представлены одной записью), тегами и id леммы
     private Map<String, WordProperty[]> createWordMap(Connection con) throws SQLException{
         Map<String, WordProperty[]> wordMap = new HashMap<>(getWordCount(con));
-        List<WordProperty> homonymList = new ArrayList<>();
+        List<WordProperty> homonyms = new ArrayList<>();
 
         try (Statement st = con.createStatement();
              ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word,tag from dictionary order by word")) {
@@ -60,17 +60,17 @@ public class DictionaryImpl implements Dictionary{
             rs.next();
             String word = rs.getString("word");
             String oldWord = word;
-            homonymList.add(new WordProperty(rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
+            homonyms.add(new WordProperty(rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             while (rs.next()) {
                 word = rs.getString("word");
                 if (!word.equals(oldWord)) {
-                    wordMap.put(oldWord, homonymList.toArray(new WordProperty[homonymList.size()]));
-                    homonymList.clear();
+                    wordMap.put(oldWord, homonyms.toArray(new WordProperty[homonyms.size()]));
+                    homonyms.clear();
                     oldWord = word;
                 }
-                homonymList.add(new WordProperty(rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
+                homonyms.add(new WordProperty(rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             }
-            wordMap.put(word, homonymList.toArray(new WordProperty[homonymList.size()]));
+            wordMap.put(word, homonyms.toArray(new WordProperty[homonyms.size()]));
         }
         return wordMap;
     }
@@ -87,17 +87,17 @@ public class DictionaryImpl implements Dictionary{
     }
 
     // Метод создает и возвращает массив лемм с тегами
-    private Lemma[] createLemmaArray(Connection con) throws SQLException{
-        Lemma[] lemmaArray = new Lemma[getLemmaCount(con)];
+    private Lemma[] createLemmas(Connection con) throws SQLException{
+        Lemma[] lemmas = new Lemma[getLemmaCount(con)];
 
         try (Statement st = con.createStatement();
              ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word,tag from dictionary where id=base_id")) {
 
             while (rs.next()) {
-                lemmaArray[rs.getInt("lemma_id") - 1] = new Lemma(rs.getString("word"), rs.getString("part_of_speech"), rs.getString("tag"));
+                lemmas[rs.getInt("lemma_id") - 1] = new Lemma(rs.getString("word"), rs.getString("part_of_speech"), rs.getString("tag"));
             }
         }
-        return lemmaArray;
+        return lemmas;
     }
 
 
@@ -120,7 +120,7 @@ public class DictionaryImpl implements Dictionary{
         return wordMap;
     }
     @Override
-    public Lemma[] getLemmaArray() {
-        return lemmaArray;
+    public Lemma[] getLemmas() {
+        return lemmas;
     }
 }

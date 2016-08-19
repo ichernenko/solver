@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 public class Word implements Serializable{
     private String word;
-    private WordTag[] wordTagArray;
+    private WordTag[] wordTags;
 
-    Word(String word, WordTag[] wordTagArray) {
+    Word(String word, WordTag[] wordTags) {
         this.word = word;
-        this.wordTagArray = wordTagArray;
+        this.wordTags = wordTags;
     }
 
     public String getWord() {
         return word;
     }
-    public WordTag[] getWordTagArray() {
-        return wordTagArray;
+    public WordTag[] getWordTags() {
+        return wordTags;
     }
 }

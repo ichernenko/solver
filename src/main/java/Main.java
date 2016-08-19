@@ -10,25 +10,25 @@ public class Main {
     public static void main(String... args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
         TextParser textParser = (TextParser)context.getBean("textParserBean");
-        List<Sentence> sentenceList = textParser.getSentenceList("самое темное время суток перед рассветом");
-        sentenceList.forEach(m -> {
-            List<Word> wordList = m.getWordList();
-            wordList.forEach(k -> {
+        List<Sentence> sentences = textParser.getSentences("самое темное время суток перед рассветом");
+        sentences.forEach(m -> {
+            List<Word> words = m.getWords();
+            words.forEach(k -> {
                         System.out.println(k.getWord());
-                        for (int i = 0; i < k.getWordTagArray().length; i++) {
-                            System.out.printf("\t%-30s", k.getWordTagArray()[i].getWordTag());
-                            System.out.print("\t\t" + (k.getWordTagArray()[i].getLemma())
-                                    + "\t\t" + k.getWordTagArray()[i].getLemmaTag());
+                        for (int i = 0; i < k.getWordTags().length; i++) {
+                            System.out.printf("\t%-30s", k.getWordTags()[i].getWordTag());
+                            System.out.print("\t\t" + (k.getWordTags()[i].getLemma())
+                                    + "\t\t" + k.getWordTags()[i].getLemmaTag());
                             System.out.println();
                         }
                     });
                 });
-//        wordList = textParser.getWordList("мальчик нашел шесть яблок");
-//        wordList.forEach(k-> {System.out.println(k.getWord());
-//            for(int i = 0; i < k.getWordTagArray().length; i ++) {
-//                System.out.printf("\t%-30s", k.getWordTagArray()[i].getWordTag());
-//                System.out.print("\t\t" + (k.getWordTagArray()[i].getLemma())
-//                        + "\t\t" + k.getWordTagArray()[i].getLemmaTag());
+//        words = textParser.getWords("мальчик нашел шесть яблок");
+//        words.forEach(k-> {System.out.println(k.getWord());
+//            for(int i = 0; i < k.getWordTags().length; i ++) {
+//                System.out.printf("\t%-30s", k.getWordTags()[i].getWordTag());
+//                System.out.print("\t\t" + (k.getWordTags()[i].getLemma())
+//                        + "\t\t" + k.getWordTags()[i].getLemmaTag());
 //                System.out.println();
 //            }
 //        });

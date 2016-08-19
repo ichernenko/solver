@@ -7,19 +7,19 @@ public class Numeral implements PartOfSpeech {
     private String wordCase;
     private String animate;
 
-    public Numeral(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public Numeral(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 case "кол"  :
                 case "неопр":
                 case "поряд":
-                case "собир": category = grammema; break;
+                case "собир": category = grammeme; break;
                 case "ед"   :
-                case "мн"   : singular = grammema; break;
+                case "мн"   : singular = grammeme; break;
                 case "муж"  :
                 case "жен"  :
                 case "ср"   :
-                case "общ"  : gender = grammema; break;
+                case "общ"  : gender = grammeme; break;
                 case "им"   :
                 case "род"  :
                 case "дат"  :
@@ -29,11 +29,11 @@ public class Numeral implements PartOfSpeech {
                 case "парт" :
                 case "счет" :
                 case "мест" :
-                case "зват" : wordCase = grammema; break;
+                case "зват" : wordCase = grammeme; break;
                 case "одуш" :
-                case "неод" : animate = grammema; break;
+                case "неод" : animate = grammeme; break;
                 default:
-                    throw new RuntimeException("Unknown property of the numeral - " + grammema);
+                    throw new RuntimeException("Unknown property of the numeral - " + grammeme);
             }
         }
     }

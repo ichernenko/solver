@@ -18,8 +18,8 @@ public class TextParserImpl implements TextParser {
     // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений
     // Предложением является список лексем, оканчивающийся '.','!','?','¡'(?!)
     @Override
-    public List<Sentence> getSentenceList(String text) {
-        List<Sentence> sentenceList = new ArrayList<>();
+    public List<Sentence> getSentences(String text) {
+        List<Sentence> sentences = new ArrayList<>();
 
         // удаление лишних символов из текста
         text = deleteRedundantCharacters(text);
@@ -30,13 +30,13 @@ public class TextParserImpl implements TextParser {
             char ch = text.charAt(i);
             if (ch == '.' || ch == '!' ||ch == '?'|| ch == '…' || ch == '¡') {
                     String sentence = text.substring(sentenceBegin, i).trim();
-                    sentenceList.add(new Sentence(sentence, getWordList(sentence), ch));
+                    sentences.add(new Sentence(sentence, getWords(sentence), ch));
                     sentenceBegin = i + 1;
                 // TODO: убрать пробелы после пунктуации!
             }
         }
 
-        return sentenceList;
+        return sentences;
     }
 
     // Метод удаляет из текста лишние символы
@@ -60,8 +60,8 @@ public class TextParserImpl implements TextParser {
     // Список слов формируется путем разбора входящего параметра-строки - text.
     // Для каждого слова проводится поиск в загруженном словаре.
     // Поиск возвращает список всех совпадений с тегами и лемму с тегом.
-    private List<Word> getWordList(String text) {
-        List<Word> wordList = new ArrayList<>();
+    private List<Word> getWords(String text) {
+        List<Word> words = new ArrayList<>();
         int beginChar = 0;
         boolean isWord = false;
 
@@ -73,40 +73,40 @@ public class TextParserImpl implements TextParser {
                 }
             } else {
                 if (isWord) {
-                    addWordToWordList(wordList, text, beginChar, i);
+                    addWordToWords(words, text, beginChar, i);
                     isWord = false;
                 }
             }
         }
 
         if (isWord) {
-            addWordToWordList(wordList, text, beginChar, text.length());
+            addWordToWords(words, text, beginChar, text.length());
         }
 
-        return wordList;
+        return words;
     }
 
-    private WordTag[] getWordTagArray(WordProperty[] wordPropertyArray) {
-        if (wordPropertyArray == null)
+    private WordTag[] getWordTags(WordProperty[] wordProperties) {
+        if (wordProperties == null)
             return new WordTag[]{};
 
-        WordTag[] wordTagArray = new WordTag[wordPropertyArray.length];
-        for (int i = 0; i < wordPropertyArray.length; i++) {
-            String property = wordPropertyArray[i].getPartOfSpeech().getAllProperties();
-            String lemma = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getLemma();
-            String partOfSpeech = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getPartOfSpeech();
-            String tag = dictionary.getLemmaArray()[wordPropertyArray[i].getLemmaId() - 1].getTag();
-            wordTagArray[i] = new WordTag(property, lemma, partOfSpeech + (tag == null ? "" : " " + tag));
+        WordTag[] wordTags = new WordTag[wordProperties.length];
+        for (int i = 0; i < wordProperties.length; i++) {
+            String property = wordProperties[i].getPartOfSpeech().getAllProperties();
+            String lemma = dictionary.getLemmas()[wordProperties[i].getLemmaId() - 1].getLemma();
+            String partOfSpeech = dictionary.getLemmas()[wordProperties[i].getLemmaId() - 1].getPartOfSpeech();
+            String tag = dictionary.getLemmas()[wordProperties[i].getLemmaId() - 1].getTag();
+            wordTags[i] = new WordTag(property, lemma, partOfSpeech + (tag == null ? "" : " " + tag));
         }
-        return wordTagArray;
+        return wordTags;
     }
 
     // Метод добавляет слово в массив слов
-    private void addWordToWordList(List<Word> wordList, String text, int begin, int end) {
+    private void addWordToWords(List<Word> words, String text, int begin, int end) {
         String word = text.substring(begin, end).toLowerCase();
-        WordProperty[] wordPropertyArray = dictionary.getWordMap().get(word);
-        WordTag[] wordTagArray = getWordTagArray(wordPropertyArray);
-        wordList.add(new Word(word, wordTagArray));
+        WordProperty[] wordProperties = dictionary.getWordMap().get(word);
+        WordTag[] wordTags = getWordTags(wordProperties);
+        words.add(new Word(word, wordTags));
     }
 
     public static void main(String[] args){

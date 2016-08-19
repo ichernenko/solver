@@ -2,11 +2,11 @@ package partsOfSpeech;
 
 public class PredicateNoun implements PartOfSpeech{
 
-    public PredicateNoun(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public PredicateNoun(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 default:
-                    throw new RuntimeException("Unknown property of the predicate noun - " + grammema);
+                    throw new RuntimeException("Unknown property of the predicate noun - " + grammeme);
             }
         }
     }

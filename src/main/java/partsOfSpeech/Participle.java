@@ -12,25 +12,25 @@ public class Participle implements PartOfSpeech{
     private String wordCase;
     private String animate;
 
-    public Participle(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
-                case "крат"  : shortForm = grammema; break;
+    public Participle(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
+                case "крат"  : shortForm = grammeme; break;
                 case "сов"   :
                 case "несов" :
-                case "2вид"  : type = grammema; break;
+                case "2вид"  : type = grammeme; break;
                 case "перех" :
                 case "непер" :
-                case "пер/не": transitivity = grammema; break;
-                case "воз"   : reflexive = grammema; break;
-                case "страд" : passive = grammema; break;
+                case "пер/не": transitivity = grammeme; break;
+                case "воз"   : reflexive = grammeme; break;
+                case "страд" : passive = grammeme; break;
                 case "прош"  :
-                case "наст"  : tense = grammema; break;
+                case "наст"  : tense = grammeme; break;
                 case "ед"    :
-                case "мн"    : singular = grammema; break;
+                case "мн"    : singular = grammeme; break;
                 case "муж"   :
                 case "жен"   :
-                case "ср"    : gender = grammema; break;
+                case "ср"    : gender = grammeme; break;
                 case "им"    :
                 case "род"   :
                 case "дат"   :
@@ -40,11 +40,11 @@ public class Participle implements PartOfSpeech{
                 case "парт"  :
                 case "счет"  :
                 case "мест"  :
-                case "зват"  : wordCase = grammema; break;
+                case "зват"  : wordCase = grammeme; break;
                 case "одуш"  :
-                case "неод"  : animate = grammema; break;
+                case "неод"  : animate = grammeme; break;
                 default:
-                    throw new RuntimeException("Unknown property of the participle - " + grammema);
+                    throw new RuntimeException("Unknown property of the participle - " + grammeme);
             }
         }
     }

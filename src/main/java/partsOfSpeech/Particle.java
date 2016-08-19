@@ -2,11 +2,11 @@ package partsOfSpeech;
 
 public class Particle implements PartOfSpeech{
 
-    public Particle(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public Particle(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 default:
-                    throw new RuntimeException("Unknown property of the particle - " + grammema);
+                    throw new RuntimeException("Unknown property of the particle - " + grammeme);
             }
         }
     }

@@ -1,5 +1,7 @@
 package servlets;
 
+import semanticSpace.SemanticSpace;
+import semanticSpace.SemanticSpaceImpl;
 import textStructureDefinition.Sentence;
 import textStructureDefinition.TextParser;
 import org.springframework.context.ApplicationContext;
@@ -35,23 +37,23 @@ public class SolverServlet extends HttpServlet {
         String text = request.getParameter("text");
         PrintWriter out = response.getWriter();
 
-        List<Sentence> sentenceList = textParser.getSentenceList(text);
+        List<Sentence> sentences = textParser.getSentences(text);
 
-        sentenceList.forEach(m -> out.print(m.getSentence() + m.getSentenceEnd() + "<br>"));
+        sentences.forEach(m -> out.print(m.getSentence() + m.getSentenceEnd() + "<br>"));
         out.print("<hr><br>");
 
-        sentenceList.forEach(m -> {
-            List<Word> wordList = m.getWordList();
+        sentences.forEach(m -> {
+            List<Word> words = m.getWords();
             out.print("<span class=task-solution-sentence-font>" + m.getSentence() + m.getSentenceEnd() + "</span>");
             out.print("<table border=\"1\" class=task-solution-table>");
             out.print("<tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
-            wordList.forEach(k-> {
+            words.forEach(k-> {
                 String word = k.getWord();
-                if (k.getWordTagArray().length != 0) {
-                    for (int i = 0; i < k.getWordTagArray().length; i++) {
-                        String wordTag = k.getWordTagArray()[i].getWordTag() == null ? "" : k.getWordTagArray()[i].getWordTag();
-                        String lemma = k.getWordTagArray()[i].getLemma() == null ? "" : k.getWordTagArray()[i].getLemma();
-                        String lemmaTag = k.getWordTagArray()[i].getLemmaTag() == null ? "" : k.getWordTagArray()[i].getLemmaTag();
+                if (k.getWordTags().length != 0) {
+                    for (int i = 0; i < k.getWordTags().length; i++) {
+                        String wordTag = k.getWordTags()[i].getWordTag() == null ? "" : k.getWordTags()[i].getWordTag();
+                        String lemma = k.getWordTags()[i].getLemma() == null ? "" : k.getWordTags()[i].getLemma();
+                        String lemmaTag = k.getWordTags()[i].getLemmaTag() == null ? "" : k.getWordTags()[i].getLemmaTag();
 
                         out.print("<tr><td>" + word + "</td><td>" + wordTag + "</td><td>" + lemma + "</td><td>" + lemmaTag + "</td></tr>");
                     }
@@ -61,6 +63,11 @@ public class SolverServlet extends HttpServlet {
             });
             out.print("</table><br>");
         });
+
+        // Размещение объектов на семантическом пространстве
+        SemanticSpace space = SemanticSpaceImpl.getInstance();
+
+
 
         out.close();
         response.setStatus(200);

@@ -2,11 +2,11 @@ package partsOfSpeech;
 
 public class ParentheticalWord implements PartOfSpeech{
 
-    public ParentheticalWord(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public ParentheticalWord(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 default:
-                    throw new RuntimeException("Unknown property of the parenthetical word - " + grammema);
+                    throw new RuntimeException("Unknown property of the parenthetical word - " + grammeme);
             }
         }
     }

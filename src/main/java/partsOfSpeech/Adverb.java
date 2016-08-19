@@ -5,23 +5,23 @@ public class Adverb implements PartOfSpeech{
     private String adverbial;
     private String attributive;
 
-    public Adverb(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public Adverb(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 case "обст"  :
                 case "опред" :
                 case "вопр"  :
-                case "сравн" : category = grammema; break;
+                case "сравн" : category = grammeme; break;
                 case "врем"  :
                 case "места" :
                 case "напр"  :
                 case "причин":
-                case "цель"  : adverbial = grammema; break;
+                case "цель"  : adverbial = grammeme; break;
                 case "кач"   :
                 case "спос"  :
-                case "степ"  : attributive = grammema; break;
+                case "степ"  : attributive = grammeme; break;
                 default:
-                    throw new RuntimeException("Unknown property of the adverb - " + grammema);
+                    throw new RuntimeException("Unknown property of the adverb - " + grammeme);
             }
         }
     }

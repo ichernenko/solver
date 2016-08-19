@@ -5,8 +5,8 @@ import java.util.List;
 public class SemanticNodeImpl implements SemanticNode {
     private int id;
     private String name;
-    private List<String> propertyArray;
-    private List<SemanticLink> linkArray;
+    private List<String> properties;
+    private List<SemanticLink> links;
 
     SemanticNodeImpl(int id, String name) {
         this.id = id;
@@ -19,16 +19,16 @@ public class SemanticNodeImpl implements SemanticNode {
     public String getName() {
         return name;
     }
-    public List<String> getPropertyArray() {
-        return propertyArray;
+    public List<String> getProperties() {
+        return properties;
     }
-    public void setPropertyArray(List<String> propertyArray) {
-        this.propertyArray = propertyArray;
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
     }
-    public List<SemanticLink> getLinkArray() {
-        return linkArray;
+    public List<SemanticLink> getLinks() {
+        return links;
     }
-    public void setLinkArray(List<SemanticLink> linkArray) {
-        this.linkArray = linkArray;
+    public void setLinks(List<SemanticLink> links) {
+        this.links = links;
     }
 }

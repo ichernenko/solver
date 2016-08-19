@@ -1,6 +1,5 @@
 package semanticSpace;
 
-interface SemanticSpace {
-    void putNode(SemanticNode semanticNode);
+public interface SemanticSpace {
     String getAnswer(Question question);
 }

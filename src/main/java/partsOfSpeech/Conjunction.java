@@ -2,11 +2,11 @@ package partsOfSpeech;
 
 public class Conjunction implements PartOfSpeech {
 
-    public Conjunction(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public Conjunction(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 default:
-                    throw new RuntimeException("Unknown property of the conjunction - " + grammema);
+                    throw new RuntimeException("Unknown property of the conjunction - " + grammeme);
             }
         }
     }

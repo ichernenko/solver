@@ -11,33 +11,33 @@ public class Verb implements PartOfSpeech {
     private String person;
     private String imperative;
 
-    public Verb(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public Verb(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 case "сов"   :
                 case "несов" :
-                case "2вид"  : type = grammema; break;
+                case "2вид"  : type = grammeme; break;
                 case "перех" :
                 case "непер" :
-                case "пер/не": transitivity = grammema; break;
-                case "воз"   : reflexive = grammema; break;
-                case "инф"   : infinitive = grammema; break;
+                case "пер/не": transitivity = grammeme; break;
+                case "воз"   : reflexive = grammeme; break;
+                case "инф"   : infinitive = grammeme; break;
                 case "прош"  :
                 case "наст"  :
-                case "буд"   : tense = grammema; break;
+                case "буд"   : tense = grammeme; break;
                 case "ед"    :
-                case "мн"    : singular = grammema; break;
+                case "мн"    : singular = grammeme; break;
                 case "муж"   :
                 case "жен"   :
                 case "ср"    :
-                case "общ"   : gender = grammema; break;
+                case "общ"   : gender = grammeme; break;
                 case "1-е"   :
                 case "2-е"   :
                 case "3-е"   :
-                case "безл"  : person = grammema; break;
-                case "пов"   : imperative = grammema; break;
+                case "безл"  : person = grammeme; break;
+                case "пов"   : imperative = grammeme; break;
                 default:
-                    throw new RuntimeException("Unknown property of the verb - " + grammema);
+                    throw new RuntimeException("Unknown property of the verb - " + grammeme);
             }
         }
     }

@@ -2,11 +2,11 @@ package partsOfSpeech;
 
 public class Interjection implements PartOfSpeech{
 
-    public Interjection(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
+    public Interjection(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
                 default:
-                    throw new RuntimeException("Unknown property of the interjection - " + grammema);
+                    throw new RuntimeException("Unknown property of the interjection - " + grammeme);
             }
         }
     }

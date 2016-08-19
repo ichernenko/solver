@@ -9,19 +9,19 @@ public class Adjective implements PartOfSpeech {
     private String gender;
     private String wordCase;
 
-    public Adjective(String[] grammemeArray){
-        for (String grammema : grammemeArray) {
-            switch(grammema) {
-                case "крат" : shortForm = grammema; break;
-                case "неизм": invariability = grammema; break;
+    public Adjective(String[] grammemes){
+        for (String grammeme : grammemes) {
+            switch(grammeme) {
+                case "крат" : shortForm = grammeme; break;
+                case "неизм": invariability = grammeme; break;
                 case "сравн":
-                case "прев" : degreeOfComparison = grammema; break;
+                case "прев" : degreeOfComparison = grammeme; break;
                 case "ед"   :
-                case "мн"   : singular = grammema; break;
+                case "мн"   : singular = grammeme; break;
                 case "муж"  :
                 case "жен"  :
                 case "ср"   :
-                case "общ"  : gender = grammema; break;
+                case "общ"  : gender = grammeme; break;
                 case "им"   :
                 case "род"  :
                 case "дат"  :
@@ -31,11 +31,11 @@ public class Adjective implements PartOfSpeech {
                 case "парт" :
                 case "счет" :
                 case "мест" :
-                case "зват" : wordCase = grammema; break;
+                case "зват" : wordCase = grammeme; break;
                 case "одуш" :
-                case "неод" : animate = grammema; break;
+                case "неод" : animate = grammeme; break;
                 default:
-                    throw new RuntimeException("Unknown property of the adjective - " + grammema);
+                    throw new RuntimeException("Unknown property of the adjective - " + grammeme);
             }
         }
     }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SemanticLinkImpl  implements SemanticLink{
     private String name;
-    private List<String> propertyList;
+    private List<String> properties;
     private int linkedId;
     private Date beginDate;
     private Date endDate;
@@ -23,11 +23,11 @@ public class SemanticLinkImpl  implements SemanticLink{
     public int getLinkedId() {
         return linkedId;
     }
-    public List<String> getPropertyList() {
-        return propertyList;
+    public List<String> getProperties() {
+        return properties;
     }
-    public void setPropertyList(List<String> propertyList) {
-        this.propertyList = propertyList;
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
     }
     public Date getBeginDate() {
         return beginDate;
