@@ -1,5 +1,7 @@
 package servlets;
 
+import semanticSpace.Question;
+import semanticSpace.QuestionImpl;
 import semanticSpace.SemanticSpace;
 import semanticSpace.SemanticSpaceImpl;
 import textStructureDefinition.Sentence;
@@ -30,22 +32,24 @@ public class SolverServlet extends HttpServlet {
     }
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
+        response.setContentType("text/xml");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
-        String text = request.getParameter("text");
+        String textParameter = request.getParameter("text");
+        String questionParameter = request.getParameter("question");
         PrintWriter out = response.getWriter();
 
-        List<Sentence> sentences = textParser.getSentences(text);
+        List<Sentence> sentences = textParser.getSentences(textParameter);
 
-        sentences.forEach(m -> out.print(m.getSentence() + m.getSentenceEnd() + "<br>"));
-        out.print("<hr><br>");
+        out.print("<data><solution>");
+        sentences.forEach(m -> out.print(m.getSentence() + m.getSentenceEnd() + "<br/>"));
+        out.print("<hr/><br/>");
 
         sentences.forEach(m -> {
             List<Word> words = m.getWords();
-            out.print("<span class=task-solution-sentence-font>" + m.getSentence() + m.getSentenceEnd() + "</span>");
-            out.print("<table border=\"1\" class=task-solution-table>");
+            out.print("<span class=\"task-solution-sentence-font\">" + m.getSentence() + m.getSentenceEnd() + "</span>");
+            out.print("<table border=\"1\" class=\"task-solution-table\">");
             out.print("<tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
             words.forEach(k-> {
                 String word = k.getWord();
@@ -61,13 +65,16 @@ public class SolverServlet extends HttpServlet {
                     out.print("<tr><td><font color=\"red\">" + word + "</font></td><td></td><td></td><td></td></tr>");
                 }
             });
-            out.print("</table><br>");
+            out.print("</table><br/>");
         });
+        out.print("</solution>");
 
         // Размещение объектов на семантическом пространстве
-        SemanticSpace space = SemanticSpaceImpl.getInstance();
+        SemanticSpace space = new SemanticSpaceImpl(/* передача параметров с уровня семантического анализа */);
+        Question question = new QuestionImpl(questionParameter);
+        String answer = space.getAnswer(question);
 
-
+        out.print("<answer>" + answer + "</answer></data>");
 
         out.close();
         response.setStatus(200);

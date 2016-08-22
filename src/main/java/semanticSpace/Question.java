@@ -1,5 +1,6 @@
 package semanticSpace;
 
 
-interface Question {
+public interface Question {
+    int getCode();
 }

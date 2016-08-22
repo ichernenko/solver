@@ -1,22 +1,25 @@
 package semanticSpace;
 
 public class SemanticSpaceImpl implements SemanticSpace {
-    private static SemanticSpace space = new SemanticSpaceImpl();
     private SemanticNode[] nodes;
 
-    private SemanticSpaceImpl() {
+    public SemanticSpaceImpl() {
         // Вообще, конструктор должен принимать на вход
         // массивы семантических данных с предыдущего уровня,
         // а именно, с семантического анализа.
         // Пока это прототип! "Мальчик курит папиросу."
     }
 
-    public static SemanticSpace getInstance() {
-        return space;
-    }
-
     @Override
     public String getAnswer(Question question) {
-        return null;
+        String answer;
+        switch(question.getCode()) {
+            case 1: answer = "Мальчик"; break;
+            case 2: answer = "Мальчик"; break;
+            case 3: answer = "Курит"; break;
+            case 4: answer = "Папиросу"; break;
+            default: answer = "Нет информации"; break;
+        }
+        return answer;
     }
 }

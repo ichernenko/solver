@@ -10,19 +10,20 @@
     <link rel="shortcut icon" href="img\solver_icon.png" type="image/png">
 </head>
 <style>
-    body {
-        background: url(img/solver_background.png);
-    }
+    body {background: url(img/solver_background.png);}
 </style>
+<body>
 <form method="post">
     <%--<h1><div align="right">Решебник. Сегодня <%=getFormattedDate()%></div></h1>--%>
     <fieldset id=main-col>
-        <small><b>Задача:</b></small>
-        <textarea id="task-condition-id" name=task-condition class=task-condition rows="10" type="html/text" placeholder="Введите условия задачи" autofocus></textarea>
+        <small><b>Условия:</b></small>
+        <textarea id="task-condition-id" class=task-condition rows="10" placeholder="Введите условия задачи" autofocus></textarea>
+        <small><b>Вопрос:</b></small>
+        <textarea id="task-question-id" class=task-question rows="1" placeholder="Введите вопрос"></textarea>
         <small><b>Решение:</b></small>
-        <div id="task-solution-id" name=task-solution class=task-solution><span>Test</span></div>
+        <div id="task-solution-id" class=task-solution><span></span></div>
         <small><b>Ответ:</b></small>
-        <textarea name=task-result class=task-result rows="1" readonly></textarea>
+        <textarea id="task-answer-id" class=task-answer rows="1" readonly></textarea>
         <div align="right"><button type="button" onclick="solve()" class=task-button><img src="/img/task_button_label.png" class=task-button-image>Решить</button></div>
     </fieldset>
 
@@ -32,18 +33,20 @@
         var xhttp = new XMLHttpRequest();
         var url = "solverServlet";
         var text = document.getElementById("task-condition-id").value;
+        var question = document.getElementById("task-question-id").value;
 
         xhttp.open("POST", url, true);
         xhttp.onreadystatechange = function () {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
-                document.getElementById("task-solution-id").innerHTML = xhttp.responseText;
+                var xmlDoc = xhttp.responseXML;
+                document.getElementById("task-solution-id").innerHTML=xmlDoc.getElementsByTagName("solution")[0].innerHTML;
+                document.getElementById("task-answer-id").innerHTML = xmlDoc.getElementsByTagName("answer")[0].innerHTML;
             }
         };
 
         xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhttp.setRequestHeader("Content-length", text.length);
-        xhttp.setRequestHeader("Connection", "close");
-        xhttp.send("text="+text);
+        xhttp.send("text="+text+"&question="+question);
     }
 </script>
 </body>

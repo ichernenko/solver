@@ -11,7 +11,7 @@ public class QuestionImpl implements Question {
     // 3. Что делает мальчик? - вопрос "о действии мальчика"
     // 4. Что курит мальчик? - вопрос "об объекте действия мальчика"
     // Если заданный вопрос соответствует шаблонному, то ему присваивается код
-    QuestionImpl(String question) {
+    public QuestionImpl(String question) {
         switch(question) {
             case "Кто курит папиросу?"  : code = 1; break;
             case "Кто курит?"           : code = 2; break;
