@@ -17,9 +17,9 @@
     <%--<h1><div align="right">Решебник. Сегодня <%=getFormattedDate()%></div></h1>--%>
     <fieldset id=main-col>
         <small><b>Условия:</b></small>
-        <textarea id="task-condition-id" class=task-condition rows="10" placeholder="Введите условия задачи" autofocus></textarea>
+        <textarea id="task-condition-id" class=task-condition rows="10" placeholder="Введите условия задачи" autofocus>Мальчик курит папиросу.</textarea>
         <small><b>Вопрос:</b></small>
-        <textarea id="task-question-id" class=task-question rows="1" placeholder="Введите вопрос"></textarea>
+        <textarea id="task-question-id" class=task-question rows="1" placeholder="Введите вопрос">Что курит мальчик?</textarea>
         <small><b>Решение:</b></small>
         <div id="task-solution-id" class=task-solution><span></span></div>
         <small><b>Ответ:</b></small>

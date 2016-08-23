@@ -1,14 +1,16 @@
 package servlets;
 
+import morphologicAnalysis.MorphologicAnalysis;
+import preliminaryTextProcessing.PreliminaryTextProcessing;
+import preliminaryTextProcessing.PreliminaryTextProcessingImpl;
 import semanticSpace.Question;
 import semanticSpace.QuestionImpl;
 import semanticSpace.SemanticSpace;
 import semanticSpace.SemanticSpaceImpl;
-import textStructureDefinition.Sentence;
-import textStructureDefinition.TextParser;
+import morphologicAnalysis.Sentence;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import textStructureDefinition.Word;
+import morphologicAnalysis.Word;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,7 @@ import java.util.List;
 
 public class SolverServlet extends HttpServlet {
     private ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
-    private TextParser textParser = (TextParser)context.getBean("textParserBean");
+    private MorphologicAnalysis morphologicAnalysis = (MorphologicAnalysis)context.getBean("morphologicAnalysisBean");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,7 +42,11 @@ public class SolverServlet extends HttpServlet {
         String questionParameter = request.getParameter("question");
         PrintWriter out = response.getWriter();
 
-        List<Sentence> sentences = textParser.getSentences(textParameter);
+        // Предварительная обработка текста
+        PreliminaryTextProcessing processing = new PreliminaryTextProcessingImpl(textParameter);
+        String text = processing.processText();
+
+        List<Sentence> sentences = morphologicAnalysis.getSentences(text);
 
         out.print("<data><solution>");
         sentences.forEach(m -> out.print(m.getSentence() + m.getSentenceEnd() + "<br/>"));

@@ -1,18 +1,18 @@
-package textStructureDefinition;
+package morphologicAnalysis;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import wordDictionary.Dictionary;
-import wordDictionary.DictionaryImpl;
-import wordDictionary.WordProperty;
+import tokenization.Dictionary;
+import tokenization.DictionaryImpl;
+import tokenization.WordProperty;
 
-public class TextParserImpl implements TextParser {
+public class MorphologicAnalysisImpl implements MorphologicAnalysis {
     private Dictionary dictionary = DictionaryImpl.getInstance();
 
-    TextParserImpl() {
+    MorphologicAnalysisImpl() {
     }
 
     // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений
@@ -20,9 +20,6 @@ public class TextParserImpl implements TextParser {
     @Override
     public List<Sentence> getSentences(String text) {
         List<Sentence> sentences = new ArrayList<>();
-
-        // удаление лишних символов из текста
-        text = deleteRedundantCharacters(text);
 
         // разбиение текста на предложения
         int sentenceBegin = 0;
@@ -37,22 +34,6 @@ public class TextParserImpl implements TextParser {
         }
 
         return sentences;
-    }
-
-    // Метод удаляет из текста лишние символы
-    private String deleteRedundantCharacters(String text) {
-        return  text.replaceAll("^\\s+|\\s+$","")
-                    .replaceAll("\\s+"," ")
-                    .replaceAll(" (,|;|\\.|!|\\?|:|\\)|\\}|\\]|%)","$1")
-                    .replaceAll("(\\(|\\{|\\[|№) ","$1")
-                    .replaceAll("\\.{3,}","…")
-                    .replaceAll("(\\.|,|;|!|\\?|:)\\1+","$1")
-                    .replaceAll("(!|\\?){2,}","¡")
-                    .replaceAll(" \\((\\?|\\!)\\)","")
-                    // удаление пробелов в числах
-                    .replaceAll("([0-9]) ([0-9])*?","$1$2")
-                    // pL - буквы русского алфавита
-                    .replaceAll("(,|;|\\.|!|\\?|:|\\)|\\}|\\]|¡)([0-9]|\\pL)", "$1 $2");
     }
 
 

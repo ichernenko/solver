@@ -4,11 +4,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="textParserBean" class="textStructureDefinition.TextParserImpl" scope="singleton"/>
+    <bean id="morphologicAnalysisBean" class="morphologicAnalysis.MorphologicAnalysisImpl"/>
     <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
-        <property name="service" ref="textParserBean"/>
-        <property name="serviceInterface" value="textStructureDefinition.TextParser"/>
-        <property name="serviceName" value="TextParserService"/>
+        <property name="service" ref="morphologicAnalysisBean"/>
+        <property name="serviceInterface" value="morphologicAnalysis.MorphologicAnalysis"/>
+        <property name="serviceName" value="MorphologicAnalysisService"/>
         <property name="replaceExistingBinding" value="true"/>
         <property name="registryPort" value="48777"/>
     </bean>

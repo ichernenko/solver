@@ -1,4 +1,4 @@
-package wordDictionary;
+package tokenization;
 
 public class Lemma {
     private String lemma, partOfSpeech, tag;

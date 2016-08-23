@@ -1,4 +1,4 @@
-import textStructureDefinition.Sentence;
+import morphologicAnalysis.Sentence;
 
 import java.util.ArrayList;
 import java.util.List;

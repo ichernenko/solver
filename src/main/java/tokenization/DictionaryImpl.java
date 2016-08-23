@@ -1,4 +1,4 @@
-package wordDictionary;
+package tokenization;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -100,7 +100,6 @@ public class DictionaryImpl implements Dictionary{
         return lemmas;
     }
 
-
     private int getLemmaCount(Connection con) throws SQLException {
         int lemmaCount;
         try (Statement st = con.createStatement();
@@ -115,6 +114,7 @@ public class DictionaryImpl implements Dictionary{
     public static Dictionary getInstance() {
         return dictionary;
     }
+
     @Override
     public Map<String, WordProperty[]> getWordMap() {
         return wordMap;

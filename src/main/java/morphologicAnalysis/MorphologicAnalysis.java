@@ -1,7 +1,7 @@
-package textStructureDefinition;
+package morphologicAnalysis;
 
 import java.util.List;
 
-public interface TextParser {
+public interface MorphologicAnalysis {
     List<Sentence> getSentences(String text);
 }

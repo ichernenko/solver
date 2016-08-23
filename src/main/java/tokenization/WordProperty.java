@@ -1,4 +1,4 @@
-package wordDictionary;
+package tokenization;
 
 import partsOfSpeech.*;
 

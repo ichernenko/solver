@@ -4,8 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="textParserBean" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-        <property name="serviceUrl" value="rmi://localhost:48777/TextParserService"/>
-        <property name="serviceInterface" value="textStructureDefinition.TextParser"/>
+    <bean id="morphologicAnalysisBean" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+        <property name="serviceUrl" value="rmi://localhost:48777/MorphologicAnalysisService"/>
+        <property name="serviceInterface" value="morphologicAnalysis.MorphologicAnalysis"/>
     </bean>
 </beans>

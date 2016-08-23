@@ -1,4 +1,4 @@
-package textStructureDefinition;
+package morphologicAnalysis;
 
 import java.io.Serializable;
 import java.util.List;
