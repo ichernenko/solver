@@ -1,19 +1,21 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Numeral implements PartOfSpeech {
-    private String category;
+import java.io.Serializable;
+
+public class Pronoun implements PartOfSpeech, Serializable {
+    private String type;
     private String singular;
     private String gender;
     private String wordCase;
     private String animate;
 
-    public Numeral(String[] grammemes){
+    public Pronoun(String[] grammemes){
         for (String grammeme : grammemes) {
             switch(grammeme) {
-                case "кол"  :
-                case "неопр":
-                case "поряд":
-                case "собир": category = grammeme; break;
+                case "сущ"  :
+                case "прил" :
+                case "числ" :
+                case "нар"  : type = grammeme; break;
                 case "ед"   :
                 case "мн"   : singular = grammeme; break;
                 case "муж"  :
@@ -33,32 +35,32 @@ public class Numeral implements PartOfSpeech {
                 case "одуш" :
                 case "неод" : animate = grammeme; break;
                 default:
-                    throw new RuntimeException("Unknown property of the numeral - " + grammeme);
+                    throw new RuntimeException("Unknown property of the pronoun - " + grammeme);
             }
         }
     }
 
     @Override
     public void print() {
-        System.out.println("Часть речи: имя числительное (категория: " + category +
-                                                        ", число: " + singular +
-                                                        ", род: " + gender +
-                                                        ", падеж: " + wordCase +
-                                                        ", одушевленность: " + animate + ")");
+        System.out.println("Часть речи: местоимение (тип: " + type +
+                                                ", число: " + singular +
+                                                ", род: " + gender +
+                                                ", падеж: " + wordCase +
+                                                ", одушевленность: " + animate + ")");
     }
 
     @Override
     public String getAllProperties() {
-        return  "числ " +
-                (category == null ? "" : category + " ") +
+        return  "мест " +
+                (type == null ? "" : type + " ") +
                 (singular == null ? "" : singular + " ") +
                 (gender == null ? "" : gender + " ") +
                 (wordCase == null ? "" : wordCase  + " ") +
                 (animate == null ? "" : animate);
     }
 
-    public String getCategory() {
-        return category;
+    public String getType() {
+        return type;
     }
     public String getSingular() {
         return singular;

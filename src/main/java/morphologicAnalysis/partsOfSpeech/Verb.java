@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Verb implements PartOfSpeech {
+import java.io.Serializable;
+
+public class Verb implements PartOfSpeech, Serializable {
     private String type;
     private String transitivity;
     private String reflexive;

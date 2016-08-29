@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class ParentheticalWord implements PartOfSpeech{
+import java.io.Serializable;
+
+public class ParentheticalWord implements PartOfSpeech, Serializable {
 
     public ParentheticalWord(String[] grammemes){
         for (String grammeme : grammemes) {

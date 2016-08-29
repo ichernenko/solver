@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Interjection implements PartOfSpeech{
+import java.io.Serializable;
+
+public class Interjection implements PartOfSpeech, Serializable {
 
     public Interjection(String[] grammemes){
         for (String grammeme : grammemes) {

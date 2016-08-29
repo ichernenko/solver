@@ -1,6 +1,8 @@
-package tokenization;
+package dictionaryLoading;
 
-public class Lemma {
+import java.io.Serializable;
+
+public class Lemma implements Serializable {
     private String lemma, partOfSpeech, tag;
 
     Lemma(String lemma, String partOfSpeech, String tag) {

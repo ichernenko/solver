@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Adverb implements PartOfSpeech{
+import java.io.Serializable;
+
+public class Adverb implements PartOfSpeech, Serializable {
     private String category;
     private String adverbial;
     private String attributive;

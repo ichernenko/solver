@@ -1,7 +1,9 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
 
-public class Preposition implements PartOfSpeech{
+import java.io.Serializable;
+
+public class Preposition implements PartOfSpeech, Serializable {
     private String wordCase;
 
     public Preposition(String[] grammemes){

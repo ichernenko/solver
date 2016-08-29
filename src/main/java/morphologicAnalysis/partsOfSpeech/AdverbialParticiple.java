@@ -1,7 +1,9 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
 
-public class AdverbialParticiple implements PartOfSpeech {
+import java.io.Serializable;
+
+public class AdverbialParticiple implements PartOfSpeech, Serializable {
     private String type;
     private String transitivity;
     private String reflexive;

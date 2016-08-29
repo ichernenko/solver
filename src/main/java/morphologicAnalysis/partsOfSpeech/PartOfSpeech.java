@@ -1,4 +1,4 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
 public interface PartOfSpeech {
     void print();

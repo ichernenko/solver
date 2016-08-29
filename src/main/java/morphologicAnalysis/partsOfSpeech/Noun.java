@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Noun implements PartOfSpeech {
+import java.io.Serializable;
+
+public class Noun implements PartOfSpeech, Serializable {
     private String animate;
     private String singular;
     private String gender;

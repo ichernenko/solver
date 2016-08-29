@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Particle implements PartOfSpeech{
+import java.io.Serializable;
+
+public class Particle implements PartOfSpeech, Serializable {
 
     public Particle(String[] grammemes){
         for (String grammeme : grammemes) {

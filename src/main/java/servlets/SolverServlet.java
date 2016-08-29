@@ -1,8 +1,8 @@
 package servlets;
 
+import dictionaryLoading.DictionaryLoading;
+import dictionaryLoading.Lemma;
 import morphologicAnalysis.MorphologicAnalysis;
-import preliminaryTextProcessing.PreliminaryTextProcessing;
-import preliminaryTextProcessing.PreliminaryTextProcessingImpl;
 import semanticSpace.Question;
 import semanticSpace.QuestionImpl;
 import semanticSpace.SemanticSpace;
@@ -42,35 +42,32 @@ public class SolverServlet extends HttpServlet {
         String questionParameter = request.getParameter("question");
         PrintWriter out = response.getWriter();
 
-        // Предварительная обработка текста
-        PreliminaryTextProcessing processing = new PreliminaryTextProcessingImpl(textParameter);
-        String text = processing.processText();
-
-        List<Sentence> sentences = morphologicAnalysis.getSentences(text);
+        List<Sentence> sentences = morphologicAnalysis.getSentences(textParameter);
 
         out.print("<data><solution>");
-        sentences.forEach(m -> out.print(m.getSentence() + m.getSentenceEnd() + "<br/>"));
+        sentences.forEach(m -> out.print(m.printSentenceWithSpaces() + "<br/>"));
         out.print("<hr/><br/>");
 
         sentences.forEach(m -> {
-            List<Word> words = m.getWords();
-            out.print("<span class=\"task-solution-sentence-font\">" + m.getSentence() + m.getSentenceEnd() + "</span>");
+            out.print("<span class=\"task-solution-sentence-font\">" + m.printSentenceWithSpaces() + "</span>");
             out.print("<table border=\"1\" class=\"task-solution-table\">");
             out.print("<tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
-            words.forEach(k-> {
-                String word = k.getWord();
-                if (k.getWordTags().length != 0) {
-                    for (int i = 0; i < k.getWordTags().length; i++) {
-                        String wordTag = k.getWordTags()[i].getWordTag() == null ? "" : k.getWordTags()[i].getWordTag();
-                        String lemma = k.getWordTags()[i].getLemma() == null ? "" : k.getWordTags()[i].getLemma();
-                        String lemmaTag = k.getWordTags()[i].getLemmaTag() == null ? "" : k.getWordTags()[i].getLemmaTag();
+            for (Word word: m.getWords()){
+                if (word.getWordTags().length != 0) {
+                    for (int i = 0; i < word.getWordTags().length; i++) {
+                        // TODO: это временный вывод и в дальнейшем будет пересмотрен!
+                        String wordTag = word.getWordTags()[i].getPartOfSpeech().getAllProperties();
+                        int lemmaId = word.getWordTags()[i].getLemmaId() - 1;
+                        Lemma lemma = morphologicAnalysis.getLemma(lemmaId);
+                        String lemmaWord = lemma.getLemma();
+                        String lemmaTag = lemma.getPartOfSpeech() + ' ' + lemma.getTag();
 
-                        out.print("<tr><td>" + word + "</td><td>" + wordTag + "</td><td>" + lemma + "</td><td>" + lemmaTag + "</td></tr>");
+                        out.print("<tr><td>" + word.getWord() + "</td><td>" + wordTag + "</td><td>" + lemmaWord + "</td><td>" + lemmaTag + "</td></tr>");
                     }
                 } else {
                     out.print("<tr><td><font color=\"red\">" + word + "</font></td><td></td><td></td><td></td></tr>");
                 }
-            });
+            };
             out.print("</table><br/>");
         });
         out.print("</solution>");

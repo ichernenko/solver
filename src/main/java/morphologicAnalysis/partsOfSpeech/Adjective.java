@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Adjective implements PartOfSpeech {
+import java.io.Serializable;
+
+public class Adjective implements PartOfSpeech, Serializable {
     private String shortForm;
     private String invariability;
     private String degreeOfComparison;

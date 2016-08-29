@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class Participle implements PartOfSpeech{
+import java.io.Serializable;
+
+public class Participle implements PartOfSpeech, Serializable {
     private String shortForm;
     private String type;
     private String transitivity;

@@ -2,96 +2,112 @@ package morphologicAnalysis;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import dictionaryLoading.DictionaryLoading;
+import dictionaryLoading.Lemma;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import tokenization.Dictionary;
-import tokenization.DictionaryImpl;
-import tokenization.WordProperty;
+import dictionaryLoading.WordProperty;
+import preliminaryTextProcessing.PreliminaryTextProcessing;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis {
-    private Dictionary dictionary = DictionaryImpl.getInstance();
 
-    MorphologicAnalysisImpl() {
-    }
-
-    // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений
+    // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений.
     // Предложением является список лексем, оканчивающийся '.','!','?','¡'(?!)
+    // Списки предложений состоят из списков слов и списков пунктуаций.
     @Override
     public List<Sentence> getSentences(String text) {
+        // Выполнение неотъемлемоего предыдущего уровня, а именно
+        // уровня предварительной обработки текста
+        text = PreliminaryTextProcessing.processText(text);
+
         List<Sentence> sentences = new ArrayList<>();
 
-        // разбиение текста на предложения
-        int sentenceBegin = 0;
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
-            if (ch == '.' || ch == '!' ||ch == '?'|| ch == '…' || ch == '¡') {
-                    String sentence = text.substring(sentenceBegin, i).trim();
-                    sentences.add(new Sentence(sentence, getWords(sentence), ch));
-                    sentenceBegin = i + 1;
-                // TODO: убрать пробелы после пунктуации!
+        if (text != null && text.length() > 0) {
+            List<Word> words = new ArrayList<>();
+            List<Punctuation> punctuationMarks = new ArrayList<>();
+            StringBuilder token = new StringBuilder();
+
+            int wordNumber = 0;
+            boolean isSentence = false;
+            boolean isWord = false;
+
+            for (int i = 0; i < text.length(); i++) {
+                char ch = text.charAt(i);
+                if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡') {
+                    words.add(getWord(token.toString()));
+                    punctuationMarks.add(new Punctuation(ch, wordNumber));
+                    sentences.add(new Sentence(words, punctuationMarks));
+                    isWord = false;
+                    isSentence = false;
+                } else {
+                    if (ch == ',' || ch == ';' || ch == ':' || ch == '(' || ch == '{' || ch == '[' || ch == ')' || ch == '}' || ch == ']' || ch == '—' || ch == '«' || ch == '»') {
+                        words.add(getWord(token.toString()));
+                        punctuationMarks.add(new Punctuation(ch, wordNumber));
+                        isWord = false;
+                    } else {
+                        if (ch == ' ') {
+                            words.add(getWord(token.toString()));
+                            isWord = false;
+                        } else {
+                            if (!isSentence) {
+                                words = new ArrayList<>();
+                                punctuationMarks = new ArrayList<>();
+                                token.setLength(0);
+                                wordNumber = 0;
+                                isWord = true;
+                                isSentence = true;
+                            } else {
+                                if (!isWord) {
+                                    token.setLength(0);
+                                    wordNumber ++;
+                                    isWord = true;
+                                }
+                            }
+                            token.append(ch);
+                        }
+                    }
+                }
             }
         }
-
         return sentences;
     }
 
+    // Метод возвращает слово с тегами из словаря
+    private static Word getWord(String word) {
+        // Вначале проверяем не является ли последовательность слов идиомой
+        WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(word);
+        WordTag[] wordTags = createWordTags(wordProperties);
 
-    // Метод возвращает список слов со списками тегов.
-    // Список слов формируется путем разбора входящего параметра-строки - text.
-    // Для каждого слова проводится поиск в загруженном словаре.
-    // Поиск возвращает список всех совпадений с тегами и лемму с тегом.
-    private List<Word> getWords(String text) {
-        List<Word> words = new ArrayList<>();
-        int beginChar = 0;
-        boolean isWord = false;
-
-        for (int i = 0; i < text.length(); i++) {
-            if ((text.charAt(i) >= 'А' && text.charAt(i) <= 'п') || (text.charAt(i) >= 'р' && text.charAt(i) <= 'ё')) {
-                if (!isWord) {
-                    beginChar = i;
-                    isWord = true;
-                }
-            } else {
-                if (isWord) {
-                    addWordToWords(words, text, beginChar, i);
-                    isWord = false;
-                }
-            }
-        }
-
-        if (isWord) {
-            addWordToWords(words, text, beginChar, text.length());
-        }
-
-        return words;
+        return new Word(word, wordTags);
     }
 
-    private WordTag[] getWordTags(WordProperty[] wordProperties) {
+
+    // Метод создает массив WordTags из массива WordProperty
+    // TODO: подумать!!!
+    // Если бы изначально словарь все слова создавал бы с WordTags этого б делать не следовало
+    private static WordTag[] createWordTags(WordProperty[] wordProperties) {
         if (wordProperties == null)
             return new WordTag[]{};
 
         WordTag[] wordTags = new WordTag[wordProperties.length];
         for (int i = 0; i < wordProperties.length; i++) {
-            String property = wordProperties[i].getPartOfSpeech().getAllProperties();
-            String lemma = dictionary.getLemmas()[wordProperties[i].getLemmaId() - 1].getLemma();
-            String partOfSpeech = dictionary.getLemmas()[wordProperties[i].getLemmaId() - 1].getPartOfSpeech();
-            String tag = dictionary.getLemmas()[wordProperties[i].getLemmaId() - 1].getTag();
-            wordTags[i] = new WordTag(property, lemma, partOfSpeech + (tag == null ? "" : " " + tag));
+            wordTags[i] = new WordTag(wordProperties[i].getLemmaId(), wordProperties[i].getPartOfSpeech(), wordProperties[i].getTag());
         }
         return wordTags;
     }
 
-    // Метод добавляет слово в массив слов
-    private void addWordToWords(List<Word> words, String text, int begin, int end) {
-        String word = text.substring(begin, end).toLowerCase();
-        WordProperty[] wordProperties = dictionary.getWordMap().get(word);
-        WordTag[] wordTags = getWordTags(wordProperties);
-        words.add(new Word(word, wordTags));
+    // Метод возвращает лемму из словаря
+    @Override
+    public Lemma getLemma(int lemmaId) {
+        return DictionaryLoading.getLemmaDictionary()[lemmaId];
     }
+
 
     public static void main(String[] args){
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        System.out.println("Waiting for requests...");
+
+        if (DictionaryLoading.loadDictionary()) {
+            System.out.println("Waiting for requests...");
+        }
     }
 }

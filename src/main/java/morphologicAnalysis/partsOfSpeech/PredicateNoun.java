@@ -1,6 +1,8 @@
-package partsOfSpeech;
+package morphologicAnalysis.partsOfSpeech;
 
-public class PredicateNoun implements PartOfSpeech{
+import java.io.Serializable;
+
+public class PredicateNoun implements PartOfSpeech, Serializable {
 
     public PredicateNoun(String[] grammemes){
         for (String grammeme : grammemes) {

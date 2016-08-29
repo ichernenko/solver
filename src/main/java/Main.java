@@ -16,9 +16,9 @@ public class Main {
             words.forEach(k -> {
                         System.out.println(k.getWord());
                         for (int i = 0; i < k.getWordTags().length; i++) {
-                            System.out.printf("\t%-30s", k.getWordTags()[i].getWordTag());
-                            System.out.print("\t\t" + (k.getWordTags()[i].getLemma())
-                                    + "\t\t" + k.getWordTags()[i].getLemmaTag());
+//                            System.out.printf("\t%-30s", k.getWordTags()[i].getWordTag());
+//                            System.out.print("\t\t" + (k.getWordTags()[i].getLemma())
+//                                    + "\t\t" + k.getWordTags()[i].getLemmaTag());
                             System.out.println();
                         }
                     });

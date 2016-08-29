@@ -1,37 +1,22 @@
-import morphologicAnalysis.Sentence;
-
-import java.util.ArrayList;
-import java.util.List;
+import preliminaryTextProcessing.PreliminaryTextProcessing;
 
 public class Test {
     public static void main(String... args) {
 //        String text = "  Пусть как   говориться  ,,  обычное !!!!! предложение..... (h )  100    0  000,а.   ) и !!?!    ?!??!все тут!   \n";
         String text = "     Пусть бегут 1 1 1 3 ' ( ?   )  . .  И на улице (  привет  }  у нас.И в лесу растет ... Класс  ? ";
-
 //        String text = "  Пусть как   говориться  ..   ";
-        List<Sentence> sentenceProperties = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
 
-        boolean wasSpace = false;
-        boolean wasDigitOrPunctuation2 = false;
-        char lastAppendedCh = 0;
-
-        text = text.replaceAll("^\\s+|\\s+$","")
-                .replaceAll("\\s+"," ")
-                .replaceAll(" (,|;|\\.|!|\\?|:|\\)|\\}|\\]|%)","$1")
-                .replaceAll("(\\(|\\{|\\[|№) ","$1")
-                .replaceAll("\\.{3,}","…")
-                .replaceAll("(\\.|,|;|!|\\?|:)\\1+","$1")
-                .replaceAll("(!|\\?){2,}","¡")
-                .replaceAll(" \\((\\?|\\!)\\)","")
-                // удаление пробелов в числах
-                .replaceAll("([0-9]) ([0-9])*?","$1$2")
-                // pL - буквы русского алфавита
-                .replaceAll("(,|;|\\.|!|\\?|:|\\)|\\}|\\]|¡)([0-9]|\\pL)", "$1 $2");
 
         System.out.println("|" + text + "|\n");
+        System.out.println("|" + PreliminaryTextProcessing.processText(text) + "|\n");
 
 
+//        List<Sentence> sentenceProperties = new ArrayList<>();
+//        StringBuilder sb = new StringBuilder();
+//
+//        boolean wasSpace = false;
+//        boolean wasDigitOrPunctuation2 = false;
+//        char lastAppendedCh = 0;
 //        for (int i = 0; i < text.length(); i++) {
 //            char ch = text.charAt(i);
 //            // удаление непечатаемых символьных последовательностей
@@ -85,7 +70,7 @@ public class Test {
 //            }
 //        }
 //
-//        sentenceProperties.forEach(k -> System.out.println(k.getSentence() + k.getSentenceEnd()));
+//        sentenceProperties.forEach(k -> System.out.println(k.getSentence() + k.getType()));
 
     }
 
