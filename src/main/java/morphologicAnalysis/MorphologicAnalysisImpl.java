@@ -1,5 +1,6 @@
 package morphologicAnalysis;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import dictionaryLoading.DictionaryLoading;
@@ -27,32 +28,39 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
             List<Punctuation> punctuationMarks = new ArrayList<>();
             StringBuilder token = new StringBuilder();
 
-            int wordNumber = 0;
+            int wordNumber = -1; // До первого слова
             boolean isSentence = false;
             boolean isWord = false;
 
             for (int i = 0; i < text.length(); i++) {
                 char ch = text.charAt(i);
                 if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡') {
-                    words.add(getWord(token.toString()));
+                    if(isWord) {
+                        words.add(getWord(token.toString()));
+                        isWord = false;
+                    }
                     punctuationMarks.add(new Punctuation(ch, wordNumber));
-                    sentences.add(new Sentence(words, punctuationMarks));
-                    isWord = false;
-                    isSentence = false;
+                    if(isSentence) {
+                        sentences.add(new Sentence(words, punctuationMarks));
+                        words = new ArrayList<>();
+                        punctuationMarks = new ArrayList<>();
+                        token.setLength(0);
+                        wordNumber = -1;
+                        isSentence = false;
+                    }
                 } else {
                     if (ch == ',' || ch == ';' || ch == ':' || ch == '(' || ch == '{' || ch == '[' || ch == ')' || ch == '}' || ch == ']' || ch == '—' || ch == '«' || ch == '»') {
-                        words.add(getWord(token.toString()));
+                        if(isWord) {
+                            words.add(getWord(token.toString()));
+                            isWord = false;
+                        }
                         punctuationMarks.add(new Punctuation(ch, wordNumber));
-                        isWord = false;
                     } else {
                         if (ch == ' ') {
                             words.add(getWord(token.toString()));
                             isWord = false;
                         } else {
                             if (!isSentence) {
-                                words = new ArrayList<>();
-                                punctuationMarks = new ArrayList<>();
-                                token.setLength(0);
                                 wordNumber = 0;
                                 isWord = true;
                                 isSentence = true;
@@ -102,6 +110,10 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         return DictionaryLoading.getLemmaDictionary()[lemmaId];
     }
 
+
+    public static void print(PrintWriter out) {
+
+    }
 
     public static void main(String[] args){
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");

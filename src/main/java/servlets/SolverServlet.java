@@ -1,6 +1,5 @@
 package servlets;
 
-import dictionaryLoading.DictionaryLoading;
 import dictionaryLoading.Lemma;
 import morphologicAnalysis.MorphologicAnalysis;
 import semanticSpace.Question;
@@ -49,7 +48,7 @@ public class SolverServlet extends HttpServlet {
         out.print("<hr/><br/>");
 
         sentences.forEach(m -> {
-            out.print("<span class=\"task-solution-sentence-font\">" + m.printSentenceWithSpaces() + "</span>");
+            out.print("<span class=\"task-solution-sentence-font\">" + m.printSentence() + "</span>");
             out.print("<table border=\"1\" class=\"task-solution-table\">");
             out.print("<tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
             for (Word word: m.getWords()){
@@ -60,7 +59,7 @@ public class SolverServlet extends HttpServlet {
                         int lemmaId = word.getWordTags()[i].getLemmaId() - 1;
                         Lemma lemma = morphologicAnalysis.getLemma(lemmaId);
                         String lemmaWord = lemma.getLemma();
-                        String lemmaTag = lemma.getPartOfSpeech() + ' ' + lemma.getTag();
+                        String lemmaTag = lemma.getPartOfSpeech() + ' ' + (lemma.getTag() == null ? "" : lemma.getTag());
 
                         out.print("<tr><td>" + word.getWord() + "</td><td>" + wordTag + "</td><td>" + lemmaWord + "</td><td>" + lemmaTag + "</td></tr>");
                     }

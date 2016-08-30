@@ -15,11 +15,19 @@ public class Sentence implements Serializable {
     public String printSentence() {
         StringBuffer sb = new StringBuffer();
         int punctuationIndex = 0;
+        // Получение всех символов пунктуации, которые расположены до первого символа в предложении
+        while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == -1) {
+            sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
+            punctuationIndex ++;
+        }
+
         for (int i = 0; i < words.size(); i ++) {
             sb.append(words.get(i).getWord());
             if (punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
-                sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
-                punctuationIndex ++;
+                while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
+                    sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
+                    punctuationIndex++;
+                }
             } else {
                 sb.append(' ');
             }
@@ -30,19 +38,26 @@ public class Sentence implements Serializable {
     public String printSentenceWithSpaces() {
         StringBuffer sb = new StringBuffer();
         int punctuationIndex = 0;
+        // Получение всех символов пунктуации, которые расположены до первого символа в предложении
+        while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == -1) {
+            sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
+            punctuationIndex ++;
+        }
+
         for (int i = 0; i < words.size(); i ++) {
             sb.append(words.get(i).getWord());
             if (punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
-                char ch = punctuationMarks.get(punctuationIndex).getPunctuationMark();
-                if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡') {
-                    sb.append(ch);
-                } else {
-                    if (ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
+                char ch = 0;
+                char oldCh = 0;
+                while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
+                    ch = punctuationMarks.get(punctuationIndex).getPunctuationMark();
+                    if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡' || ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
                         sb.append(ch);
-                        sb.append(' ');
                     } else {
                         if (ch == '(' || ch == '{' || ch == '[' || ch == '«') {
-                            sb.append(' ');
+                            if (oldCh != '(' && oldCh != '{' && oldCh != '[' && oldCh != '«' && oldCh != '—') {
+                                sb.append(' ');
+                            }
                             sb.append(ch);
                         } else {
                             if (ch == '—') {
@@ -52,8 +67,13 @@ public class Sentence implements Serializable {
                             }
                         }
                     }
+                    oldCh = ch;
+                    punctuationIndex++;
                 }
-                punctuationIndex ++;
+
+                if (ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
+                    sb.append(' ');
+                }
             } else {
                 sb.append(' ');
             }
