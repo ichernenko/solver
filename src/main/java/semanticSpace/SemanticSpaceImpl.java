@@ -3,7 +3,7 @@ package semanticSpace;
 public class SemanticSpaceImpl implements SemanticSpace {
     private SemanticNode[] nodes;
 
-    public SemanticSpaceImpl() {
+    public SemanticSpaceImpl(String text) {
         // Вообще, конструктор должен принимать на вход
         // массивы семантических данных с предыдущего уровня,
         // а именно, с семантического анализа.
@@ -21,5 +21,10 @@ public class SemanticSpaceImpl implements SemanticSpace {
             default: answer = "Нет информации"; break;
         }
         return answer;
+    }
+
+    @Override
+    public void print(String answer) {
+        System.out.print("<answer>" + answer + "</answer>");
     }
 }

@@ -39,8 +39,16 @@
         xhttp.onreadystatechange = function () {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
                 var xmlDoc = xhttp.responseXML;
-                document.getElementById("task-solution-id").innerHTML=xmlDoc.getElementsByTagName("solution")[0].innerHTML;
-                document.getElementById("task-answer-id").innerHTML = xmlDoc.getElementsByTagName("answer")[0].innerHTML;
+                if (xmlDoc.getElementsByTagName("solution")[0] !== undefined) {
+                    document.getElementById("task-solution-id").innerHTML = xmlDoc.getElementsByTagName("solution")[0].innerHTML;
+                } else {
+                    document.getElementById("task-solution-id").innerHTML = "";
+                }
+                if (xmlDoc.getElementsByTagName("answer")[0] !== undefined) {
+                    document.getElementById("task-answer-id").innerHTML = xmlDoc.getElementsByTagName("answer")[0].innerHTML;
+                } else {
+                    document.getElementById("task-answer-id").innerHTML = "";
+                }
             }
         };
 

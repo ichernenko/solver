@@ -1,6 +1,5 @@
 package morphologicAnalysis;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import dictionaryLoading.DictionaryLoading;
@@ -104,16 +103,53 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         return wordTags;
     }
 
-    // Метод возвращает лемму из словаря
+    // Метод возвращает строку, представляющую результат работы класса
     @Override
-    public Lemma getLemma(int lemmaId) {
-        return DictionaryLoading.getLemmaDictionary()[lemmaId];
+    public String getSolution(List<Sentence> sentences) {
+        StringBuilder sb = new StringBuilder("<solution>");
+        sentences.forEach(m -> {
+            sb.append(m.printSentenceWithSpaces());
+            sb.append("<br/>");
+        });
+        sb.append("<hr/><br/>");
+
+        sentences.forEach(m -> {
+            sb.append("<span class=\"task-solution-sentence-font\">");
+            sb.append(m.printSentence());
+            sb.append("</span><table border=\"1\" class=\"task-solution-table\"><tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
+            for (Word word: m.getWords()){
+                if (word.getWordTags().length != 0) {
+                    for (int i = 0; i < word.getWordTags().length; i++) {
+                        // TODO: это временный вывод и в дальнейшем будет пересмотрен!
+                        String wordTag = word.getWordTags()[i].getPartOfSpeech().getAllProperties();
+                        int lemmaId = word.getWordTags()[i].getLemmaId() - 1;
+                        Lemma lemma = DictionaryLoading.getLemmaDictionary()[lemmaId];
+                        String lemmaWord = lemma.getLemma();
+                        String lemmaTag = lemma.getPartOfSpeech() + ' ' + (lemma.getTag() == null ? "" : lemma.getTag());
+
+                        sb.append("<tr><td>");
+                        sb.append(word.getWord());
+                        sb.append("</td><td>");
+                        sb.append(wordTag);
+                        sb.append("</td><td>");
+                        sb.append(lemmaWord);
+                        sb.append("</td><td>");
+                        sb.append(lemmaTag);
+                        sb.append("</td></tr>");
+                    }
+                } else {
+                    sb.append("<tr><td><font color=\"red\">");
+                    sb.append(word);
+                    sb.append("</font></td><td></td><td></td><td></td></tr>");
+                }
+            };
+            sb.append("</table><br/>");
+        });
+        sb.append("</solution>");
+        return sb.toString();
     }
 
 
-    public static void print(PrintWriter out) {
-
-    }
 
     public static void main(String[] args){
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
