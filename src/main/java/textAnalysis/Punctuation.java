@@ -1,4 +1,4 @@
-package morphologicAnalysis;
+package textAnalysis;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ public class Punctuation implements Serializable{
     private char punctuationMark;
     private int wordNumber;
 
-    Punctuation(char punctuationMark, int wordNumber) {
+    public Punctuation(char punctuationMark, int wordNumber) {
         this.punctuationMark = punctuationMark;
         this.wordNumber = wordNumber;
     }

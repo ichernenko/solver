@@ -41,7 +41,7 @@ public class PreliminaryTextProcessing {
     // замена дефиса, среднего и малого тире, идущих после закрывающих кавычек, закрывающих скобок, запятых, и пробела на тоже, но без пробела
     p15 = Pattern.compile("(»|\\)|\\]|\\})(-|–|—) ");
 
-    public static String processText(String text) {
+    public static String getResult(String text) {
         if (text != null && text.length() > 0) {
             text = p1.matcher(text).replaceAll("");
             text = p2.matcher(text).replaceAll(" ");

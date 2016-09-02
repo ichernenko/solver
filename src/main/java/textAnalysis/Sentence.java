@@ -1,4 +1,4 @@
-package morphologicAnalysis;
+package textAnalysis;
 
 import java.io.Serializable;
 import java.util.List;
@@ -7,12 +7,12 @@ public class Sentence implements Serializable {
     private List<Word> words;
     private List<Punctuation> punctuationMarks;
 
-    Sentence(List<Word> words, List<Punctuation> punctuationMarks) {
+    public Sentence(List<Word> words, List<Punctuation> punctuationMarks) {
         this.words = words;
         this.punctuationMarks = punctuationMarks;
     }
 
-    public String printSentence() {
+    public String getSentence() {
         StringBuffer sb = new StringBuffer();
         int punctuationIndex = 0;
         // Получение всех символов пунктуации, которые расположены до первого символа в предложении
@@ -35,7 +35,7 @@ public class Sentence implements Serializable {
         return sb.toString();
     }
 
-    public String printSentenceWithSpaces() {
+    public String getSentenceWithSpaces() {
         StringBuffer sb = new StringBuffer();
         int punctuationIndex = 0;
         // Получение всех символов пунктуации, которые расположены до первого символа в предложении

@@ -22,9 +22,4 @@ public class SemanticSpaceImpl implements SemanticSpace {
         }
         return answer;
     }
-
-    @Override
-    public void print(String answer) {
-        System.out.print("<answer>" + answer + "</answer>");
-    }
 }

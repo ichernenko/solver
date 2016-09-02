@@ -1,5 +1,7 @@
 package morphologicAnalysis;
 
+import textAnalysis.Word;
+
 import java.io.Serializable;
 import java.util.List;
 

@@ -26,10 +26,7 @@ public class SolverServlet extends HttpServlet {
         String question = request.getParameter("question");
         PrintStream out = new PrintStream(response.getOutputStream(), true, "UTF-8");
         System.setOut(out);
-
-        out.print("<data>");
         Solver.solve(text, question);
-        out.print("</data>");
 
         out.close();
         response.setStatus(200);

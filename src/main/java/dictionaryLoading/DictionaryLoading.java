@@ -56,7 +56,7 @@ public class DictionaryLoading {
         List<WordProperty> homonyms = new ArrayList<>();
 
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("select word,lemma_id,part_of_speech,tag from dictionary where word not like '% %' order by word")) {
+             ResultSet rs = st.executeQuery("select word,lemma_id,part_of_speech,tag from dictionary where word_type_id=1 order by word")) {
 
             rs.next();
             String word = rs.getString("word");
@@ -79,7 +79,7 @@ public class DictionaryLoading {
     private static int getWordCount(Connection con) throws SQLException {
         int wordCount;
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("select count() count from (select 1 from dictionary where word not like '% %' group by word)")) {
+             ResultSet rs = st.executeQuery("select count() count from (select 1 from dictionary where word_type_id=1 group by word)")) {
 
             rs.next();
             wordCount = rs.getInt("count");
@@ -88,9 +88,9 @@ public class DictionaryLoading {
     }
 
     // Метод создает и возвращает Map с идиомами из словаря (омонимы представлены одной записью), тегами и id леммы
-    // Алгоритм работы: извлекаются из базы все записи в которых есть пробелы - каждая идиома состоит из более одной словоформы, а значит, имеет пробел
+    // Алгоритм работы: извлекаются из базы все записи, в которых есть пробелы - каждая идиома состоит из более одной словоформы, а значит, имеет пробел
     // Ключем Map определяется значение первых двух словоформ с пробелом по середине.
-    // Это сделано для первичного отбора словоформ. На первом этапе отбираются последовательности слов, у которых превых две словоформы совпадают.
+    // Это сделано для первичного отбора словоформ. На первом этапе отбираются последовательности слов, у которых первых две словоформы совпадают.
     // Далее ведется поиск идиомы путем перебора всех значений в Map, у которых ключ совпадает, и определением включает ли текст перебираемую идиому
     // с места окончания двух взятых слов. В случае, если определено соответствие идиомы с последовательностью слов в тексте, далее при добавлении тегов проверяются только
     // точно такие же (на случай если одна и та же идиома имеет разные теги или является другой частью речи). Идиомы упорядочены по-убыванию, поэтому в начале проверяются идиомы с наибольшим количеством слов
@@ -100,7 +100,7 @@ public class DictionaryLoading {
         List<IdiomProperty> homonyms = new ArrayList<>();
 
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word idiom,tag,case when instr(substr(word,instr(word,' ')+1),' ')=0 then word else substr(word,0,instr(word,' ')+instr(substr(word,instr(word,' ')+1),' ')) end idiom_key from dictionary where word like '% %' order by idiom_key desc,word desc")) {
+             ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word idiom,tag,case when instr(substr(word,instr(word,' ')+1),' ')=0 then word else substr(word,0,instr(word,' ')+instr(substr(word,instr(word,' ')+1),' ')) end idiom_key from dictionary where word_type_id=2 order by idiom_key desc,word desc")) {
 
             rs.next();
             String idiomKey = rs.getString("idiom_key");
@@ -123,7 +123,7 @@ public class DictionaryLoading {
     private static int getIdiomCount(Connection con) throws SQLException {
         int wordCount;
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("select count() count from (select 1 from dictionary where word not like '% %' group by word)")) {
+             ResultSet rs = st.executeQuery("select count() count from (select 1 from dictionary where word_type_id=2 group by word)")) {
 
             rs.next();
             wordCount = rs.getInt("count");
