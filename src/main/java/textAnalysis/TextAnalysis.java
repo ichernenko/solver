@@ -1,7 +1,11 @@
 package textAnalysis;
 
+import preliminaryTextProcessing.PreliminaryTextProcessing;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextAnalysis {
 
@@ -66,6 +70,19 @@ public class TextAnalysis {
             }
         }
         return sentences;
+    }
+
+
+    private void findFullName() {
+        String text = "И.А.Черненко-Ива Обычно,И. А.Хру ,все хорошо но не так как. Хру-Черненко И. А.  ";
+        text = PreliminaryTextProcessing.getResult(text);
+        System.out.println(text);
+        Pattern p1 = Pattern.compile("[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)*? [А-ЯЁ]\\.[А-ЯЁ]\\.|[А-ЯЁ]\\.[А-ЯЁ]\\.[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)*");
+        Matcher m = p1.matcher (text);
+        while (m.find()) {
+            System.out.println(m.group(0));
+        }
+
     }
 
     // Метод возвращает строку, состоящую из отформатированных предложений

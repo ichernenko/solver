@@ -2,6 +2,7 @@ package morphologicAnalysis;
 
 import java.util.List;
 import dictionaryLoading.DictionaryLoading;
+import dictionaryLoading.IdiomProperty;
 import dictionaryLoading.Lemma;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -11,21 +12,75 @@ import textAnalysis.Word;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
-    // Метод определяет теги для слов в предложениях
+    // Метод определяет теги для слов и идиом в предложениях
     @Override
     public List<Sentence> setWordTags(List<Sentence> sentences) {
         for (Sentence sentence: sentences) {
-            for (Word word: sentence.getWords()) {
-                // Вначале проверяем не является ли последовательность слов идиомой
+            findIdioms(sentence);
+            findWords(sentence);
+        }
+        return sentences;
+    }
+
+    private static void findIdioms(Sentence sentence) {
+        // Находим идиому
+        // Заменяем все участвующие слова на одно
+        // Добавляем теги
+        StringBuilder sb = new StringBuilder();
+        sb.setLength(0);
+        List<Word> words = sentence.getWords();
+        for (int i = 0; i < words.size() - 1; i++) {
+            String idiomHead = words.get(i).getWord() + ' ' + words.get(i + 1).getWord();
+            IdiomProperty[] idiomProperties = DictionaryLoading.getIdiomDictionary().get(idiomHead);
+            if (idiomProperties != null) {
+                // ключ совпал! проверяется остальная часть идиомы
+                for (int j = 0; j < idiomProperties.length; j ++) {
+                    if (idiomProperties[j].getIdiomTail() == null || isIdiom(words, i + 2, idiomProperties[j].getIdiomTail())) {
+                        System.out.println("Идиома найдена: " + idiomHead);
+                    }
+                }
+            }
+        }
+    }
+
+    // Метод проверяет включает ли оставшаяся часть предложения хвостовую часть выбранной идиомы
+    private static boolean isIdiom(List<Word> words, int sentenceTailStartIndex, String idiomTail) {
+        int idiomTailIndex = 0;
+        for (int i = sentenceTailStartIndex; i < words.size(); i++) {
+            String word = words.get(i).getWord();
+            for (int j = 0; j < word.length(); j++, idiomTailIndex ++) {
+                if (word.charAt(j) != idiomTail.charAt(idiomTailIndex)) {
+                    return false;
+                }
+            }
+            if (idiomTail.length() == idiomTailIndex) {
+                return true;
+            } else {
+               if (idiomTail.charAt(idiomTailIndex) != ' ') {
+                   return false;
+               } else {
+                   idiomTailIndex ++;
+               }
+            }
+        }
+
+        if (idiomTail.length() != idiomTailIndex) {
+            return false;
+        }
+
+        return true;
+    }
 
 
-
+    private static void findWords(Sentence sentence) {
+        for (Word word: sentence.getWords()) {
+            // Если слово не является идиомой, то определяем его теги
+            if (word.getWordTags() == null) {
                 WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(word.getWord());
                 WordTag[] wordTags = createWordTags(wordProperties);
                 word.setWordTags(wordTags);
             }
         }
-        return sentences;
     }
 
     // Метод создает массив WordTags из массива WordProperty

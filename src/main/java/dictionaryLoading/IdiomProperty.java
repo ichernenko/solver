@@ -2,19 +2,19 @@ package dictionaryLoading;
 
 
 public class IdiomProperty {
-    private String idiom;
+    private String idiomTail;
     private int lemmaId;
     private String partOfSpeech, tag;
 
-    IdiomProperty(String idiom, int lemmaId, String partOfSpeech, String tag) {
-        this.idiom = idiom;
+    IdiomProperty(String idiomTail, int lemmaId, String partOfSpeech, String tag) {
+        this.idiomTail = idiomTail;
         this.lemmaId = lemmaId;
         this.partOfSpeech = partOfSpeech;
         this.tag = tag;
     }
 
-    public String getIdiom() {
-        return idiom;
+    public String getIdiomTail() {
+        return idiomTail;
     }
     public int getLemmaId() {
         return lemmaId;

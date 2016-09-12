@@ -100,20 +100,20 @@ public class DictionaryLoading {
         List<IdiomProperty> homonyms = new ArrayList<>();
 
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word idiom,tag,case when instr(substr(word,instr(word,' ')+1),' ')=0 then word else substr(word,0,instr(word,' ')+instr(substr(word,instr(word,' ')+1),' ')) end idiom_key from dictionary where word_type_id=2 order by idiom_key desc,word desc")) {
+             ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,tag,case when instr(substr(word,instr(word,' ')+1),' ')=0 then replace(word,',','') else replace(substr(word,0,instr(word,' ')+instr(substr(word,instr(word,' ')+1),' ')),',','') end idiom_head,case when instr(substr(word,instr(word,' ')+1),' ')=0 then null else replace(substr(word,instr(word,' ')+instr(substr(word,instr(word,' ')+1),' ')+1,length(word)),',','') end idiom_tail from dictionary where word_type_id=2 order by idiom_head desc,word desc")) {
 
             rs.next();
-            String idiomKey = rs.getString("idiom_key");
+            String idiomKey = rs.getString("idiom_head");
             String oldIdiomKey = idiomKey;
-            homonyms.add(new IdiomProperty(rs.getString("idiom"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
+            homonyms.add(new IdiomProperty(rs.getString("idiom_tail"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             while (rs.next()) {
-                idiomKey = rs.getString("idiom_key");
+                idiomKey = rs.getString("idiom_head");
                 if (!idiomKey.equals(oldIdiomKey)) {
                     idiomMap.put(oldIdiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
                     homonyms.clear();
                     oldIdiomKey = idiomKey;
                 }
-                homonyms.add(new IdiomProperty(rs.getString("idiom"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
+                homonyms.add(new IdiomProperty(rs.getString("idiom_tail"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             }
             idiomMap.put(idiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
         }
