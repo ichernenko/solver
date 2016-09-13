@@ -9,67 +9,75 @@ import java.util.regex.Pattern;
 
 public class TextAnalysis {
 
-    // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений.
-    // Предложением является список лексем, оканчивающийся '.','!','?','¡'(?!)
-    // Списки предложений состоят из списков слов и списков пунктуаций.
-    public static List<Sentence> getSentences(String text) {
-        List<Sentence> sentences = new ArrayList<>();
+    // Метод разбивает текст на параграфы и возвращает список этих параграфов с характеристиками параграфов.
+    // Параграфом является список лексем, оканчивающийся переходом на новую строку ('\n')
+    // Списки параграфов состоят из списков слов и списков пунктуаций.
+    // Предложения на этом этапе выявить еще нельзя!!! Т.к. нельзя однозначно сказать о словах, заканчивающихся на точку, что эта точка
+    // завершает предложение, а не является сокращением какого-либо слова. Например, Московская обл.
+    public static List<Paragraph> getParagraphs(String text) {
+        List<Paragraph> paragraphs = new ArrayList<>();
 
         if (text != null && text.length() > 0) {
             List<Word> words = new ArrayList<>();
             List<Punctuation> punctuationMarks = new ArrayList<>();
-            StringBuilder lexeme = new StringBuilder();
+            StringBuilder word = new StringBuilder();
 
             int wordNumber = -1; // До первого слова
-            boolean isSentence = false;
+            boolean isParagraph = false;
             boolean isWord = false;
+            WordDescriptor wordDescriptor = new WordDescriptor();
 
             for (int i = 0; i < text.length(); i++) {
                 char ch = text.charAt(i);
-                if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡') {
+                if (ch == '\n') {
                     if(isWord) {
-                        words.add(new Word(lexeme.toString()));
+                        words.add(new Word(word.toString(), wordDescriptor));
                         isWord = false;
                     }
-                    punctuationMarks.add(new Punctuation(ch, wordNumber));
-                    if(isSentence) {
-                        sentences.add(new Sentence(words, punctuationMarks));
+                    if(isParagraph) {
+                        paragraphs.add(new Paragraph(words, punctuationMarks));
                         words = new ArrayList<>();
                         punctuationMarks = new ArrayList<>();
-                        lexeme.setLength(0);
+                        word.setLength(0);
                         wordNumber = -1;
-                        isSentence = false;
+                        isParagraph = false;
                     }
                 } else {
-                    if (ch == ',' || ch == ';' || ch == ':' || ch == '(' || ch == '{' || ch == '[' || ch == ')' || ch == '}' || ch == ']' || ch == '—' || ch == '«' || ch == '»') {
+                    if (ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ';' || ch == ':' ||
+                        ch == '(' || ch == '{' || ch == '[' || ch == ')' || ch == '}' || ch == ']' || ch == '—' ||
+                        ch == '«' || ch == '»' || ch == '…' || ch == '¡' ||
+                        ch == '/' || ch == '\\' || ch == '+' || ch == '-' || ch == '*' || ch == '<' || ch == '>' || ch == '=' ||
+                        ch == '@' || ch == '＆') {
+
                         if(isWord) {
-                            words.add(new Word(lexeme.toString()));
+                            words.add(new Word(word.toString(), wordDescriptor));
                             isWord = false;
                         }
                         punctuationMarks.add(new Punctuation(ch, wordNumber));
                     } else {
                         if (ch == ' ') {
-                            words.add(new Word(lexeme.toString()));
+                            words.add(new Word(word.toString(), wordDescriptor));
                             isWord = false;
                         } else {
-                            if (!isSentence) {
+                            if (!isParagraph) {
                                 wordNumber = 0;
                                 isWord = true;
-                                isSentence = true;
+                                isParagraph = true;
                             } else {
                                 if (!isWord) {
-                                    lexeme.setLength(0);
+                                    word.setLength(0);
+                                    wordDescriptor = new WordDescriptor();
                                     wordNumber ++;
                                     isWord = true;
                                 }
                             }
-                            lexeme.append(ch);
+                            word.append(wordDescriptor.analyze(ch));
                         }
                     }
                 }
             }
         }
-        return sentences;
+        return paragraphs;
     }
 
 
@@ -85,11 +93,11 @@ public class TextAnalysis {
 
     }
 
-    // Метод возвращает строку, состоящую из отформатированных предложений
-    public static String getResult(List<Sentence> sentences) {
+    // Метод возвращает строку, состоящую из отформатированных параграфов
+    public static String getResult(List<Paragraph> paragraphs) {
         StringBuilder sb = new StringBuilder();
-        sentences.forEach(m -> {
-            sb.append(m.getSentenceWithSpaces());
+        paragraphs.forEach(m -> {
+            sb.append(m.getParagraphWithSpaces());
             sb.append("<br/>");
         });
         return sb.toString();

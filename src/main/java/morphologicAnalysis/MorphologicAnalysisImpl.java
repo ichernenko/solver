@@ -7,35 +7,35 @@ import dictionaryLoading.Lemma;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import dictionaryLoading.WordProperty;
-import textAnalysis.Sentence;
+import textAnalysis.Paragraph;
 import textAnalysis.Word;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
     // Метод определяет теги для слов и идиом в предложениях
     @Override
-    public List<Sentence> setWordTags(List<Sentence> sentences) {
-        for (Sentence sentence: sentences) {
-            findIdioms(sentence);
-            findWords(sentence);
+    public List<Paragraph> setWordTags(List<Paragraph> paragraphs) {
+        for (Paragraph paragraph : paragraphs) {
+            //findIdioms(paragraph);
+            findWords(paragraph);
         }
-        return sentences;
+        return paragraphs;
     }
 
-    private static void findIdioms(Sentence sentence) {
+    private static void findIdioms(Paragraph paragraph) {
         // Находим идиому
         // Заменяем все участвующие слова на одно
         // Добавляем теги
         StringBuilder sb = new StringBuilder();
         sb.setLength(0);
-        List<Word> words = sentence.getWords();
+        List<Word> words = paragraph.getWords();
         for (int i = 0; i < words.size() - 1; i++) {
             String idiomHead = words.get(i).getWord() + ' ' + words.get(i + 1).getWord();
             IdiomProperty[] idiomProperties = DictionaryLoading.getIdiomDictionary().get(idiomHead);
             if (idiomProperties != null) {
                 // ключ совпал! проверяется остальная часть идиомы
-                for (int j = 0; j < idiomProperties.length; j ++) {
-                    if (idiomProperties[j].getIdiomTail() == null || isIdiom(words, i + 2, idiomProperties[j].getIdiomTail())) {
+                for (IdiomProperty idiomProperty : idiomProperties) {
+                    if (idiomProperty.getIdiomTail() == null || isIdiom(words, i + 2, idiomProperty.getIdiomTail())) {
                         System.out.println("Идиома найдена: " + idiomHead);
                     }
                 }
@@ -72,8 +72,8 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     }
 
 
-    private static void findWords(Sentence sentence) {
-        for (Word word: sentence.getWords()) {
+    private static void findWords(Paragraph paragraph) {
+        for (Word word: paragraph.getWords()) {
             // Если слово не является идиомой, то определяем его теги
             if (word.getWordTags() == null) {
                 WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(word.getWord());
@@ -99,11 +99,11 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
     // Метод возвращает строку, представляющую результат работы класса
     @Override
-    public String getResult(List<Sentence> sentences) {
+    public String getResult(List<Paragraph> paragraphs) {
         StringBuilder sb = new StringBuilder();
-        sentences.forEach(m -> {
-            sb.append("<span class=\"task-solution-sentence-font\">");
-            sb.append(m.getSentence());
+        paragraphs.forEach(m -> {
+            sb.append("<span class=\"task-solution-paragraph-font\">");
+            sb.append(m.getParagraph());
             sb.append("</span><table border=\"1\" class=\"task-solution-table\"><tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
             for (Word word: m.getWords()){
                 if (word.getWordTags().length != 0) {
@@ -130,7 +130,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
                     sb.append(word);
                     sb.append("</font></td><td></td><td></td><td></td></tr>");
                 }
-            };
+            }
             sb.append("</table><br/>");
         });
         return sb.toString();

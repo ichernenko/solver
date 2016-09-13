@@ -32,8 +32,8 @@
     function solve() {
         var xhttp = new XMLHttpRequest();
         var url = "solverServlet";
-        var text = document.getElementById("task-condition-id").value;
-        var question = document.getElementById("task-question-id").value;
+        var text = encodeURIComponent(document.getElementById("task-condition-id").value);
+        var question = encodeURIComponent(document.getElementById("task-question-id").value);
 
         xhttp.open("POST", url, true);
         xhttp.onreadystatechange = function () {

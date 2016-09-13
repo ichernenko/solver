@@ -1,11 +1,11 @@
 package morphologicAnalysis;
 
 
-import textAnalysis.Sentence;
+import textAnalysis.Paragraph;
 
 import java.util.List;
 
 public interface MorphologicAnalysis {
-    List<Sentence> setWordTags(List<Sentence> sentences);
-    String getResult(List<Sentence> sentences);
+    List<Paragraph> setWordTags(List<Paragraph> paragraphs);
+    String getResult(List<Paragraph> paragraphs);
 }

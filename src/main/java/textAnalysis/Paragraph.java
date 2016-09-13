@@ -3,19 +3,19 @@ package textAnalysis;
 import java.io.Serializable;
 import java.util.List;
 
-public class Sentence implements Serializable {
+public class Paragraph implements Serializable {
     private List<Word> words;
     private List<Punctuation> punctuationMarks;
 
-    public Sentence(List<Word> words, List<Punctuation> punctuationMarks) {
+    Paragraph(List<Word> words, List<Punctuation> punctuationMarks) {
         this.words = words;
         this.punctuationMarks = punctuationMarks;
     }
 
-    public String getSentence() {
-        StringBuffer sb = new StringBuffer();
+    public String getParagraph() {
+        StringBuilder sb = new StringBuilder();
         int punctuationIndex = 0;
-        // Получение всех символов пунктуации, которые расположены до первого символа в предложении
+        // Получение всех символов пунктуации, которые расположены до первого символа в параграфе
         while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == -1) {
             sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
             punctuationIndex ++;
@@ -35,10 +35,10 @@ public class Sentence implements Serializable {
         return sb.toString();
     }
 
-    public String getSentenceWithSpaces() {
-        StringBuffer sb = new StringBuffer();
+    String getParagraphWithSpaces() {
+        StringBuilder sb = new StringBuilder();
         int punctuationIndex = 0;
-        // Получение всех символов пунктуации, которые расположены до первого символа в предложении
+        // Получение всех символов пунктуации, которые расположены до первого символа в параграфе
         while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == -1) {
             sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
             punctuationIndex ++;
@@ -46,6 +46,9 @@ public class Sentence implements Serializable {
 
         for (int i = 0; i < words.size(); i ++) {
             sb.append(words.get(i).getWord());
+            sb.append("(");
+            sb.append(words.get(i).getWordDescriptor().getAllProperties());
+            sb.append(")");
             if (punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
                 char ch = 0;
                 char oldCh = 0;
@@ -64,6 +67,8 @@ public class Sentence implements Serializable {
                                 sb.append(' ');
                                 sb.append(ch);
                                 sb.append(' ');
+                            } else {
+                                sb.append(ch);
                             }
                         }
                     }
@@ -77,6 +82,7 @@ public class Sentence implements Serializable {
             } else {
                 sb.append(' ');
             }
+            sb.append("<br/>");
         }
         return sb.toString();
     }
