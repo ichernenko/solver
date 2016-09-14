@@ -1,15 +1,19 @@
-package morphologicAnalysis.partsOfSpeech;
+package morphologicalAnalysis.morphologicalGroups;
+
+import morphologicalAnalysis.partsOfSpeech.PartOfSpeech;
 
 import java.io.Serializable;
 
-public class Numeral implements PartOfSpeech, Serializable {
+
+public class Fraction implements PartOfSpeech, Serializable {
     private String category;
     private String singular;
     private String gender;
     private String wordCase;
     private String animate;
 
-    public Numeral(String[] grammemes){
+    // TODO: пересмотреть необходимость проверок по всем случаям, когда все возможные варианты известны!
+    public Fraction(String[] grammemes){
         for (String grammeme : grammemes) {
             switch(grammeme) {
                 case "кол"  :
@@ -42,16 +46,16 @@ public class Numeral implements PartOfSpeech, Serializable {
 
     @Override
     public void print() {
-        System.out.println("Часть речи: имя числительное (категория: " + category +
-                                                        ", число: " + singular +
-                                                        ", род: " + gender +
-                                                        ", падеж: " + wordCase +
-                                                        ", одушевленность: " + animate + ")");
+        System.out.println("Морфологическая группа: дробное число (категория: " + category +
+                ", число: " + singular +
+                ", род: " + gender +
+                ", падеж: " + wordCase +
+                ", одушевленность: " + animate + ")");
     }
 
     @Override
     public String getAllProperties() {
-        return  "числ " +
+        return  "дробное_число " +
                 (category == null ? "" : category + " ") +
                 (singular == null ? "" : singular + " ") +
                 (gender == null ? "" : gender + " ") +

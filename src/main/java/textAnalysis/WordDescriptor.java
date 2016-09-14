@@ -2,10 +2,11 @@ package textAnalysis;
 
 import java.io.Serializable;
 
-class WordDescriptor implements Serializable {
+public class WordDescriptor implements Serializable {
     private boolean
             isFirst = false,
             hasDigit = false,
+            hasLetter = false,
             hasFirstUpperCase = false,
             hasLowerCase = false,
             hasUpperCase = false,
@@ -20,66 +21,97 @@ class WordDescriptor implements Serializable {
         char newCh;
         if (Character.isDigit(ch)) {
             newCh = ch;
-            hasDigit = true;
+            if (!hasDigit) {
+                hasDigit = true;
+            }
         } else {
             newCh = Character.toLowerCase(ch);
             if (Character.isLetter(ch)) {
+                if (!hasLetter) {
+                    hasLetter = true;
+                }
                 if (ch != newCh) {
                     if (!isFirst) {
-                        hasFirstUpperCase = true;
+                        if (!hasFirstUpperCase) {
+                            hasFirstUpperCase = true;
+                        }
                     } else {
-                        hasUpperCase = true;
+                        if (!hasUpperCase) {
+                            hasUpperCase = true;
+                        }
                     }
                 } else {
-                    hasLowerCase = true;
+                    if (!hasLowerCase) {
+                        hasLowerCase = true;
+                    }
                 }
 
                 if ((ch >= 'А' && ch <= 'я') || ch == 'Ё' || ch == 'ё') {
-                    hasRussian = true;
+                    if (!hasRussian) {
+                        hasRussian = true;
+                    }
                 } else {
                     if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
-                        hasLatin = true;
+                        if (!hasLatin) {
+                            hasLatin = true;
+                        }
                     } else {
-                        hasOther = true;
+                        if (!hasOther) {
+                            hasOther = true;
+                        }
                     }
                 }
             } else {
-                hasOther = true;
+                if (!hasOther) {
+                    hasOther = true;
+                }
             }
         }
-        isFirst = true;
+        if (!isFirst) {
+            isFirst = true;
+        }
         return newCh;
     }
 
     public String getAllProperties() {
-        return  (hasDigit ? "цифры" : "") +
-                ((hasLowerCase || hasUpperCase || hasFirstUpperCase) ? (hasDigit ? ", " : "") + "буквы:" : "") +
+        return (hasDigit ? "цифры" : "") +
+                (hasLetter ? (hasDigit ? ", " : "") + "буквы:" : "") +
                 (hasLowerCase ? " строчные" : "") +
                 (hasUpperCase ? " заглавные" : "") +
                 (hasRussian ? " русские" : "") +
                 (hasLatin ? " латинские" : "") +
-                (hasOther ? (hasDigit || hasLowerCase || hasUpperCase || hasFirstUpperCase ? ", " : "") + "другие символы" : "") +
+                (hasOther ? (hasDigit || hasLetter ? ", " : "") + "другие символы" : "") +
                 (hasFirstUpperCase ? ", 1-я заглавная" : "");
     }
 
     public boolean isHasDigit() {
         return hasDigit;
     }
+
+    public boolean isHasLetter() {
+        return hasLetter;
+    }
+
     public boolean isHasFirstUpperCase() {
         return hasFirstUpperCase;
     }
+
     public boolean isHasLowerCase() {
         return hasLowerCase;
     }
+
     public boolean isHasUpperCase() {
         return hasUpperCase;
     }
+
     public boolean isHasRussian() {
         return hasRussian;
     }
+
     public boolean isHasLatin() {
         return hasLatin;
     }
+
     public boolean isHasOther() {
         return hasOther;
     }

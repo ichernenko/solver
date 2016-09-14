@@ -1,4 +1,4 @@
-package morphologicAnalysis.partsOfSpeech;
+package morphologicalAnalysis.partsOfSpeech;
 
 import java.io.Serializable;
 

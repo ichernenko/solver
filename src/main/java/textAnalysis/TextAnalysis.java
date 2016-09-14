@@ -80,19 +80,6 @@ public class TextAnalysis {
         return paragraphs;
     }
 
-
-    private void findFullName() {
-        String text = "И.А.Черненко-Ива Обычно,И. А.Хру ,все хорошо но не так как. Хру-Черненко И. А.  ";
-        text = PreliminaryTextProcessing.getResult(text);
-        System.out.println(text);
-        Pattern p1 = Pattern.compile("[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)*? [А-ЯЁ]\\.[А-ЯЁ]\\.|[А-ЯЁ]\\.[А-ЯЁ]\\.[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)*");
-        Matcher m = p1.matcher (text);
-        while (m.find()) {
-            System.out.println(m.group(0));
-        }
-
-    }
-
     // Метод возвращает строку, состоящую из отформатированных параграфов
     public static String getResult(List<Paragraph> paragraphs) {
         StringBuilder sb = new StringBuilder();

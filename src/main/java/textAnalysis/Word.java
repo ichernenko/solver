@@ -1,6 +1,6 @@
 package textAnalysis;
 
-import morphologicAnalysis.WordTag;
+import morphologicalAnalysis.WordTag;
 
 import java.io.Serializable;
 
@@ -25,5 +25,8 @@ public class Word implements Serializable{
     }
     public void setWordTags(WordTag[] wordTags) {
         this.wordTags = wordTags;
+    }
+    public void setWord(String word) {
+        this.word = word;
     }
 }

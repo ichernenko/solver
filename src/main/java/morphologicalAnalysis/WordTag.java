@@ -1,6 +1,9 @@
-package morphologicAnalysis;
+package morphologicalAnalysis;
 
-import morphologicAnalysis.partsOfSpeech.*;
+import morphologicalAnalysis.morphologicalGroups.Integer;
+import morphologicalAnalysis.partsOfSpeech.*;
+import morphologicalAnalysis.morphologicalGroups.Fraction;
+
 import java.io.Serializable;
 
 public class WordTag implements Serializable{
@@ -12,6 +15,7 @@ public class WordTag implements Serializable{
         String[] grammemes = tag != null ? tag.split(" ") : new String[]{};
 
         switch(partOfSpeechString) {
+            // классы пакета partsOfSpeech
             case "сущ"    : partOfSpeech = new Noun(grammemes); break;
             case "прил"   : partOfSpeech = new Adjective(grammemes); break;
             case "числ"   : partOfSpeech = new Numeral(grammemes); break;
@@ -26,6 +30,9 @@ public class WordTag implements Serializable{
             case "част"   : partOfSpeech = new Particle(grammemes); break;
             case "межд"   : partOfSpeech = new Interjection(grammemes); break;
             case "ввод"   : partOfSpeech = new ParentheticalWord(grammemes); break;
+            // классы пакета morphologicalGroups
+            case "целое_число"  : partOfSpeech = new Integer(grammemes); break;
+            case "дробное_число"  : partOfSpeech = new Fraction(grammemes); break;
         }
     }
 

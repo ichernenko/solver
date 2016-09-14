@@ -4,10 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="morphologicAnalysisBean" class="morphologicAnalysis.MorphologicAnalysisImpl"/>
+    <bean id="morphologicAnalysisBean" class="morphologicalAnalysis.MorphologicAnalysisImpl"/>
     <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
         <property name="service" ref="morphologicAnalysisBean"/>
-        <property name="serviceInterface" value="morphologicAnalysis.MorphologicAnalysis"/>
+        <property name="serviceInterface" value="morphologicalAnalysis.MorphologicAnalysis"/>
         <property name="serviceName" value="MorphologicAnalysisService"/>
         <property name="replaceExistingBinding" value="true"/>
         <property name="registryPort" value="48777"/>

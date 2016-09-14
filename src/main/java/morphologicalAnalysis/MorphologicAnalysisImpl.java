@@ -1,5 +1,6 @@
-package morphologicAnalysis;
+package morphologicalAnalysis;
 
+import java.util.Iterator;
 import java.util.List;
 import dictionaryLoading.DictionaryLoading;
 import dictionaryLoading.IdiomProperty;
@@ -8,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import dictionaryLoading.WordProperty;
 import textAnalysis.Paragraph;
+import textAnalysis.Punctuation;
 import textAnalysis.Word;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis{
@@ -16,13 +18,57 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     @Override
     public List<Paragraph> setWordTags(List<Paragraph> paragraphs) {
         for (Paragraph paragraph : paragraphs) {
-            //findIdioms(paragraph);
+            findFractions(paragraph);
+//            findIntegers(paragraph);
             findWords(paragraph);
+            //findIdioms(paragraph);
         }
         return paragraphs;
     }
 
-    private static void findIdioms(Paragraph paragraph) {
+    //TODO: сделать чтобы слова проверялись только те, которые еще неопределны!!!
+
+
+    // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
+    // и создает морфологическую единицу как экземпляр класса Integer
+    private static void findFractions(Paragraph paragraph) {
+        List<Word> words = paragraph.getWords();
+        Iterator<Punctuation> iterator = paragraph.getPunctuationMarks().iterator();
+        while (iterator.hasNext()) {
+            Punctuation punctuation = iterator.next();
+
+            if (punctuation.getPunctuationMark() == ',') {
+                int i = punctuation.getWordNumber();
+                Word word1 = words.get(i);
+                Word word2 = words.get(i + 1);
+
+                if (word1.getWordDescriptor().isHasDigit() && !word1.getWordDescriptor().isHasLetter() &&
+                        word2.getWordDescriptor().isHasDigit() && !word2.getWordDescriptor().isHasLetter()) {
+
+                    String newWord = word1.getWord() + punctuation.getPunctuationMark() + word2.getWord();
+                    word1.setWord(newWord);
+                    words.remove(i + 1);
+                    iterator.remove();
+                    WordTag[] wordTags = {new WordTag(-1, "дробное_число", "кол им")};
+                    word1.setWordTags(wordTags);
+                }
+            }
+        }
+    }
+
+    // Метод находит последовательности сиволов, состоящие только из цифр
+    // и создает морфологическую единицу как экземпляр класса Integer
+    private static void findIntegers(Paragraph paragraph) {
+        for (Word word : paragraph.getWords()) {
+            if (word.getWordDescriptor().isHasDigit() && !word.getWordDescriptor().isHasLetter()) {
+                WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
+                word.setWordTags(wordTags);
+            }
+        }
+    }
+
+
+        private static void findIdioms(Paragraph paragraph) {
         // Находим идиому
         // Заменяем все участвующие слова на одно
         // Добавляем теги
@@ -73,7 +119,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
 
     private static void findWords(Paragraph paragraph) {
-        for (Word word: paragraph.getWords()) {
+        for (Word word : paragraph.getWords()) {
             // Если слово не является идиомой, то определяем его теги
             if (word.getWordTags() == null) {
                 WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(word.getWord());
@@ -111,9 +157,17 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
                         // TODO: это временный вывод и в дальнейшем будет пересмотрен!
                         String wordTag = word.getWordTags()[i].getPartOfSpeech().getAllProperties();
                         int lemmaId = word.getWordTags()[i].getLemmaId() - 1;
-                        Lemma lemma = DictionaryLoading.getLemmaDictionary()[lemmaId];
-                        String lemmaWord = lemma.getLemma();
-                        String lemmaTag = lemma.getPartOfSpeech() + ' ' + (lemma.getTag() == null ? "" : lemma.getTag());
+
+                        String lemmaWord, lemmaTag;
+
+                        if (lemmaId >= 0) {
+                            Lemma lemma = DictionaryLoading.getLemmaDictionary()[lemmaId];
+                            lemmaWord = lemma.getLemma();
+                            lemmaTag = lemma.getPartOfSpeech() + ' ' + (lemma.getTag() == null ? "" : lemma.getTag());
+                        } else {
+                            lemmaWord = "";
+                            lemmaTag = "";
+                        }
 
                         sb.append("<tr><td>");
                         sb.append(word.getWord());
@@ -131,7 +185,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
                     sb.append("</font></td><td></td><td></td><td></td></tr>");
                 }
             }
-            sb.append("</table><br/>");
+            sb.append("</table>");
         });
         return sb.toString();
     }

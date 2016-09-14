@@ -1,6 +1,6 @@
 package servlets;
 
-import morphologicAnalysis.MorphologicAnalysis;
+import morphologicalAnalysis.MorphologicAnalysis;
 import preliminaryTextProcessing.PreliminaryTextProcessing;
 import textAnalysis.Paragraph;
 import org.springframework.context.ApplicationContext;
@@ -17,20 +17,25 @@ class Solver {
     private static MorphologicAnalysis morphologicAnalysis = (MorphologicAnalysis)context.getBean("morphologicAnalysisBean");
 
     static void solve(String text, String question) {
-        // По причине того, что связь с модулем morphologicAnalysis осуществляется по средствам RMI
+        long startTime;
+        // По причине того, что связь с модулем morphologicalAnalysis осуществляется по средствам RMI
         // а stream System.out является несериализуемым, то для вывода в stream, получаются сериализуемые данные,
-        // к тому же через morphologicAnalysis не могут вызываться статические методы класса!!!
+        // к тому же через morphologicalAnalysis не могут вызываться статические методы класса!!!
         System.out.print("<data><solution>");
-        text = PreliminaryTextProcessing.getResult(text);
-        System.out.print(text);
-        System.out.print("<hr/><br/>");
 
+        startTime = System.nanoTime();
+        text = PreliminaryTextProcessing.getResult(text);
+        printPhaseHeader("Подготовительная обработка текста", startTime);
+        System.out.print(text + "<br/><br/>");
+
+        startTime = System.nanoTime();
         List<Paragraph> paragraphs = TextAnalysis.getParagraphs(text);
+        printPhaseHeader("Текстовый анализ", startTime);
         System.out.print(TextAnalysis.getResult(paragraphs));
-        System.out.print("<hr/><br/>");
 
         // Необходимо paragraphs получить заново с дополненными тегами!
         paragraphs = morphologicAnalysis.setWordTags(paragraphs);
+        printPhaseHeader("Морфологический анализ", startTime);
         System.out.print(morphologicAnalysis.getResult(paragraphs));
         System.out.print("</solution><answer>");
 
@@ -38,5 +43,10 @@ class Solver {
         String answer = space.getAnswer(new QuestionImpl(question));
         System.out.print(answer);
         System.out.print("</answer></data>");
+    }
+
+    private static void printPhaseHeader(String phaseName, long startTime) {
+        long finishTime = System.nanoTime();
+        System.out.print("<hr/><span class=\"task-solution-header-font\">" + phaseName + ": " + String.format("%,5d", (finishTime - startTime) / 1000) + " мкс</span><hr/>");
     }
 }

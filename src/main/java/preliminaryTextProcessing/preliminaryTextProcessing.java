@@ -12,36 +12,38 @@ public class PreliminaryTextProcessing {
     private static Pattern
     // удаление начальных и конечных непечатаемых символов
     p1 = Pattern.compile("^\\s+|\\s+$"),
-    // замена всех непечатаемых сиволов на пробел
-    p2 = Pattern.compile("\\s+"),
+    // замена всех непечатаемых сиволов на пробел, кроме знака перехода на новую строку ('\n') - признака нового параграфа
+    p2 = Pattern.compile("[ \\t\\r\\f]+"),
     // замена кавычек на закрывающие
     p3 = Pattern.compile("(\\S[^-–— ])\"|“"),
     // замена кавычек на закрывающие
     p4 = Pattern.compile("”|’"),
     // замена кавычек на открывающие
-    p5 = Pattern.compile(" *(\"|„|“|‘)"),
+    p5 = Pattern.compile(" *([\"„“‘])"),
     // замена дефисов, с ведущим пробелом, и средних тире на длинные тире, без обрамляющих пробелов
     p6 = Pattern.compile(" - *| *– *"),
-    // удаление начальных и конечных пробелов перед указанными знаками пунктуации
-    p7 = Pattern.compile(" *(,|;|\\.|!|\\?|:|\\(|\\{|\\[|\\)|\\}|\\]|«|») *"),
+    // удаление начальных и конечных пробелов перед указанными символами
+    p7 = Pattern.compile(" *([\n\\.,;!\\?:\\(\\{\\[\\)\\}\\]«»/+*<>=@&\\\\]) *"),
     // замена трех и более точек на символ "многоточие"
     p8 = Pattern.compile("\\.{3,}"),
-    // замена повторяющихся знаков пунктуации на один такой знак
-    p9 = Pattern.compile("(\\.|,|;|!|\\?|:)\\1+"),
+    // замена повторяющихся знаков на один такой знак
+    p9 = Pattern.compile("([\n\\.,;!\\?:])\\1+"),
     // замена вместе стоящих восклисательного и вопросительного знака на знак "¡"
-    p10 = Pattern.compile("(!|\\?){2,}"),
+    p10 = Pattern.compile("([!\\?]){2,}"),
+    // замена амперсанда на символ-близнец "＆" (для корректной обработки ответа отсервера на клиенте)
+    p11 = Pattern.compile("&"),
     // удаление пометок в тексте вида (!) или (?)
-    p11 = Pattern.compile("\\((\\?|\\!)\\)"),
+    p12 = Pattern.compile("\\(([\\?\\!])\\)"),
     // удаление пробелов в числах
-    p12 = Pattern.compile("([0-9]) ([0-9])*?"),
+    p13 = Pattern.compile("([0-9]) ([0-9])*?"),
     // удаление пробела между ведущим номером или знаком доллара и цифрой
-    p13 = Pattern.compile("(№|\\$) ([0-9])"),
+    p14 = Pattern.compile("([№\\$#])([0-9])"),
     // добавление пробела между ведущей цифрой и последующим символом (не знаком пунктуации)
-    p14 = Pattern.compile("([0-9]|°|%)(\\pL|№|\\$)"),
+    p15 = Pattern.compile("([0-9]|°|%)(\\pL|№|#|\\$)"),
     // замена дефиса, среднего и малого тире, идущих после закрывающих кавычек, закрывающих скобок, запятых, и пробела на тоже, но без пробела
-    p15 = Pattern.compile("(»|\\)|\\]|\\})(-|–|—) ");
+    p16 = Pattern.compile("([»\\)\\]\\}])([-–—]) ");
 
-    public static String getResult(String text) {
+        public static String getResult(String text) {
         if (text != null && text.length() > 0) {
             text = p1.matcher(text).replaceAll("");
             text = p2.matcher(text).replaceAll(" ");
@@ -53,22 +55,20 @@ public class PreliminaryTextProcessing {
             text = p8.matcher(text).replaceAll("…");
             text = p9.matcher(text).replaceAll("$1");
             text = p10.matcher(text).replaceAll("¡");
-            text = p11.matcher(text).replaceAll("");
-            text = p12.matcher(text).replaceAll("$1$2");
+            text = p11.matcher(text).replaceAll("＆");
+            text = p12.matcher(text).replaceAll("");
             text = p13.matcher(text).replaceAll("$1$2");
             text = p14.matcher(text).replaceAll("$1 $2");
-            text = p15.matcher(text).replaceAll("$1—");
+            text = p15.matcher(text).replaceAll("$1 $2");
+            text = p16.matcher(text).replaceAll("$1—");
 
-            // TODO: временное преобразование больших букв в маленькие!
-            text = text.toLowerCase();
-
-            // если у предложения нет завершающего знака пунктуации, то добавляется точка в конец предложения
+            // если у текста нет завершающего знака пунктуации, то добавляется точка в конец текста
             char ch = text.charAt(text.length() - 1);
             if (ch != '.' && ch != '!' && ch != '?' && ch != '…' && ch != '¡') {
-                return text + '.';
+                return text + '.' + '\n';
             }
-
         }
-        return text;
+
+        return text + '\n';
     }
 }

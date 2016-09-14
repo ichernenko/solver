@@ -1,4 +1,4 @@
-package morphologicAnalysis;
+package morphologicalAnalysis;
 
 import textAnalysis.Word;
 

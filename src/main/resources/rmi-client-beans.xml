@@ -6,6 +6,6 @@
 
     <bean id="morphologicAnalysisBean" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
         <property name="serviceUrl" value="rmi://localhost:48777/MorphologicAnalysisService"/>
-        <property name="serviceInterface" value="morphologicAnalysis.MorphologicAnalysis"/>
+        <property name="serviceInterface" value="morphologicalAnalysis.MorphologicAnalysis"/>
     </bean>
 </beans>

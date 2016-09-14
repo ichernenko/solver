@@ -1,4 +1,4 @@
-package morphologicAnalysis;
+package morphologicalAnalysis;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
