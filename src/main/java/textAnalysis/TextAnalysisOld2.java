@@ -3,7 +3,7 @@ package textAnalysis;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextAnalysis {
+public class TextAnalysisOld2 {
 
     // Метод разбивает текст на параграфы и возвращает список этих параграфов с характеристиками параграфов.
     // Параграфом является список лексем, оканчивающийся переходом на новую строку ('\n')
@@ -20,71 +20,44 @@ public class TextAnalysis {
             LexemeDescriptor lexemeDescriptor = null;
 
             int i = 0;
-            boolean isNewParagraph = true;
-            boolean isNewLexeme = true;
             char ch;
-
-
-
-
-
             while (i < text.length()) {
-                // Если параграф новый, то добавляются все символы пунктуации в качестве 0-го элемента lexemes, которые расположены до первого символа в параграфе
-                if (isNewParagraph) {
-                    lexemes = new ArrayList<>();
+                // Собираются все символы пунктуации, которые расположены до первой лексемы и сохраняются в 0-м элементе lexemes
+                punctuations.setLength(0);
+                while (isPunctuation(ch = text.charAt(i)) && i < text.length()) {
+                    punctuations.append(ch);
+                    i++;
+                }
+                lexemes.add(new Lexeme(null, punctuations.toString(), null));
+
+                // Проход по всем параграфам
+                while (text.charAt(i) != '\n' && i < text.length()) {
                     lexeme.setLength(0);
                     punctuations.setLength(0);
                     lexemeDescriptor = new LexemeDescriptor();
-
-                    while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
-                        punctuations.append(ch);
+                    // Проход по всем лексемам
+                    while (text.charAt(i) != ' ' && !isPunctuation(text.charAt(i)) && text.charAt(i) != '\n' && i < text.length()) {
+                        lexeme.append(lexemeDescriptor.analyze(text.charAt(i)));
                         i++;
                     }
 
-                    lexemes.add(new Lexeme(null, punctuations.toString(), null));
-                    isNewParagraph = false;
-                }
-
-                ch = text.charAt(i);
-                if (ch == ' ') {
-                    isNewLexeme = true;
-                } else {
-                    if (isPunctuation(ch)) {
-                        punctuations.append(ch);
-                        isNewLexeme = true;
+                    if (text.charAt(i) == ' ') {
+                        i++;
                     } else {
-                        if (ch == '\n') {
-                            lexemes.add(new Lexeme(lexeme.toString(), punctuations.toString(), lexemeDescriptor));
-                            paragraphs.add(new Paragraph(lexemes));
-
-                            // Подготовка к новому параграфу (сбор всех знаков пунктуации до первой лексемы)
-                            if (i < text.length() - 1) {
-                                lexemes = new ArrayList<>();
-                                punctuations.setLength(0);
-
-                                i++;
-                                while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
-                                    punctuations.append(ch);
-                                    i++;
-                                }
-
-                                lexemes.add(new Lexeme(null, punctuations.toString(), null));
-                                isNewLexeme = true;
-                                isNewParagraph = true;
-                            }
-                        } else {
-                            if (isNewLexeme == true) {
-                                lexemes.add(new Lexeme(lexeme.toString(), punctuations.toString(), lexemeDescriptor));
-                                lexeme.setLength(0);
-                                punctuations.setLength(0);
-                                lexemeDescriptor = new LexemeDescriptor();
-                                isNewLexeme = false;
-                            }
-                            lexeme.append(lexemeDescriptor.analyze(ch));
+                        while (isPunctuation(text.charAt(i)) && i < text.length()) {
+                            punctuations.append(text.charAt(i));
+                            i++;
                         }
                     }
+                    lexemes.add(new Lexeme(lexeme.toString(), punctuations.toString(), lexemeDescriptor));
                 }
-                i++;
+
+                if (text.charAt(i) == '\n') {
+                    lexemes.add(new Lexeme(lexeme.toString(), punctuations.toString(), lexemeDescriptor));
+                    paragraphs.add(new Paragraph(lexemes));
+                    lexemes = new ArrayList<>();
+                    i++;
+                }
             }
         }
         return paragraphs;

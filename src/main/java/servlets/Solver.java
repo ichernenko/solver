@@ -13,8 +13,8 @@ import textAnalysis.TextAnalysis;
 import java.util.List;
 
 class Solver {
-    private static ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
-    private static MorphologicAnalysis morphologicAnalysis = (MorphologicAnalysis)context.getBean("morphologicAnalysisBean");
+    // private static ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
+    //private static MorphologicAnalysis morphologicAnalysis = (MorphologicAnalysis)context.getBean("morphologicAnalysisBean");
 
     static void solve(String text, String question) {
         long startTime;
@@ -34,9 +34,9 @@ class Solver {
         System.out.print(TextAnalysis.getResult(paragraphs));
 
         // Необходимо paragraphs получить заново с дополненными тегами!
-        paragraphs = morphologicAnalysis.setWordTags(paragraphs);
-        printPhaseHeader("Морфологический анализ", startTime);
-        System.out.print(morphologicAnalysis.getResult(paragraphs));
+//        paragraphs = morphologicAnalysis.setWordTags(paragraphs);
+//        printPhaseHeader("Морфологический анализ", startTime);
+//        System.out.print(morphologicAnalysis.getResult(paragraphs));
         System.out.print("</solution><answer>");
 
         SemanticSpace space = new SemanticSpaceImpl(text);

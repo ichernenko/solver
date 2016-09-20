@@ -2,7 +2,7 @@ package textAnalysis;
 
 import java.io.Serializable;
 
-public class WordDescriptor implements Serializable {
+public class LexemeDescriptor implements Serializable {
     private boolean
             isFirst = false,
             hasDigit = false,
@@ -13,9 +13,6 @@ public class WordDescriptor implements Serializable {
             hasRussian = false,
             hasLatin = false,
             hasOther = false;
-
-    WordDescriptor() {
-    }
 
     char analyze(char ch) {
         char newCh;

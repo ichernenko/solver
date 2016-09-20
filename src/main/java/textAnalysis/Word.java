@@ -6,19 +6,19 @@ import java.io.Serializable;
 
 public class Word implements Serializable{
     private String word;
-    private WordDescriptor wordDescriptor;
+    private LexemeDescriptor lexemeDescriptor;
     private WordTag[] wordTags;
 
-    Word(String word, WordDescriptor wordDescriptor) {
+    Word(String word, LexemeDescriptor lexemeDescriptor) {
         this.word = word;
-        this.wordDescriptor = wordDescriptor;
+        this.lexemeDescriptor = lexemeDescriptor;
     }
 
     public String getWord() {
         return word;
     }
-    public WordDescriptor getWordDescriptor() {
-        return wordDescriptor;
+    public LexemeDescriptor getLexemeDescriptor() {
+        return lexemeDescriptor;
     }
     public WordTag[] getWordTags() {
         return wordTags;

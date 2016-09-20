@@ -4,30 +4,18 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Paragraph implements Serializable {
-    private List<Word> words;
-    private List<Punctuation> punctuationMarks;
+    private List<Lexeme> lexemes;
 
-    Paragraph(List<Word> words, List<Punctuation> punctuationMarks) {
-        this.words = words;
-        this.punctuationMarks = punctuationMarks;
+    Paragraph(List<Lexeme> lexemes) {
+        this.lexemes = lexemes;
     }
 
     public String getParagraph() {
-        StringBuilder sb = new StringBuilder();
-        int punctuationIndex = 0;
-        // Получение всех символов пунктуации, которые расположены до первого символа в параграфе
-        while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == -1) {
-            sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
-            punctuationIndex ++;
-        }
-
-        for (int i = 0; i < words.size(); i ++) {
-            sb.append(words.get(i).getWord());
-            if (punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
-                while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
-                    sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
-                    punctuationIndex++;
-                }
+        StringBuilder sb = new StringBuilder(lexemes.get(0).getPunctuations());
+        for (int i = 1; i < lexemes.size(); i ++) {
+            sb.append(lexemes.get(i).getLexeme());
+            if (lexemes.get(i).getPunctuations().length() != 0) {
+                sb.append(lexemes.get(i).getPunctuations());
             } else {
                 sb.append(' ');
             }
@@ -36,24 +24,19 @@ public class Paragraph implements Serializable {
     }
 
     String getParagraphWithSpaces() {
-        StringBuilder sb = new StringBuilder();
-        int punctuationIndex = 0;
         // Получение всех символов пунктуации, которые расположены до первого символа в параграфе
-        while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == -1) {
-            sb.append(punctuationMarks.get(punctuationIndex).getPunctuationMark());
-            punctuationIndex ++;
-        }
+        StringBuilder sb = new StringBuilder(lexemes.get(0).getPunctuations());
 
-        for (int i = 0; i < words.size(); i ++) {
-            sb.append(words.get(i).getWord());
+        for (int i = 1; i < lexemes.size(); i ++) {
+            sb.append(lexemes.get(i).getLexeme());
             sb.append("(");
-            sb.append(words.get(i).getWordDescriptor().getAllProperties());
+            sb.append(lexemes.get(i).getLexemeDescriptor().getAllProperties());
             sb.append(")");
-            if (punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
+            if (lexemes.get(i).getPunctuations().length() != 0) {
                 char ch = 0;
                 char oldCh = 0;
-                while (punctuationIndex < punctuationMarks.size() && punctuationMarks.get(punctuationIndex).getWordNumber() == i) {
-                    ch = punctuationMarks.get(punctuationIndex).getPunctuationMark();
+                for (int j = 0; j < lexemes.get(i).getPunctuations().length(); j++) {
+                    ch = lexemes.get(i).getPunctuations().charAt(j);
                     if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡' || ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
                         sb.append(ch);
                     } else {
@@ -73,9 +56,7 @@ public class Paragraph implements Serializable {
                         }
                     }
                     oldCh = ch;
-                    punctuationIndex++;
                 }
-
                 if (ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
                     sb.append(' ');
                 }
@@ -87,10 +68,7 @@ public class Paragraph implements Serializable {
         return sb.toString();
     }
 
-    public List<Word> getWords() {
-        return words;
-    }
-    public List<Punctuation> getPunctuationMarks() {
-        return punctuationMarks;
+    public List<Lexeme> getLexemes() {
+        return lexemes;
     }
 }
