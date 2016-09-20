@@ -41,7 +41,7 @@ public class PreliminaryTextProcessing {
     // добавление пробела между ведущей цифрой и последующим символом (не знаком пунктуации)
     p15 = Pattern.compile("([0-9]|°|%)(\\pL|№|#|\\$)"),
     // замена дефиса, среднего и малого тире, идущих после закрывающих кавычек, закрывающих скобок, запятых, и пробела на тоже, но без пробела
-    p16 = Pattern.compile("([»\\)\\]\\}])([-–—]) ");
+    p16 = Pattern.compile("([\n\\.,;!\\?:»\\)\\]\\}])([-–—]) ");
 
         public static String getResult(String text) {
         if (text != null && text.length() > 0) {
@@ -62,11 +62,11 @@ public class PreliminaryTextProcessing {
             text = p15.matcher(text).replaceAll("$1 $2");
             text = p16.matcher(text).replaceAll("$1—");
 
-            // если у текста нет завершающего знака пунктуации, то добавляется точка в конец текста
-            char ch = text.charAt(text.length() - 1);
-            if (ch != '.' && ch != '!' && ch != '?' && ch != '…' && ch != '¡') {
-                return text + '.' + '\n';
-            }
+//            // если у текста нет завершающего знака пунктуации, то добавляется точка в конец текста
+//            char ch = text.charAt(text.length() - 1);
+//            if (ch != '.' && ch != '!' && ch != '?' && ch != '…' && ch != '¡') {
+//                return text + '.' + '\n';
+//            }
         }
 
         return text + '\n';

@@ -79,7 +79,7 @@ public class TextAnalysis {
     }
 
     private static boolean isPunctuation(char ch) {
-        return ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ';' || ch == ':' ||
+        return  ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ';' || ch == ':' ||
                 ch == '(' || ch == '{' || ch == '[' || ch == ')' || ch == '}' || ch == ']' || ch == '—' ||
                 ch == '«' || ch == '»' || ch == '…' || ch == '¡' ||
                 ch == '/' || ch == '\\' || ch == '+' || ch == '-' || ch == '*' || ch == '<' || ch == '>' || ch == '=' ||
