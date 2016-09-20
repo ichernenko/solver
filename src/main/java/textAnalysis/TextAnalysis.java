@@ -17,34 +17,21 @@ public class TextAnalysis {
             List<Lexeme> lexemes = new ArrayList<>();
             StringBuilder lexeme = new StringBuilder();
             StringBuilder punctuations = new StringBuilder();
-            LexemeDescriptor lexemeDescriptor = null;
+            LexemeDescriptor lexemeDescriptor = new LexemeDescriptor();
 
             int i = 0;
-            boolean isNewParagraph = true;
-            boolean isNewLexeme = true;
+            boolean isNewLexeme = false;
             char ch;
 
+            while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
+                punctuations.append(ch);
+                i++;
+            }
 
-
-
+            lexemes.add(new Lexeme(null, punctuations.toString(), null));
+            punctuations.setLength(0);
 
             while (i < text.length()) {
-                // Если параграф новый, то добавляются все символы пунктуации в качестве 0-го элемента lexemes, которые расположены до первого символа в параграфе
-                if (isNewParagraph) {
-                    lexemes = new ArrayList<>();
-                    lexeme.setLength(0);
-                    punctuations.setLength(0);
-                    lexemeDescriptor = new LexemeDescriptor();
-
-                    while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
-                        punctuations.append(ch);
-                        i++;
-                    }
-
-                    lexemes.add(new Lexeme(null, punctuations.toString(), null));
-                    isNewParagraph = false;
-                }
-
                 ch = text.charAt(i);
                 if (ch == ' ') {
                     isNewLexeme = true;
@@ -60,17 +47,18 @@ public class TextAnalysis {
                             // Подготовка к новому параграфу (сбор всех знаков пунктуации до первой лексемы)
                             if (i < text.length() - 1) {
                                 lexemes = new ArrayList<>();
+                                lexeme.setLength(0);
                                 punctuations.setLength(0);
+                                lexemeDescriptor = new LexemeDescriptor();
 
-                                i++;
-                                while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
+                                while (i < text.length() - 1 && isPunctuation(ch = text.charAt(i + 1))) {
                                     punctuations.append(ch);
                                     i++;
                                 }
 
                                 lexemes.add(new Lexeme(null, punctuations.toString(), null));
-                                isNewLexeme = true;
-                                isNewParagraph = true;
+                                punctuations.setLength(0);
+                                isNewLexeme = false;
                             }
                         } else {
                             if (isNewLexeme == true) {
