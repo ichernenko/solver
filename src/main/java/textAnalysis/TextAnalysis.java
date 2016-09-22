@@ -5,31 +5,36 @@ import java.util.List;
 
 public class TextAnalysis {
 
-    // Метод разбивает текст на параграфы и возвращает список этих параграфов с характеристиками параграфов.
-    // Параграфом является список лексем, оканчивающийся переходом на новую строку ('\n')
-    // Списки параграфов состоят из списков лексем. Лексемы состоят из названия лексемы и списка знаков пунктуации расположенных слева.
+    // Метод разбивает текст на текстовые блоки и возвращает список этих текстовых блоков.
+    // Текстовые блоки состоят из списков лексем, списка пунктуации, типа текстового блока.
+    // Тип 1 - главный блок - список лексем, которые оканчиваются переходом на новую строку ('\n').
+    // Лексема состоит из названия и определяющего набора характеристик.
     // Предложения на этом этапе выявить еще нельзя!!! Т.к. нельзя однозначно сказать о словах, заканчивающихся на точку, что эта точка
     // завершает предложение, а не является сокращением какого-либо слова. Например, Московская обл.
-    public static List<Paragraph> getParagraphs(String text) {
-        List<Paragraph> paragraphs = new ArrayList<>();
+    public static List<TextBlock> getTextBlocks(String text) {
+        List<TextBlock> textBlocks = new ArrayList<>();
 
         if (text != null && text.length() > 0) {
             List<Lexeme> lexemes = new ArrayList<>();
             StringBuilder lexeme = new StringBuilder();
-            StringBuilder punctuations = new StringBuilder();
+            StringBuilder punctuation = new StringBuilder();
+            List<Punctuation> punctuations = new ArrayList<>();
             LexemeDescriptor lexemeDescriptor = new LexemeDescriptor();
 
             int i = 0;
+            int lexemeOrder = 0;
             boolean isNewLexeme = false;
             char ch;
 
             while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
-                punctuations.append(ch);
+                punctuation.append(ch);
                 i++;
             }
 
-            lexemes.add(new Lexeme(null, punctuations.toString(), null));
-            punctuations.setLength(0);
+            if (punctuation.length() > 0) {
+                punctuations.add(new Punctuation(punctuation.toString(), -1));
+                punctuation.setLength(0);
+            }
 
             while (i < text.length()) {
                 ch = text.charAt(i);
@@ -37,35 +42,44 @@ public class TextAnalysis {
                     isNewLexeme = true;
                 } else {
                     if (isPunctuation(ch)) {
-                        punctuations.append(ch);
+                        punctuation.append(ch);
                         isNewLexeme = true;
                     } else {
                         if (ch == '\n') {
-                            lexemes.add(new Lexeme(lexeme.toString(), punctuations.toString(), lexemeDescriptor));
-                            paragraphs.add(new Paragraph(lexemes));
+                            lexemes.add(new Lexeme(lexeme.toString(), lexemeDescriptor));
+                            punctuations.add(new Punctuation(punctuation.toString(), lexemeOrder));
+                            textBlocks.add(new TextBlock(1, lexemes, punctuations));
 
-                            // Подготовка к новому параграфу (сбор всех знаков пунктуации до первой лексемы)
+                            // Подготовка к новому текстовому блоку (сбор всех знаков пунктуации до первой лексемы)
                             if (i < text.length() - 1) {
                                 lexemes = new ArrayList<>();
                                 lexeme.setLength(0);
-                                punctuations.setLength(0);
+                                punctuation.setLength(0);
+                                punctuations = new ArrayList<>();
+                                lexemeOrder = 0;
                                 lexemeDescriptor = new LexemeDescriptor();
 
                                 while (i < text.length() - 1 && isPunctuation(ch = text.charAt(i + 1))) {
-                                    punctuations.append(ch);
+                                    punctuation.append(ch);
                                     i++;
                                 }
 
-                                lexemes.add(new Lexeme(null, punctuations.toString(), null));
-                                punctuations.setLength(0);
+                                if (punctuation.length() > 0) {
+                                    punctuations.add(new Punctuation(punctuation.toString(), -1));
+                                    punctuation.setLength(0);
+                                }
                                 isNewLexeme = false;
                             }
                         } else {
                             if (isNewLexeme == true) {
-                                lexemes.add(new Lexeme(lexeme.toString(), punctuations.toString(), lexemeDescriptor));
+                                lexemes.add(new Lexeme(lexeme.toString(), lexemeDescriptor));
                                 lexeme.setLength(0);
-                                punctuations.setLength(0);
+                                if (punctuation.length() > 0) {
+                                    punctuations.add(new Punctuation(punctuation.toString(), lexemeOrder));
+                                    punctuation.setLength(0);
+                                }
                                 lexemeDescriptor = new LexemeDescriptor();
+                                lexemeOrder++;
                                 isNewLexeme = false;
                             }
                             lexeme.append(lexemeDescriptor.analyze(ch));
@@ -75,11 +89,11 @@ public class TextAnalysis {
                 i++;
             }
         }
-        return paragraphs;
+        return textBlocks;
     }
 
     private static boolean isPunctuation(char ch) {
-        return  ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ';' || ch == ':' ||
+        return ch == ',' || ch == '.' || ch == '!' || ch == '?' || ch == ';' || ch == ':' ||
                 ch == '(' || ch == '{' || ch == '[' || ch == ')' || ch == '}' || ch == ']' || ch == '—' ||
                 ch == '«' || ch == '»' || ch == '…' || ch == '¡' ||
                 ch == '/' || ch == '\\' || ch == '+' || ch == '-' || ch == '*' || ch == '<' || ch == '>' || ch == '=' ||
@@ -87,10 +101,10 @@ public class TextAnalysis {
     }
 
     // Метод возвращает строку, состоящую из отформатированных параграфов
-    public static String getResult(List<Paragraph> paragraphs) {
+    public static String getResult(List<TextBlock> textBlocks) {
         StringBuilder sb = new StringBuilder();
-        paragraphs.forEach(m -> {
-            sb.append(m.getParagraphWithSpaces());
+        textBlocks.forEach(m -> {
+            sb.append(m.getTextBlockWithSpaces());
             sb.append("<br/>");
         });
         return sb.toString();

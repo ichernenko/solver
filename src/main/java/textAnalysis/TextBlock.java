@@ -3,19 +3,29 @@ package textAnalysis;
 import java.io.Serializable;
 import java.util.List;
 
-public class Paragraph implements Serializable {
+public class TextBlock implements Serializable {
+    private int textBlockType;
     private List<Lexeme> lexemes;
+    private List<Punctuation> punctuations;
 
-    Paragraph(List<Lexeme> lexemes) {
+    TextBlock(int textBlockType, List<Lexeme> lexemes, List<Punctuation> punctuations) {
+        this.textBlockType = textBlockType;
         this.lexemes = lexemes;
+        this.punctuations = punctuations;
     }
 
-    public String getParagraph() {
-        StringBuilder sb = new StringBuilder(lexemes.get(0).getPunctuations());
-        for (int i = 1; i < lexemes.size(); i ++) {
+    public String getTextBlock() {
+        StringBuilder sb = new StringBuilder();
+        if (punctuations.get(0).getLexemeOrder() == -1) {
+            sb.append(punctuations.get(0).getPunctuation());
+        }
+
+        int punctuationIndex = 0;
+        for (int i = 0; i < lexemes.size(); i ++) {
             sb.append(lexemes.get(i).getLexeme());
-            if (lexemes.get(i).getPunctuations().length() != 0) {
-                sb.append(lexemes.get(i).getPunctuations());
+            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getLexemeOrder() == i) {
+                sb.append(punctuations.get(punctuationIndex).getPunctuation());
+                punctuationIndex ++;
             } else {
                 sb.append(' ');
             }
@@ -23,20 +33,25 @@ public class Paragraph implements Serializable {
         return sb.toString();
     }
 
-    String getParagraphWithSpaces() {
-        // Получение всех символов пунктуации, которые расположены до первого символа в параграфе
-        StringBuilder sb = new StringBuilder(lexemes.get(0).getPunctuations());
+    String getTextBlockWithSpaces() {
+        StringBuilder sb = new StringBuilder();
+        if (0 < punctuations.size() && punctuations.get(0).getLexemeOrder() == -1) {
+            sb.append(punctuations.get(0).getPunctuation());
+        }
 
-        for (int i = 1; i < lexemes.size(); i ++) {
+        int punctuationIndex = 1;
+        for (int i = 0; i < lexemes.size(); i ++) {
             sb.append(lexemes.get(i).getLexeme());
             sb.append("(");
             sb.append(lexemes.get(i).getLexemeDescriptor().getAllProperties());
             sb.append(")");
-            if (lexemes.get(i).getPunctuations().length() != 0) {
+
+            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getLexemeOrder() == i) {
                 char ch = 0;
                 char oldCh = 0;
-                for (int j = 0; j < lexemes.get(i).getPunctuations().length(); j++) {
-                    ch = lexemes.get(i).getPunctuations().charAt(j);
+                String punctuation = punctuations.get(punctuationIndex).getPunctuation();
+                for (int j = 0; j < punctuation.length(); j++) {
+                    ch = punctuation.charAt(j);
                     if (ch == '.' || ch == '!' || ch == '?' || ch == '…' || ch == '¡' || ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
                         sb.append(ch);
                     } else {
@@ -60,6 +75,7 @@ public class Paragraph implements Serializable {
                 if (ch == ',' || ch == ';' || ch == ':' || ch == ')' || ch == '}' || ch == ']' || ch == '»') {
                     sb.append(' ');
                 }
+                punctuationIndex ++;
             } else {
                 sb.append(' ');
             }
@@ -70,5 +86,11 @@ public class Paragraph implements Serializable {
 
     public List<Lexeme> getLexemes() {
         return lexemes;
+    }
+    public int getTextBlockType() {
+        return textBlockType;
+    }
+    public List<Punctuation> getPunctuations() {
+        return punctuations;
     }
 }

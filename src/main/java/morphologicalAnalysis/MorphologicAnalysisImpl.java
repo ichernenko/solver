@@ -1,26 +1,41 @@
 package morphologicalAnalysis;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import dictionaryLoading.DictionaryLoading;
-import dictionaryLoading.IdiomProperty;
-import dictionaryLoading.Lemma;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import dictionaryLoading.WordProperty;
-import textAnalysis.Paragraph;
-import textAnalysis.Word;
+import textAnalysis.Lexeme;
+import textAnalysis.Punctuation;
+import textAnalysis.TextBlock;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
     // Метод определяет теги для слов и идиом в предложениях
     @Override
-    public List<Paragraph> setWordTags(List<Paragraph> paragraphs) {
-        for (Paragraph paragraph : paragraphs) {
-            findFractions(paragraph);
-//            findIntegers(paragraph);
-            findWords(paragraph);
-            //findIdioms(paragraph);
+    public List<Paragraph> setWordTags(List<TextBlock> textBlocks) {
+        List<Paragraph> paragraphs = new ArrayList<>();
+        for (TextBlock textBlock : textBlocks) {
+            // Определяются слова, которые можно распознать по признаку - пунктуации
+            List<Word> words = new ArrayList<>();
+            for (Punctuation punctuation: textBlock.getPunctuations()) {
+                Word word = null;
+                if (punctuation.getPunctuation().length() == 1) {
+                    switch (punctuation.getPunctuation().charAt(0)) {
+//                        case ',': word = findComma(textBlock, punctuation.getLexemeOrder()); break;
+//                        case '@': word = findAt(textBlock, punctuation.getLexemeOrder()); break;
+//                        case '$': word = findDollar(textBlock, punctuation.getLexemeOrder()); break;
+//                        case '&': word = findEt(textBlock, punctuation.getLexemeOrder()); break;
+                    }
+                }
+                if (word != null) {
+                    words.add(word);
+                }
+            }
+            Collections.sort(words);
+            paragraphs.add(new Paragraph(words));
         }
         return paragraphs;
     }
@@ -30,21 +45,21 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
     // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
     // и создает морфологическую единицу как экземпляр класса Integer
-    private static void findFractions(Paragraph paragraph) {
-//        List<Word> words = paragraph.getWords();
-//        Iterator<Punctuation> iterator = paragraph.getPunctuationMarks().iterator();
+//    private static void findFractions(TextBlock textBlock) {
+//        List<Word> words = textBlock.getWords();
+//        Iterator<Punctuation> iterator = textBlock.getPunctuationMarks().iterator();
 //        while (iterator.hasNext()) {
 //            Punctuation punctuation = iterator.next();
 //
-//            if (punctuation.getPunctuationMark() == ',') {
-//                int i = punctuation.getWordNumber();
+//            if (punctuation.getPunctuation() == ',') {
+//                int i = punctuation.getLexemeOrder();
 //                Word word1 = words.get(i);
 //                Word word2 = words.get(i + 1);
 //
 //                if (word1.getLexemeDescriptor().isHasDigit() && !word1.getLexemeDescriptor().isHasLetter() &&
 //                        word2.getLexemeDescriptor().isHasDigit() && !word2.getLexemeDescriptor().isHasLetter()) {
 //
-//                    String newWord = word1.getWord() + punctuation.getPunctuationMark() + word2.getWord();
+//                    String newWord = word1.getWord() + punctuation.getPunctuation() + word2.getWord();
 //                    word1.setWord(newWord);
 //                    words.remove(i + 1);
 //                    iterator.remove();
@@ -53,27 +68,28 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 //                }
 //            }
 //        }
-    }
+//    }
 
     // Метод находит последовательности сиволов, состоящие только из цифр
     // и создает морфологическую единицу как экземпляр класса Integer
-    private static void findIntegers(Paragraph paragraph) {
-//        for (Word word : paragraph.getWords()) {
-//            if (word.getLexemeDescriptor().isHasDigit() && !word.getLexemeDescriptor().isHasLetter()) {
-//                WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
-//                word.setWordTags(wordTags);
-//            }
-//        }
+    private static List<Word> findIntegers(TextBlock textBlock) {
+        for (Lexeme lexeme : textBlock.getLexemes()) {
+            if (lexeme.getLexemeDescriptor().isHasDigit() && !lexeme.getLexemeDescriptor().isHasLetter()) {
+                WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
+//                lexeme.setWordTags(wordTags);
+            }
+        }
+        return null;
     }
 
 
-        private static void findIdioms(Paragraph paragraph) {
+        private static void findIdioms(TextBlock textBlock) {
 //        // Находим идиому
 //        // Заменяем все участвующие слова на одно
 //        // Добавляем теги
 //        StringBuilder sb = new StringBuilder();
 //        sb.setLength(0);
-//        List<Word> words = paragraph.getWords();
+//        List<Word> words = textBlock.getWords();
 //        for (int i = 0; i < words.size() - 1; i++) {
 //            String idiomHead = words.get(i).getWord() + ' ' + words.get(i + 1).getWord();
 //            IdiomProperty[] idiomProperties = DictionaryLoading.getIdiomDictionary().get(idiomHead);
@@ -117,13 +133,13 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     }
 
 
-    private static void findWords(Paragraph paragraph) {
-//        for (Word word : paragraph.getWords()) {
+    private static void findWords(TextBlock textBlock) {
+//        for (Word lexeme : textBlock.getWords()) {
 //            // Если слово не является идиомой, то определяем его теги
-//            if (word.getWordTags() == null) {
-//                WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(word.getWord());
+//            if (lexeme.getWordTags() == null) {
+//                WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(lexeme.getWord());
 //                WordTag[] wordTags = createWordTags(wordProperties);
-//                word.setWordTags(wordTags);
+//                lexeme.setWordTags(wordTags);
 //            }
 //        }
     }
@@ -144,18 +160,18 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
     // Метод возвращает строку, представляющую результат работы класса
     @Override
-    public String getResult(List<Paragraph> paragraphs) {
+    public String getResult(List<TextBlock> textBlocks) {
         StringBuilder sb = new StringBuilder();
-//        paragraphs.forEach(m -> {
-//            sb.append("<span class=\"task-solution-paragraph-font\">");
-//            sb.append(m.getParagraph());
+//        textBlocks.forEach(m -> {
+//            sb.append("<span class=\"task-solution-textBlock-font\">");
+//            sb.append(m.getTextBlock());
 //            sb.append("</span><table border=\"1\" class=\"task-solution-table\"><tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
-//            for (Word word: m.getWords()){
-//                if (word.getWordTags().length != 0) {
-//                    for (int i = 0; i < word.getWordTags().length; i++) {
+//            for (Word lexeme: m.getWords()){
+//                if (lexeme.getWordTags().length != 0) {
+//                    for (int i = 0; i < lexeme.getWordTags().length; i++) {
 //                        // TODO: это временный вывод и в дальнейшем будет пересмотрен!
-//                        String wordTag = word.getWordTags()[i].getPartOfSpeech().getAllProperties();
-//                        int lemmaId = word.getWordTags()[i].getLemmaId() - 1;
+//                        String wordTag = lexeme.getWordTags()[i].getPartOfSpeech().getAllProperties();
+//                        int lemmaId = lexeme.getWordTags()[i].getLemmaId() - 1;
 //
 //                        String lemmaWord, lemmaTag;
 //
@@ -169,7 +185,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 //                        }
 //
 //                        sb.append("<tr><td>");
-//                        sb.append(word.getWord());
+//                        sb.append(lexeme.getWord());
 //                        sb.append("</td><td>");
 //                        sb.append(wordTag);
 //                        sb.append("</td><td>");
@@ -180,7 +196,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 //                    }
 //                } else {
 //                    sb.append("<tr><td><font color=\"red\">");
-//                    sb.append(word);
+//                    sb.append(lexeme);
 //                    sb.append("</font></td><td></td><td></td><td></td></tr>");
 //                }
 //            }
@@ -193,8 +209,8 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     public static void main(String[] args){
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-        if (DictionaryLoading.loadDictionary()) {
+//        if (DictionaryLoading.loadDictionary()) {
             System.out.println("Waiting for requests...");
-        }
+//        }
     }
 }

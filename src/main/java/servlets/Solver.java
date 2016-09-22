@@ -1,8 +1,9 @@
 package servlets;
 
 import morphologicalAnalysis.MorphologicAnalysis;
+import morphologicalAnalysis.Paragraph;
 import preliminaryTextProcessing.PreliminaryTextProcessing;
-import textAnalysis.Paragraph;
+import textAnalysis.TextBlock;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import semanticSpace.QuestionImpl;
@@ -13,8 +14,8 @@ import textAnalysis.TextAnalysis;
 import java.util.List;
 
 class Solver {
-    // private static ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
-    //private static MorphologicAnalysis morphologicAnalysis = (MorphologicAnalysis)context.getBean("morphologicAnalysisBean");
+    private static ApplicationContext context = new ClassPathXmlApplicationContext("rmi-client-beans.xml");
+    private static MorphologicAnalysis morphologicAnalysis = (MorphologicAnalysis)context.getBean("morphologicAnalysisBean");
 
     static void solve(String text, String question) {
         long startTime;
@@ -29,14 +30,13 @@ class Solver {
         System.out.print(text + "<br/><br/>");
 
         startTime = System.nanoTime();
-        List<Paragraph> paragraphs = TextAnalysis.getParagraphs(text);
+        List<TextBlock> textBlocks = TextAnalysis.getTextBlocks(text);
         printPhaseHeader("Текстовый анализ", startTime);
-        System.out.print(TextAnalysis.getResult(paragraphs));
+        System.out.print(TextAnalysis.getResult(textBlocks));
 
-        // Необходимо paragraphs получить заново с дополненными тегами!
-//        paragraphs = morphologicAnalysis.setWordTags(paragraphs);
-//        printPhaseHeader("Морфологический анализ", startTime);
-//        System.out.print(morphologicAnalysis.getResult(paragraphs));
+        List<Paragraph> paragraphs = morphologicAnalysis.setWordTags(textBlocks);
+        printPhaseHeader("Морфологический анализ", startTime);
+        System.out.print(morphologicAnalysis.getResult(textBlocks));
         System.out.print("</solution><answer>");
 
         SemanticSpace space = new SemanticSpaceImpl(text);
