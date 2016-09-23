@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 public class Punctuation implements Serializable{
     private String punctuation;
-    private int lexemeOrder;
+    private int order;
 
-    public Punctuation(String punctuation, int lexemeOrder) {
+    public Punctuation(String punctuation, int order) {
         this.punctuation = punctuation;
-        this.lexemeOrder = lexemeOrder;
+        this.order = order;
     }
 
     public String getPunctuation() {
         return punctuation;
     }
-    public int getLexemeOrder() {
-        return lexemeOrder;
+    public int getOrder() {
+        return order;
     }
 }

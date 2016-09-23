@@ -34,9 +34,9 @@ class Solver {
         printPhaseHeader("Текстовый анализ", startTime);
         System.out.print(TextAnalysis.getResult(textBlocks));
 
-        List<Paragraph> paragraphs = morphologicAnalysis.setWordTags(textBlocks);
+        List<Paragraph> paragraphs = morphologicAnalysis.getParagraphs(textBlocks);
         printPhaseHeader("Морфологический анализ", startTime);
-        System.out.print(morphologicAnalysis.getResult(textBlocks));
+        System.out.print(morphologicAnalysis.getResult(paragraphs));
         System.out.print("</solution><answer>");
 
         SemanticSpace space = new SemanticSpaceImpl(text);

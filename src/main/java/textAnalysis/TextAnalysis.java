@@ -103,8 +103,8 @@ public class TextAnalysis {
     // Метод возвращает строку, состоящую из отформатированных параграфов
     public static String getResult(List<TextBlock> textBlocks) {
         StringBuilder sb = new StringBuilder();
-        textBlocks.forEach(m -> {
-            sb.append(m.getTextBlockWithSpaces());
+        textBlocks.forEach(textBlock -> {
+            sb.append(textBlock.getTextBlockWithSpaces());
             sb.append("<br/>");
         });
         return sb.toString();

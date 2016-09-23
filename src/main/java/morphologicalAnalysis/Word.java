@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class Word implements Serializable, Comparable<Word> {
     private int order;
     private String word;
-    private String punctuations;
     private WordTag[] wordTags;
 
-    Word(int order, String word) {
+    Word(int order, String word, WordTag[] wordTags) {
         this.order = order;
         this.word = word;
+        this.wordTags = wordTags;
     }
 
     @Override
@@ -18,11 +18,11 @@ public class Word implements Serializable, Comparable<Word> {
         return this.order - comparedWord.order;
     }
 
+    public int getOrder() {
+        return order;
+    }
     public String getWord() {
         return word;
-    }
-    public String getPunctuations() {
-        return punctuations;
     }
     public WordTag[] getWordTags() {
         return wordTags;

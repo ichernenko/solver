@@ -16,14 +16,14 @@ public class TextBlock implements Serializable {
 
     public String getTextBlock() {
         StringBuilder sb = new StringBuilder();
-        if (punctuations.get(0).getLexemeOrder() == -1) {
+        if (0 < punctuations.size() && punctuations.get(0).getOrder() == -1) {
             sb.append(punctuations.get(0).getPunctuation());
         }
 
         int punctuationIndex = 0;
         for (int i = 0; i < lexemes.size(); i ++) {
             sb.append(lexemes.get(i).getLexeme());
-            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getLexemeOrder() == i) {
+            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getOrder() == i) {
                 sb.append(punctuations.get(punctuationIndex).getPunctuation());
                 punctuationIndex ++;
             } else {
@@ -35,7 +35,7 @@ public class TextBlock implements Serializable {
 
     String getTextBlockWithSpaces() {
         StringBuilder sb = new StringBuilder();
-        if (0 < punctuations.size() && punctuations.get(0).getLexemeOrder() == -1) {
+        if (0 < punctuations.size() && punctuations.get(0).getOrder() == -1) {
             sb.append(punctuations.get(0).getPunctuation());
         }
 
@@ -46,7 +46,7 @@ public class TextBlock implements Serializable {
             sb.append(lexemes.get(i).getLexemeDescriptor().getAllProperties());
             sb.append(")");
 
-            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getLexemeOrder() == i) {
+            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getOrder() == i) {
                 char ch = 0;
                 char oldCh = 0;
                 String punctuation = punctuations.get(punctuationIndex).getPunctuation();
