@@ -1,11 +1,10 @@
 package morphologicalAnalysis;
 
-
-import textAnalysis.Paragraph;
+import textAnalysis.TextBlock;
 
 import java.util.List;
 
 public interface MorphologicAnalysis {
-    List<Paragraph> setWordTags(List<Paragraph> paragraphs);
+    List<Paragraph> getParagraphs(List<TextBlock> textBlocks);
     String getResult(List<Paragraph> paragraphs);
 }

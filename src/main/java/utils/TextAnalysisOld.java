@@ -12,8 +12,8 @@
 //    // Метод разбивает текст на предложения и возвращает список этих предложений с характеристиками предложений.
 //    // Предложением является список лексем, оканчивающийся '.','!','?','¡'(?!)
 //    // Списки предложений состоят из списков слов и списков пунктуаций.
-//    public static List<Paragraph> getSentences(String text) {
-//        List<Paragraph> paragraphs = new ArrayList<>();
+//    public static List<TextBlock> getSentences(String text) {
+//        List<TextBlock> paragraphs = new ArrayList<>();
 //
 //        if (text != null && text.length() > 0) {
 //            List<Word> words = new ArrayList<>();
@@ -33,7 +33,7 @@
 //                    }
 //                    punctuationMarks.add(new Punctuation(ch, wordNumber));
 //                    if(isSentence) {
-//                        paragraphs.add(new Paragraph(words, punctuationMarks));
+//                        paragraphs.add(new TextBlock(words, punctuationMarks));
 //                        words = new ArrayList<>();
 //                        punctuationMarks = new ArrayList<>();
 //                        lexeme.setLength(0);
@@ -86,7 +86,7 @@
 //    }
 //
 //    // Метод возвращает строку, состоящую из отформатированных предложений
-//    public static String getResult(List<Paragraph> paragraphs) {
+//    public static String getResult(List<TextBlock> paragraphs) {
 //        StringBuilder sb = new StringBuilder();
 //        paragraphs.forEach(m -> {
 //            sb.append(m.getParagraphWithSpaces());
