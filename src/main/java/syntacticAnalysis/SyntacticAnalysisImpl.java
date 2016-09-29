@@ -8,7 +8,6 @@ public class SyntacticAnalysisImpl implements SyntacticAnalysis {
 
     }
 
-
     @Override
     public List<String> parse() {
         return null;

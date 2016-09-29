@@ -3,18 +3,18 @@ package textAnalysis;
 import java.io.Serializable;
 
 public class Punctuation implements Serializable{
-    private String punctuation;
     private int order;
+    private String punctuation;
 
-    public Punctuation(String punctuation, int order) {
-        this.punctuation = punctuation;
+    public Punctuation(int order, String punctuation) {
         this.order = order;
+        this.punctuation = punctuation;
     }
 
-    public String getPunctuation() {
-        return punctuation;
-    }
     public int getOrder() {
         return order;
+    }
+    public String getPunctuation() {
+        return punctuation;
     }
 }

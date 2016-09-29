@@ -8,24 +8,26 @@ import java.util.List;
 public class Paragraph implements Serializable {
     private List<Word> words;
     private List<Punctuation> punctuations;
-    private List<Integer> rawWordsRange;
 
-    Paragraph(List<Word> words, List<Punctuation> punctuations, List<Integer> rawWordsRange) {
+    Paragraph(List<Word> words, List<Punctuation> punctuations) {
         this.words = words;
         this.punctuations = punctuations;
-        this.rawWordsRange = rawWordsRange;
     }
 
     public String getParagraph() {
         StringBuilder sb = new StringBuilder();
-        if (0 < punctuations.size() && punctuations.get(0).getOrder() == -1) {
+        int wordsSize = words.size();
+        int punctuationSize = punctuations.size();
+        int punctuationIndex = 0;
+
+        if (0 < punctuationSize && punctuations.get(0).getOrder() == -1) {
             sb.append(punctuations.get(0).getPunctuation());
+            punctuationIndex ++;
         }
 
-        int punctuationIndex = 0;
-        for (int i = 0; i < words.size(); i ++) {
+        for (int i = 0; i < wordsSize; i ++) {
             sb.append(words.get(i).getWord());
-            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getOrder() == i) {
+            if (punctuationIndex < punctuationSize && punctuations.get(punctuationIndex).getOrder() == i) {
                 sb.append(punctuations.get(punctuationIndex).getPunctuation());
                 punctuationIndex ++;
             } else {
@@ -35,14 +37,10 @@ public class Paragraph implements Serializable {
         return sb.toString();
     }
 
-
     public List<Word> getWords() {
         return words;
     }
     public List<Punctuation> getPunctuations() {
         return punctuations;
-    }
-    public List<Integer> getRawWordsRange() {
-        return rawWordsRange;
     }
 }

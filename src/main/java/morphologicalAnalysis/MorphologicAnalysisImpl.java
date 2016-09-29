@@ -3,6 +3,8 @@ package morphologicalAnalysis;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -18,15 +20,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     @Override
     public List<Paragraph> getParagraphs(List<TextBlock> textBlocks) {
         List<Paragraph> paragraphs = new ArrayList<>();
-        for (final TextBlock textBlock : textBlocks) {
-
-            // Определение диапазона необработанных слов
-            // Четный индекс - start, нечетный - end
-            List<Integer> rawWordsRange = new ArrayList<>();
-            rawWordsRange.add(0);
-            rawWordsRange.add(textBlock.getLexemes().size());
-
-
+        textBlocks.forEach(textBlock -> {
             List<Word> words = new ArrayList<>();
             // Определяются слова, которые можно распознать по признаку - пунктуации
             // (значения из метода возвращаются через параметры, чтобы не городить огород
@@ -34,13 +28,13 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
             // и изменяться диапазон поиска слов из расчета уже найденных
 //            findIndependentWordsWithPunctuation(textBlock, rawWordsRange, words);
 //            findDependentWordsWithPunctuation(textBlock, rawWordsRange, words);
-            findWordsWithoutPunctuation(textBlock, rawWordsRange, words);
+            findWordsWithoutPunctuation(textBlock, words);
 
             findWordsFromDictionary(textBlock, words);
 
             Collections.sort(words);
-            paragraphs.add(new Paragraph(words, textBlock.getPunctuations(), rawWordsRange));
-        }
+            paragraphs.add(new Paragraph(words, textBlock.getPunctuations()));
+        });
         return paragraphs;
     }
 
@@ -68,7 +62,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 //    }
 
 
-    private void findWordsWithoutPunctuation(TextBlock textBlock, List<Integer> rawWordsRange, List<Word> words) {
+    private void findWordsWithoutPunctuation(TextBlock textBlock, List<Word> words) {
         findIntegers(textBlock, words);
     }
 
@@ -103,13 +97,13 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     // и создает морфологическую единицу как экземпляр класса Integer
     private static void findIntegers(TextBlock textBlock, List<Word> words) {
         List<Lexeme> lexemes = textBlock.getLexemes();
-        for (int i = 0; i < lexemes.size(); i++) {
-            Lexeme lexeme = lexemes.get(i);
-            if (lexeme.getLexemeDescriptor().isHasDigit() && !lexeme.getLexemeDescriptor().isHasLetter()) {
-                WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
-                words.add(new Word(i, lexeme.getLexeme(), wordTags));
-            }
-        }
+        lexemes.removeIf(lexeme -> {
+                    if (lexeme.getLexemeDescriptor().isHasDigit() && !lexeme.getLexemeDescriptor().isHasLetter()) {
+                        WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
+                        words.add(new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags));
+                        return true;
+                    }
+                    return false;});
     }
 
 
@@ -155,22 +149,20 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
             }
         }
 
-        if (idiomTail.length() != idiomTailIndex) {
-            return false;
-        }
-
-        return true;
+        return idiomTail.length() == idiomTailIndex;
     }
 
     // TODO: Добавить диапазон обработанных лексем!!!
     private static void findWordsFromDictionary(TextBlock textBlock, List<Word> words) {
-        for (int i = 0; i < textBlock.getLexemes().size(); i++) {
-            // Если слово не является идиомой, то определяем его теги
-            String lexeme = textBlock.getLexemes().get(i).getLexeme();
-            WordProperty[] wordProperties = DictionaryLoading.getWordDictionary().get(lexeme);
+        List<Lexeme> lexemes = textBlock.getLexemes();
+        Map<String, WordProperty[]> dictionary = DictionaryLoading.getWordDictionary();
+        lexemes.forEach(lexeme -> {
+            String lexemeString = lexeme.getLexeme();
+            WordProperty[] wordProperties = dictionary.get(lexemeString);
             WordTag[] wordTags = createWordTags(wordProperties);
-            words.add(new Word(i, lexeme, wordTags));
-        }
+            int order = lexeme.getOrder();
+            words.add(new Word(order, lexemeString, wordTags));
+        });
     }
 
     // Метод создает массив WordTags из массива WordProperty
@@ -192,21 +184,23 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     @Override
     public String getResult(List<Paragraph> paragraphs) {
         StringBuilder sb = new StringBuilder();
+        Lemma[] dictionary = DictionaryLoading.getLemmaDictionary();
         paragraphs.forEach(paragraph -> {
             sb.append("<span class=\"task-solution-textBlock-font\">");
             sb.append(paragraph.getParagraph());
             sb.append("</span><table border=\"1\" class=\"task-solution-table\"><tr><th>Слово</th><th>Тег</th><th>Лемма</th><th>Тег леммы</th></tr>");
-            for (Word word : paragraph.getWords()){
-                if (word.getWordTags().length != 0) {
-                    for (int i = 0; i < word.getWordTags().length; i++) {
+            List<Word> words = paragraph.getWords();
+            words.forEach(word -> {
+                WordTag[] wordTags = word.getWordTags();
+                if (wordTags.length != 0) {
+                    for (WordTag wordTag : wordTags) {
                         // TODO: это временный вывод и в дальнейшем будет пересмотрен!
-                        String wordTag = word.getWordTags()[i].getPartOfSpeech().getAllProperties();
-                        int lemmaId = word.getWordTags()[i].getLemmaId() - 1;
+                        String wordTagString = wordTag.getPartOfSpeech().getAllProperties();
+                        int lemmaId = wordTag.getLemmaId() - 1;
 
                         String lemmaWord, lemmaTag;
-
                         if (lemmaId >= 0) {
-                            Lemma lemma = DictionaryLoading.getLemmaDictionary()[lemmaId];
+                            Lemma lemma = dictionary[lemmaId];
                             lemmaWord = lemma.getLemma();
                             lemmaTag = lemma.getPartOfSpeech() + ' ' + (lemma.getTag() == null ? "" : lemma.getTag());
                         } else {
@@ -217,7 +211,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
                         sb.append("<tr><td>");
                         sb.append(word.getWord());
                         sb.append("</td><td>");
-                        sb.append(wordTag);
+                        sb.append(wordTagString);
                         sb.append("</td><td>");
                         sb.append(lemmaWord);
                         sb.append("</td><td>");
@@ -229,7 +223,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
                     sb.append(word);
                     sb.append("</font></td><td></td><td></td><td></td></tr>");
                 }
-            }
+            });
             sb.append("</table>");
         });
         return sb.toString();

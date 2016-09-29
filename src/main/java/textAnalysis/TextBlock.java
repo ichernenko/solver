@@ -16,14 +16,18 @@ public class TextBlock implements Serializable {
 
     public String getTextBlock() {
         StringBuilder sb = new StringBuilder();
-        if (0 < punctuations.size() && punctuations.get(0).getOrder() == -1) {
+        int lexemesSize = lexemes.size();
+        int punctuationSize = punctuations.size();
+        int punctuationIndex = 0;
+
+        if (0 < punctuationSize && punctuations.get(0).getOrder() == -1) {
             sb.append(punctuations.get(0).getPunctuation());
+            punctuationIndex ++;
         }
 
-        int punctuationIndex = 0;
-        for (int i = 0; i < lexemes.size(); i ++) {
+        for (int i = 0; i < lexemesSize; i ++) {
             sb.append(lexemes.get(i).getLexeme());
-            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getOrder() == i) {
+            if (punctuationIndex < punctuationSize && punctuations.get(punctuationIndex).getOrder() == i) {
                 sb.append(punctuations.get(punctuationIndex).getPunctuation());
                 punctuationIndex ++;
             } else {
@@ -35,18 +39,22 @@ public class TextBlock implements Serializable {
 
     String getTextBlockWithSpaces() {
         StringBuilder sb = new StringBuilder();
-        if (0 < punctuations.size() && punctuations.get(0).getOrder() == -1) {
+        int lexemesSize = lexemes.size();
+        int punctuationSize = punctuations.size();
+        int punctuationIndex = 0;
+
+        if (0 < punctuationSize && punctuations.get(0).getOrder() == -1) {
             sb.append(punctuations.get(0).getPunctuation());
+            punctuationIndex ++;
         }
 
-        int punctuationIndex = 1;
-        for (int i = 0; i < lexemes.size(); i ++) {
+        for (int i = 0; i < lexemesSize; i ++) {
             sb.append(lexemes.get(i).getLexeme());
             sb.append("(");
             sb.append(lexemes.get(i).getLexemeDescriptor().getAllProperties());
             sb.append(")");
 
-            if (punctuationIndex < punctuations.size() && punctuations.get(punctuationIndex).getOrder() == i) {
+            if (punctuationIndex < punctuationSize && punctuations.get(punctuationIndex).getOrder() == i) {
                 char ch = 0;
                 char oldCh = 0;
                 String punctuation = punctuations.get(punctuationIndex).getPunctuation();

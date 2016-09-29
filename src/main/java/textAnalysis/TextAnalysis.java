@@ -25,18 +25,19 @@ public class TextAnalysis {
             int lexemeOrder = 0;
             boolean isNewLexeme = false;
             char ch;
+            int textLength = text.length();
 
-            while (i < text.length() && isPunctuation(ch = text.charAt(i))) {
+            while (i < textLength && isPunctuation(ch = text.charAt(i))) {
                 punctuation.append(ch);
                 i++;
             }
 
             if (punctuation.length() > 0) {
-                punctuations.add(new Punctuation(punctuation.toString(), -1));
+                punctuations.add(new Punctuation(-1, punctuation.toString()));
                 punctuation.setLength(0);
             }
 
-            while (i < text.length()) {
+            while (i < textLength) {
                 ch = text.charAt(i);
                 if (ch == ' ') {
                     isNewLexeme = true;
@@ -46,12 +47,12 @@ public class TextAnalysis {
                         isNewLexeme = true;
                     } else {
                         if (ch == '\n') {
-                            lexemes.add(new Lexeme(lexeme.toString(), lexemeDescriptor));
-                            punctuations.add(new Punctuation(punctuation.toString(), lexemeOrder));
+                            lexemes.add(new Lexeme(lexemeOrder, lexeme.toString(), lexemeDescriptor));
+                            punctuations.add(new Punctuation(lexemeOrder, punctuation.toString()));
                             textBlocks.add(new TextBlock(1, lexemes, punctuations));
 
                             // Подготовка к новому текстовому блоку (сбор всех знаков пунктуации до первой лексемы)
-                            if (i < text.length() - 1) {
+                            if (i < textLength - 1) {
                                 lexemes = new ArrayList<>();
                                 lexeme.setLength(0);
                                 punctuation.setLength(0);
@@ -59,23 +60,23 @@ public class TextAnalysis {
                                 lexemeOrder = 0;
                                 lexemeDescriptor = new LexemeDescriptor();
 
-                                while (i < text.length() - 1 && isPunctuation(ch = text.charAt(i + 1))) {
+                                while (i < textLength - 1 && isPunctuation(ch = text.charAt(i + 1))) {
                                     punctuation.append(ch);
                                     i++;
                                 }
 
                                 if (punctuation.length() > 0) {
-                                    punctuations.add(new Punctuation(punctuation.toString(), -1));
+                                    punctuations.add(new Punctuation(-1, punctuation.toString()));
                                     punctuation.setLength(0);
                                 }
                                 isNewLexeme = false;
                             }
                         } else {
-                            if (isNewLexeme == true) {
-                                lexemes.add(new Lexeme(lexeme.toString(), lexemeDescriptor));
+                            if (isNewLexeme) {
+                                lexemes.add(new Lexeme(lexemeOrder, lexeme.toString(), lexemeDescriptor));
                                 lexeme.setLength(0);
                                 if (punctuation.length() > 0) {
-                                    punctuations.add(new Punctuation(punctuation.toString(), lexemeOrder));
+                                    punctuations.add(new Punctuation(lexemeOrder, punctuation.toString()));
                                     punctuation.setLength(0);
                                 }
                                 lexemeDescriptor = new LexemeDescriptor();
