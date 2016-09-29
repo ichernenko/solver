@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class Conjunction implements PartOfSpeech, Serializable {
 
     public Conjunction(String[] grammemes){
-        for (String grammeme : grammemes) {
-            switch(grammeme) {
-                default:
-                    throw new RuntimeException("Unknown property of the conjunction - " + grammeme);
-            }
-        }
+//        for (String grammeme : grammemes) {
+//            switch(grammeme) {
+//                default:
+//                    throw new RuntimeException("Unknown property of the conjunction - " + grammeme);
+//            }
+//        }
     }
 
     @Override

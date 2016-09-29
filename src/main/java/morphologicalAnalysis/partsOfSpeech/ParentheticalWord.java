@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class ParentheticalWord implements PartOfSpeech, Serializable {
 
     public ParentheticalWord(String[] grammemes){
-        for (String grammeme : grammemes) {
-            switch(grammeme) {
-                default:
-                    throw new RuntimeException("Unknown property of the parenthetical word - " + grammeme);
-            }
-        }
+//        for (String grammeme : grammemes) {
+//            switch(grammeme) {
+//                default:
+//                    throw new RuntimeException("Unknown property of the parenthetical word - " + grammeme);
+//            }
+//        }
     }
 
     @Override

@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class Particle implements PartOfSpeech, Serializable {
 
     public Particle(String[] grammemes){
-        for (String grammeme : grammemes) {
-            switch(grammeme) {
-                default:
-                    throw new RuntimeException("Unknown property of the particle - " + grammeme);
-            }
-        }
+//        for (String grammeme : grammemes) {
+//            switch(grammeme) {
+//                default:
+//                    throw new RuntimeException("Unknown property of the particle - " + grammeme);
+//            }
+//        }
     }
 
     @Override
