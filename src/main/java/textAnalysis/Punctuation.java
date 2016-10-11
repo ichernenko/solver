@@ -17,4 +17,8 @@ public class Punctuation implements Serializable{
     public String getPunctuation() {
         return punctuation;
     }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 }

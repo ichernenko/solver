@@ -1,9 +1,6 @@
 package morphologicalAnalysis;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -12,6 +9,7 @@ import dictionaryLoading.DictionaryLoading;
 import dictionaryLoading.Lemma;
 import dictionaryLoading.WordProperty;
 import textAnalysis.Lexeme;
+import textAnalysis.Punctuation;
 import textAnalysis.TextBlock;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis{
@@ -26,7 +24,9 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
             // (значения из метода возвращаются через параметры, чтобы не городить огород
             // для этого в каждом методе должны добавляться найденные слова в список words
             // и изменяться диапазон поиска слов из расчета уже найденных
-//            findIndependentWordsWithPunctuation(textBlock, rawWordsRange, words);
+
+            // Проверка слов, которые существуют независимо от других слов с другими знаками пунктуации
+             findIndependentWordsWithPunctuation(textBlock, words);
 //            findDependentWordsWithPunctuation(textBlock, rawWordsRange, words);
             findWordsWithoutPunctuation(textBlock, words);
 
@@ -41,59 +41,69 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     }
 
     //TODO: сделать чтобы слова проверялись только те, которые еще неопределны!!!
+    private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Word> words) {
+        List<Punctuation> punctuations = textBlock.getPunctuations();
+        List<Lexeme> lexemes = textBlock.getLexemes();
+        class ddd {int i = 0;}
+        ddd fff = new ddd();
 
-//    private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Integer> rawWordsRange, List<Word> words) {
-//        for (Punctuation punctuation: textBlock.getPunctuations()) {
-//            Word word = null;
-//            if (punctuation.getPunctuation().length() == 1) {
-//                switch (punctuation.getPunctuation().charAt(0)) {
-//                        case ',': word = findComma(textBlock, punctuation.getOrder()); break;
-////                        case '@': word = findAt(textBlock, punctuation.getOrder()); break;
-////                        case '$': word = findDollar(textBlock, punctuation.getOrder()); break;
-////                        case '&': word = findEt(textBlock, punctuation.getOrder()); break;
-//                }
-//            }
-//            if (word != null) {
-//                words.add(word);
-//            }
-//        }
-//    }
-//
-//    private void findComma(TextBlock textBlock, int lexemeOrder) {
-//
-//    }
+        punctuations.removeIf(punctuation -> {
+            Word word = null;
+            punctuation.setOrder(punctuation.getOrder() - fff.i);
+            int punctuationOrder = punctuation.getOrder();
+
+            if (punctuation.getPunctuation().length() == 1) {
+                switch (punctuation.getPunctuation().charAt(0)) {
+                        case ',': word = findComma(textBlock, punctuationOrder); break;
+//                        case '@': word = findAt(textBlock, punctuation.getOrder()); break;
+//                        case '$': word = findDollar(textBlock, punctuation.getOrder()); break;
+//                        case '&': word = findEt(textBlock, punctuation.getOrder()); break;
+                }
+            }
+            if (word != null) {
+                words.add(word);
+                // Быть может стоит поменять тип списка в lexemes на LinkedList,
+                // и в методы передовать ссылку на текущий элемент списка
+                lexemes.subList(punctuationOrder, punctuationOrder + word.getLexemesNumber()).clear();
+                fff.i++;
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private static Word findComma(TextBlock textBlock, int lexemeOrder) {
+        return findFractions(textBlock, lexemeOrder);
+    }
 
 
-    private void findWordsWithoutPunctuation(TextBlock textBlock, List<Word> words) {
+    private static void findWordsWithoutPunctuation(TextBlock textBlock, List<Word> words) {
         findIntegers(textBlock, words);
     }
 
     // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
     // и создает морфологическую единицу как экземпляр класса Integer
-//    private static void findFractions(TextBlock textBlock) {
-//        List<Word> words = textBlock.getWords();
-//        Iterator<Punctuation> iterator = textBlock.getPunctuationMarks().iterator();
-//        while (iterator.hasNext()) {
-//            Punctuation punctuation = iterator.next();
-//
-//            if (punctuation.getPunctuation() == ',') {
-//                int i = punctuation.getOrder();
-//                Word word1 = words.get(i);
-//                Word word2 = words.get(i + 1);
-//
-//                if (word1.getLexemeDescriptor().isHasDigit() && !word1.getLexemeDescriptor().isHasLetter() &&
-//                        word2.getLexemeDescriptor().isHasDigit() && !word2.getLexemeDescriptor().isHasLetter()) {
-//
-//                    String newWord = word1.getWord() + punctuation.getPunctuation() + word2.getWord();
-//                    word1.setWord(newWord);
-//                    words.remove(i + 1);
-//                    iterator.remove();
-//                    WordTag[] wordTags = {new WordTag(-1, "дробное_число", "кол им")};
-//                    word1.getParagraphs(wordTags);
-//                }
-//            }
-//        }
-//    }
+    private static Word findFractions(TextBlock textBlock, int lexemeOrder) {
+        List<Lexeme> lexemes = textBlock.getLexemes();
+
+        if (lexemeOrder <= -1 || lexemeOrder >= lexemes.size() - 1) {
+            return null;
+        }
+
+        Lexeme lexeme1 = lexemes.get(lexemeOrder);
+        Lexeme lexeme2 = lexemes.get(lexemeOrder + 1);
+
+        if (lexeme1.getLexemeDescriptor().isHasDigit() && !lexeme1.getLexemeDescriptor().isHasLetter() &&
+            lexeme2.getLexemeDescriptor().isHasDigit() && !lexeme2.getLexemeDescriptor().isHasLetter()) {
+
+            String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
+            WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
+            Word word = new Word(lexeme1.getOrder(), lexemeString, wordTags);
+            word.setLexemesNumber(2);
+            return word;
+        }
+        return null;
+    }
 
     // Метод находит последовательности сиволов, состоящие только из цифр
     // и создает морфологическую единицу как экземпляр класса Integer

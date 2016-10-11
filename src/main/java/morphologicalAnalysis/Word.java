@@ -6,6 +6,7 @@ public class Word implements Serializable, Comparable<Word> {
     private int order;
     private String word;
     private WordTag[] wordTags;
+    private int lexemesNumber = 1;
 
     Word(int order, String word, WordTag[] wordTags) {
         this.order = order;
@@ -26,5 +27,11 @@ public class Word implements Serializable, Comparable<Word> {
     }
     public WordTag[] getWordTags() {
         return wordTags;
+    }
+    public int getLexemesNumber() {
+        return lexemesNumber;
+    }
+    public void setLexemesNumber(int lexemesNumber) {
+        this.lexemesNumber = lexemesNumber;
     }
 }
