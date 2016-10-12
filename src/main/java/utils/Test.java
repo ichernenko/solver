@@ -9,6 +9,7 @@ public class Test {
         printAllWords(words);
         processWords(words, parts);
         printRangeWords(words, parts);
+        printRanges(parts);
     }
 
     private static List<String> initWords() {
@@ -47,31 +48,75 @@ public class Test {
             Range range = iterator.next();
             int start = range.getStart();
             int end = range.getEnd();
-            for (int i = start; i < end; i++) {
-                String word = words.get(i);
-                if (check(word)) {
-                    addPartRange(iterator, i, end);
+            int i = start;
+            while (i < end) {
+                int number = check(words.get(i));
+                if (number > 0) {
+                    //i = processRange(iterator, range, i, number, start, end);
+                    if (i == start) {
+                        if (i + number == end) {
+                            iterator.remove();
+                            break;
+                        } else {
+                            i += number;
+                            range.setStart(i);
+                            iterator.set(range);
+                            start = i;
+                        }
+                    } else {
+                        if (i + number >= end) {
+                            range.setEnd(i);
+                            iterator.set(range);
+                            end = i;
+                        } else {
+                            range.setEnd(i);
+                            iterator.set(range);
+                            i += number;
+                            iterator.add(new Range(i, end));
+                        }
+                    }
+                } else {
+                    i++;
                 }
             }
         }
     }
 
-    private static boolean check(String word) {
-        return //word.equals("Мама") ||
-                word.equals("мыла") ||
+    private static int check(String word) {
+        return  word.equals("Мама") ||
+//                word.equals("мыла") ||
                 word.equals("раму") ||
-                word.equals("а") ||
-                word.equals("Сережа") ||
-                word.equals("мыл");// ||
-                //word.equals("балкон");
+//                word.equals("а") ||
+                //word.equals("Сережа") ||
+                //word.equals("мыл") //||
+                word.equals("балкон") ? 2 : 0;
     }
 
-    private static void addPartRange(ListIterator<Range> iterator, int index, int end) {
-        Range previousRange = iterator.previous();
-        previousRange.setEnd(index);
-        iterator.set(previousRange);
-        iterator.next();
-        iterator.add(new Range(index + 1, end));
+    private static int processRange(ListIterator<Range> iterator, Range range, int index, int number, int start, int end) {
+        // При изменении крайних точек необходимо изменять и начало/конец диапазона
+        if (index == start) {
+            if (index + number == end) {
+                iterator.remove();
+                return end;
+            } else {
+                index = index + number;
+                range.setStart(index);
+                iterator.set(range);
+                return index;
+            }
+        } else {
+            if (index + number >= end) {
+                range.setEnd(index);
+                iterator.set(range);
+                return end;
+            } else {
+                range.setEnd(index);
+                iterator.set(range);
+                index = index + number;
+                iterator.add(new Range(index, end));
+                return index;
+            }
+        }
     }
 
     private static void printRangeWords(List<String> words, List<Range> parts) {
@@ -87,6 +132,16 @@ public class Test {
         }
     }
 
+    private static void printRanges(List<Range> parts) {
+        ListIterator<Range> iterator = parts.listIterator();
+        System.out.println();
+        while (iterator.hasNext()) {
+            Range range = iterator.next();
+            int start = range.getStart();
+            int end = range.getEnd();
+            System.out.print("(" + start + "," + end + ") ");
+        }
+    }
 
 }
 
