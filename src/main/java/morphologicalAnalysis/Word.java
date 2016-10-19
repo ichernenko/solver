@@ -1,12 +1,14 @@
 package morphologicalAnalysis;
 
+import common.ElementCountable;
+
 import java.io.Serializable;
 
-public class Word implements Serializable, Comparable<Word> {
+public class Word implements ElementCountable, Serializable, Comparable<Word> {
     private int order;
     private String word;
     private WordTag[] wordTags;
-    private int lexemesNumber = 1;
+    private int elementNumber = 1;
 
     Word(int order, String word, WordTag[] wordTags) {
         this.order = order;
@@ -28,10 +30,12 @@ public class Word implements Serializable, Comparable<Word> {
     public WordTag[] getWordTags() {
         return wordTags;
     }
-    public int getLexemesNumber() {
-        return lexemesNumber;
+
+    @Override
+    public int getElementNumber() {
+        return elementNumber;
     }
-    public void setLexemesNumber(int lexemesNumber) {
-        this.lexemesNumber = lexemesNumber;
+    public void setElementNumber(int elementNumber) {
+        this.elementNumber = elementNumber;
     }
 }

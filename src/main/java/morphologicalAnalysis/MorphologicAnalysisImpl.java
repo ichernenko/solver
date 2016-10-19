@@ -2,6 +2,7 @@ package morphologicalAnalysis;
 
 import java.util.*;
 
+import common.RangeHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -11,26 +12,33 @@ import dictionaryLoading.WordProperty;
 import textAnalysis.Lexeme;
 import textAnalysis.Punctuation;
 import textAnalysis.TextBlock;
+import common.Range;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis{
+//    private static Map<String, WordProperty[]> dictionary = DictionaryLoading.getWordDictionary();
 
     // Метод определяет теги для слов и идиом в предложениях
     @Override
     public List<Paragraph> getParagraphs(List<TextBlock> textBlocks) {
         List<Paragraph> paragraphs = new ArrayList<>();
         textBlocks.forEach(textBlock -> {
-            List<Word> words = new ArrayList<>();
+            List<Word> words = new ArrayList<>(textBlock.getLexemes().size());
+            List<Range> ranges = textBlock.getUnprocessedRanges();
+            List<Lexeme> lexemes = textBlock.getLexemes();
             // Определяются слова, которые можно распознать по признаку - пунктуации
             // (значения из метода возвращаются через параметры, чтобы не городить огород
             // для этого в каждом методе должны добавляться найденные слова в список words
             // и изменяться диапазон поиска слов из расчета уже найденных
 
             // Проверка слов, которые существуют независимо от других слов с другими знаками пунктуации
-             findIndependentWordsWithPunctuation(textBlock, words);
+//            findIndependentWordsWithPunctuation(textBlock, words);
 //            findDependentWordsWithPunctuation(textBlock, rawWordsRange, words);
-            findWordsWithoutPunctuation(textBlock, words);
+//            findWordsWithoutPunctuation(textBlock, words);
 
-            findWordsFromDictionary(textBlock, words);
+            words = RangeHandler.processElements(ranges, MorphologicAnalysisImpl::processWordsFromDictionary, lexemes, words);
+
+
+//            processWordsFromDictionary(textBlock, words);
 
             addUnknownWords(textBlock, words);
 
@@ -39,6 +47,8 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
         });
         return paragraphs;
     }
+
+
 
     //TODO: сделать чтобы слова проверялись только те, которые еще неопределны!!!
     private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Word> words) {
@@ -64,7 +74,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
                 words.add(word);
                 // Быть может стоит поменять тип списка в lexemes на LinkedList,
                 // и в методы передовать ссылку на текущий элемент списка
-                lexemes.subList(punctuationOrder, punctuationOrder + word.getLexemesNumber()).clear();
+                lexemes.subList(punctuationOrder, punctuationOrder + word.getElementNumber()).clear();
                 fff.i++;
                 return true;
             }
@@ -99,7 +109,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
             String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
             WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
             Word word = new Word(lexeme1.getOrder(), lexemeString, wordTags);
-            word.setLexemesNumber(2);
+            word.setElementNumber(2);
             return word;
         }
         return null;
@@ -164,19 +174,16 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
         return idiomTail.length() == idiomTailIndex;
     }
 
-    // TODO: Добавить диапазон обработанных лексем!!!
-    private static void findWordsFromDictionary(TextBlock textBlock, List<Word> words) {
-        List<Lexeme> lexemes = textBlock.getLexemes();
+    private static Word processWordsFromDictionary(Object element) {
+        Lexeme lexeme = (Lexeme) element;
+        String lexemeString = lexeme.getLexeme();
         Map<String, WordProperty[]> dictionary = DictionaryLoading.getWordDictionary();
-        lexemes.removeIf(lexeme -> {
-            String lexemeString = lexeme.getLexeme();
-            WordProperty[] wordProperties = dictionary.get(lexemeString);
-            if (wordProperties != null) {
-                WordTag[] wordTags = createWordTags(wordProperties);
-                words.add(new Word(lexeme.getOrder(), lexemeString, wordTags));
-                return true;
-            }
-            return false;});
+        WordProperty[] wordProperties = dictionary.get(lexemeString);
+        if (wordProperties != null) {
+            WordTag[] wordTags = createWordTags(wordProperties);
+            return new Word(lexeme.getOrder(), lexemeString, wordTags);
+        }
+        return null;
     }
 
     // Метод создает массив WordTags из массива WordProperty
@@ -186,7 +193,6 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
         if (wordProperties == null) {
             return new WordTag[]{};
         }
-
         WordTag[] wordTags = new WordTag[wordProperties.length];
         for (int i = 0; i < wordProperties.length; i++) {
             wordTags[i] = new WordTag(wordProperties[i].getLemmaId(), wordProperties[i].getPartOfSpeech(), wordProperties[i].getTag());
@@ -196,11 +202,16 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 
     private static void addUnknownWords(TextBlock textBlock, List<Word> words) {
         List<Lexeme> lexemes = textBlock.getLexemes();
-        lexemes.forEach(lexeme -> {
-            WordTag[] wordTags = {new WordTag(-9999, "неизв", "")};
-            words.add(new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags));
-        });
-        lexemes.clear();
+        List<Range> ranges = textBlock.getUnprocessedRanges();
+        for (Range range : ranges) {
+            int start = range.getStart();
+            int end = range.getEnd();
+            for (int i = start; i < end; i++) {
+                Lexeme lexeme = lexemes.get(i);
+                WordTag[] wordTags = {new WordTag(-9999, "неизв", "")};
+                words.add(new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags));
+            }
+        }
     }
 
     // Метод возвращает строку, представляющую результат работы класса

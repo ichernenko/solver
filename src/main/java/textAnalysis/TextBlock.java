@@ -1,17 +1,23 @@
 package textAnalysis;
 
+import common.Range;
+
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TextBlock implements Serializable {
     private int textBlockType;
     private List<Lexeme> lexemes;
     private List<Punctuation> punctuations;
+    private List<Range> unprocessedRanges;
 
     TextBlock(int textBlockType, List<Lexeme> lexemes, List<Punctuation> punctuations) {
         this.textBlockType = textBlockType;
         this.lexemes = lexemes;
         this.punctuations = punctuations;
+        this.unprocessedRanges = new LinkedList<>();
+        unprocessedRanges.add(new Range(0, lexemes.size()));
     }
 
     public String getTextBlock() {
@@ -100,5 +106,8 @@ public class TextBlock implements Serializable {
     }
     public List<Punctuation> getPunctuations() {
         return punctuations;
+    }
+    public List<Range> getUnprocessedRanges() {
+        return unprocessedRanges;
     }
 }

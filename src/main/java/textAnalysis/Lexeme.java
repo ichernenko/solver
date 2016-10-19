@@ -2,7 +2,7 @@ package textAnalysis;
 
 import java.io.Serializable;
 
-public class Lexeme  implements Serializable {
+public class Lexeme implements Serializable {
     private int order;
     private String lexeme;
     private LexemeDescriptor lexemeDescriptor;
