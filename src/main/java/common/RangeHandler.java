@@ -3,7 +3,17 @@ package common;
 import java.util.*;
 
 public class RangeHandler {
-    public static List processElements(List<Range> ranges, RangeElementProcessing<Object, Object> rangeElementProcessing, List inputList, List outputList) {
+    private List<Range> ranges;
+    private List inputList;
+    private List outputList;
+
+    public RangeHandler(List<Range> ranges, List inputList, List outputList) {
+        this.ranges = ranges;
+        this.inputList = inputList;
+        this.outputList = outputList;
+    }
+
+    public List processElements(RangeElementProcessing<Object, Object> rangeElementProcessing) {
         ListIterator<Range> iterator = ranges.listIterator();
         while (iterator.hasNext()) {
             Range range = iterator.next();

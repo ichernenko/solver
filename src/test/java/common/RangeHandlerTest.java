@@ -18,221 +18,253 @@ public class RangeHandlerTest {
         Range[] inputRanges;
         Range[] correctRanges;
         List<Range> ranges;
+        RangeHandler rangeHandler;
 
         // 1. - (Мама, раму, балкон; 1) - (1,2),(3,6)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest1, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest1);
         correctRanges = new Range[]{new Range(1, 2), new Range(3, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 2. - (Мама, раму, балкон; 2) - (4,6)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest2, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest2);
         correctRanges = new Range[]{new Range(4, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 3. - (Мама, раму, балкон; 3) - (3,6)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest3, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest3);
         correctRanges = new Range[]{new Range(3, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 4. - (Мама, раму, балкон; 4) - (4,6)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest4, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest4);
         correctRanges = new Range[]{new Range(4, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 5. - (Мама, раму, балкон; 5) - (5,6)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest5, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest5);
         correctRanges = new Range[]{new Range(5, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 6. - (Мама, раму, балкон; 6) - ()
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest6, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest6);
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 7. - (Мама, раму, балкон; 7) - ()
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest7, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest7);
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 8. - (Мама, раму, балкон; 8) - ()
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest8, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest8);
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 9. - (мыла, Сережа; 1) - (0,1),(2,4),(5,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest9, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest9);
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 4), new Range(5, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 10. - (мыла, раму; 1) - (0,1),(3,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest10, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest10);
         correctRanges = new Range[]{new Range(0, 1), new Range(3, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 11. - (мыла, раму; 2) - (0,1),(3,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest11, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest11);
         correctRanges = new Range[]{new Range(0, 1), new Range(3, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 12. - (мыла, раму; 3) - (0,1),(4,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest12, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest12);
         correctRanges = new Range[]{new Range(0, 1), new Range(4, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 13. - (мыл, балкон; 1) - (0,5)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest13, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest13);
         correctRanges = new Range[]{new Range(0, 5)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 14. - (мыл, балкон; 2) - (0,5)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest14, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest14);
         correctRanges = new Range[]{new Range(0, 5)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 15. - (; 1) - (0,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest15, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest15);
         correctRanges = new Range[]{new Range(0, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 16. - (Мама; 1) - (1,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest16, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest16);
         correctRanges = new Range[]{new Range(1, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 17. - (Мама; 4) - (4,7)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest17, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest17);
         correctRanges = new Range[]{new Range(4, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 18. - (Мама; 8) - ()
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest18, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest18);
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 19. - ((0,2),(3,5),(6,7); Мама, раму, Сережа, балкон; 1) - (1,2),(3,4)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest19, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest19);
         correctRanges = new Range[]{new Range(1, 2), new Range(3, 4)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 20. - ((0,2),(3,5),(6,7); мыла, балкон; 1) - (0,1),(3,5)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest20, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest20);
         correctRanges = new Range[]{new Range(0, 1), new Range(3, 5)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 21. - ((0,2),(3,5),(6,7); Мама, а; 2) - (6,7)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest21, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest21);
         correctRanges = new Range[]{new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 22. - ((0,2),(3,5),(6,7); а; 5) - (0,2),(6,7)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest22, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest22);
         correctRanges = new Range[]{new Range(0, 2), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 23. - ((0,2),(3,5),(6,7); ; -) - (0,2),(3,5),(6,7)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest23, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest23);
         correctRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 24. - ((0,2),(3,5),(6,7); Мама, а, балкон; 3) - ()
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest24, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest24);
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 25. - ((0,2),(3,5),(6,7); а; 2) - (0,2),(6,7)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest25, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest25);
         correctRanges = new Range[]{new Range(0, 2), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 26. - ((0,2),(3,5),(6,7); Мама; 2) - (3,5),(6,7)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest26, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest26);
         correctRanges = new Range[]{new Range(3, 5), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 27. - ((0,2),(3,4),(5,7); мыл; 2) - (3,5),(6,7)
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 4), new Range(5, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest27, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest27);
         correctRanges = new Range[]{new Range(0, 2), new Range(3, 4)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 28. - ((0,1),(2,5),(6,7); а; 1) - (0,1),(2,3),(4,5),(6,7)
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest28, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest28);
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 3), new Range(4, 5), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 29. - ((0,1),(2,5),(6,7); а; 2) - (0,1),(2,3),(6,7)
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest29, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest29);
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 3), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 30. - ((0,1),(2,5),(6,7); Сережа; 1) - (0,1),(2,4),(6,7)
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest30, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest30);
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 4), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
         // 31. - ((0,1),(2,5),(6,7); Сережа; 2) - (0,1),(2,4),(6,7)
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
-        RangeHandler.processElements(ranges, RangeHandlerTest::processTest31, inputList, outputList);
+        rangeHandler = new RangeHandler(ranges, inputList, outputList);
+        rangeHandler.processElements(RangeHandlerTest::processTest31);
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 4), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
     }

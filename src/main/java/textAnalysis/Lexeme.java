@@ -6,12 +6,13 @@ public class Lexeme implements Serializable {
     private int order;
     private String lexeme;
     private LexemeDescriptor lexemeDescriptor;
+    private String punctuation;
 
-
-    Lexeme(int order, String lexeme, LexemeDescriptor lexemeDescriptor) {
+    Lexeme(int order, String lexeme, LexemeDescriptor lexemeDescriptor, String punctuation) {
         this.order = order;
         this.lexeme = lexeme;
         this.lexemeDescriptor = lexemeDescriptor;
+        this.punctuation = punctuation;
     }
 
     public int getOrder() {
@@ -22,5 +23,8 @@ public class Lexeme implements Serializable {
     }
     public LexemeDescriptor getLexemeDescriptor() {
         return lexemeDescriptor;
+    }
+    public String getPunctuation() {
+        return punctuation;
     }
 }

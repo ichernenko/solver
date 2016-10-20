@@ -1,38 +1,23 @@
 package morphologicalAnalysis;
 
-import textAnalysis.Punctuation;
-
 import java.io.Serializable;
 import java.util.List;
 
 public class Paragraph implements Serializable {
     private List<Word> words;
-    private List<Punctuation> punctuations;
+    private String paragraphPunctuation;
 
-    Paragraph(List<Word> words, List<Punctuation> punctuations) {
+    Paragraph(List<Word> words, String paragraphPunctuation) {
         this.words = words;
-        this.punctuations = punctuations;
+        this.paragraphPunctuation = paragraphPunctuation;
     }
 
     public String getParagraph() {
-        StringBuilder sb = new StringBuilder();
-        int wordsSize = words.size();
-        int punctuationSize = punctuations.size();
-        int punctuationIndex = 0;
-
-        if (0 < punctuationSize && punctuations.get(0).getOrder() == -1) {
-            sb.append(punctuations.get(0).getPunctuation());
-            punctuationIndex ++;
-        }
-
-        for (int i = 0; i < wordsSize; i ++) {
-            sb.append(words.get(i).getWord());
-            if (punctuationIndex < punctuationSize && punctuations.get(punctuationIndex).getOrder() == i) {
-                sb.append(punctuations.get(punctuationIndex).getPunctuation());
-                punctuationIndex ++;
-            } else {
-                sb.append(' ');
-            }
+        StringBuilder sb = new StringBuilder(paragraphPunctuation);
+        for (Word word : words) {
+            sb.append(word.getWord());
+            String punctuation = word.getPunctuation();
+            sb.append(punctuation.isEmpty() ?  " " : punctuation);
         }
         return sb.toString();
     }
@@ -40,7 +25,7 @@ public class Paragraph implements Serializable {
     public List<Word> getWords() {
         return words;
     }
-    public List<Punctuation> getPunctuations() {
-        return punctuations;
+    public String getParagraphPunctuations() {
+        return paragraphPunctuation;
     }
 }

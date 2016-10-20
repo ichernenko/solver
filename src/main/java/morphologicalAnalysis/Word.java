@@ -8,12 +8,14 @@ public class Word implements ElementCountable, Serializable, Comparable<Word> {
     private int order;
     private String word;
     private WordTag[] wordTags;
+    private String punctuation;
     private int elementNumber = 1;
 
-    Word(int order, String word, WordTag[] wordTags) {
+    Word(int order, String word, WordTag[] wordTags, String punctuation) {
         this.order = order;
         this.word = word;
         this.wordTags = wordTags;
+        this.punctuation = punctuation;
     }
 
     @Override
@@ -29,6 +31,9 @@ public class Word implements ElementCountable, Serializable, Comparable<Word> {
     }
     public WordTag[] getWordTags() {
         return wordTags;
+    }
+    public String getPunctuation() {
+        return punctuation;
     }
 
     @Override
