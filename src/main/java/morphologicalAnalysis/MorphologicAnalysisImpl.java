@@ -10,10 +10,11 @@ import dictionaryLoading.DictionaryLoading;
 import dictionaryLoading.Lemma;
 import dictionaryLoading.WordProperty;
 import textAnalysis.Lexeme;
+import textAnalysis.LexemeDescriptor;
 import textAnalysis.TextBlock;
 import common.Range;
 
-public class MorphologicAnalysisImpl implements MorphologicAnalysis{
+public class MorphologicAnalysisImpl implements MorphologicAnalysis {
     private static Map<String, WordProperty[]> dictionary;
 
     // Метод определяет теги для слов и идиом в предложениях
@@ -35,7 +36,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
 //            findWordsWithoutPunctuation(textBlock, words);
 
             RangeHandler rangeHandler = new RangeHandler(ranges, lexemes, words);
-            rangeHandler.processElements(MorphologicAnalysisImpl::processIntegers);
+            rangeHandler.processElements(MorphologicAnalysisImpl::processIndependentWordsWithPunctuation);
             rangeHandler.processElements(MorphologicAnalysisImpl::processWordsFromDictionary);
 
             addUnknownWords(textBlock, words);
@@ -46,6 +47,34 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
         return paragraphs;
     }
 
+    private static int FRACTION_ELEMENT_NUMBER = 2;
+
+    public static Word processIndependentWordsWithPunctuation(List lexemes, int i, int end) {
+        // После каждого метода необходимо проверять успешность
+        // Если метод успешен, то следующие за ним методы не выполняются!!!
+        // Это может быть массив методов, перебераемый в цикле.
+        // М-да еще важно помнить, что один метод может являться частью другого!!!
+        Lexeme lexeme1 = (Lexeme) lexemes.get(i);
+        LexemeDescriptor lexeme1Descriptor = lexeme1.getLexemeDescriptor();
+        if (lexeme1Descriptor.isHasDigit() && !lexeme1Descriptor.isHasLetter()) {
+            if (i + FRACTION_ELEMENT_NUMBER - 1 < end) {
+                Lexeme lexeme2 = (Lexeme) lexemes.get(i + 1);
+                LexemeDescriptor lexeme2Descriptor = lexeme2.getLexemeDescriptor();
+                if (lexeme2Descriptor.isHasDigit() && !lexeme2Descriptor.isHasLetter()) {
+                    if (",".equals(lexeme1.getPunctuation())) {
+                        String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
+                        WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
+                        Word word = new Word(lexeme1.getOrder(), lexemeString, wordTags, lexeme2.getPunctuation());
+                        word.setElementNumber(FRACTION_ELEMENT_NUMBER);
+                        return word;
+                    }
+                }
+            }
+            WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
+            return new Word(lexeme1.getOrder(), lexeme1.getLexeme(), wordTags, lexeme1.getPunctuation());
+        }
+        return null;
+    }
 
 
     //TODO: сделать чтобы слова проверялись только те, которые еще неопределны!!!
@@ -125,7 +154,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     }
 
 
-        private static void findIdioms(TextBlock textBlock) {
+    private static void findIdioms(TextBlock textBlock) {
 //        // Находим идиому
 //        // Заменяем все участвующие слова на одно
 //        // Добавляем теги
@@ -151,7 +180,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
         int idiomTailIndex = 0;
         for (int i = sentenceTailStartIndex; i < words.size(); i++) {
             String word = words.get(i).getWord();
-            for (int j = 0; j < word.length(); j++, idiomTailIndex ++) {
+            for (int j = 0; j < word.length(); j++, idiomTailIndex++) {
                 if (word.charAt(j) != idiomTail.charAt(idiomTailIndex)) {
                     return false;
                 }
@@ -159,19 +188,19 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
             if (idiomTail.length() == idiomTailIndex) {
                 return true;
             } else {
-               if (idiomTail.charAt(idiomTailIndex) != ' ') {
-                   return false;
-               } else {
-                   idiomTailIndex ++;
-               }
+                if (idiomTail.charAt(idiomTailIndex) != ' ') {
+                    return false;
+                } else {
+                    idiomTailIndex++;
+                }
             }
         }
 
         return idiomTail.length() == idiomTailIndex;
     }
 
-    private static Word processWordsFromDictionary(Object element) {
-        Lexeme lexeme = (Lexeme) element;
+    private static Word processWordsFromDictionary(List lexemes, int i, int maxRight) {
+        Lexeme lexeme = (Lexeme) lexemes.get(i);
         String lexemeString = lexeme.getLexeme();
         WordProperty[] wordProperties = dictionary.get(lexemeString);
         if (wordProperties != null) {
@@ -261,7 +290,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis{
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         if (DictionaryLoading.loadDictionary()) {

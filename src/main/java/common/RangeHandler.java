@@ -13,7 +13,7 @@ public class RangeHandler {
         this.outputList = outputList;
     }
 
-    public List processElements(RangeElementProcessing<Object, Object> rangeElementProcessing) {
+    public List processElements(RangeElementProcessing<Object, List, Integer> rangeElementProcessing) {
         ListIterator<Range> iterator = ranges.listIterator();
         while (iterator.hasNext()) {
             Range range = iterator.next();
@@ -21,8 +21,7 @@ public class RangeHandler {
             int end = range.getEnd();
             int i = start;
             while (i < end) {
-                Object inputElement = inputList.get(i);
-                Object outputElement = rangeElementProcessing.process(inputElement);
+                Object outputElement = rangeElementProcessing.process(inputList, i, end);
 
                 int number;
                 if (outputElement != null && (number = ((ElementCountable) outputElement).getElementNumber()) > 0) {

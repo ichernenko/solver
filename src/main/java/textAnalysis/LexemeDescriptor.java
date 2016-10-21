@@ -84,31 +84,24 @@ public class LexemeDescriptor implements Serializable {
     public boolean isHasDigit() {
         return hasDigit;
     }
-
     public boolean isHasLetter() {
         return hasLetter;
     }
-
     public boolean isHasFirstUpperCase() {
         return hasFirstUpperCase;
     }
-
     public boolean isHasLowerCase() {
         return hasLowerCase;
     }
-
     public boolean isHasUpperCase() {
         return hasUpperCase;
     }
-
     public boolean isHasRussian() {
         return hasRussian;
     }
-
     public boolean isHasLatin() {
         return hasLatin;
     }
-
     public boolean isHasOther() {
         return hasOther;
     }

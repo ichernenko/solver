@@ -269,127 +269,157 @@ public class RangeHandlerTest {
         assertTrue(isEqualRanges(ranges, correctRanges));
     }
 
-    private static ElementCountable processTest1(Object word) {
+    private static ElementCountable processTest1(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest2(Object word) {
+    private static ElementCountable processTest2(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest3(Object word) {
+    private static ElementCountable processTest3(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(3) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest4(Object word) {
+    private static ElementCountable processTest4(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(4) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest5(Object word) {
+    private static ElementCountable processTest5(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(5) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest6(Object word) {
+    private static ElementCountable processTest6(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(6) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest7(Object word) {
+    private static ElementCountable processTest7(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(7) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest8(Object word) {
+    private static ElementCountable processTest8(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(8) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest9(Object word) {
+    private static ElementCountable processTest9(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("Сережа") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest10(Object word) {
+    private static ElementCountable processTest10(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("раму") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest11(Object word) {
+    private static ElementCountable processTest11(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("раму") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest12(Object word) {
+    private static ElementCountable processTest12(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("раму") ? new ElementCountableImplTest(3) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest13(Object word) {
+    private static ElementCountable processTest13(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыл") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest14(Object word) {
+    private static ElementCountable processTest14(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыл") || word.equals("балкон") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest15(Object word) {
+    private static ElementCountable processTest15(List words, int i, int end) {
         return new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest16(Object word) {
+    private static ElementCountable processTest16(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest17(Object word) {
+    private static ElementCountable processTest17(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(4) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest18(Object word) {
+    private static ElementCountable processTest18(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(8) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest19(Object word) {
+    private static ElementCountable processTest19(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("Сережа") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest20(Object word) {
+    private static ElementCountable processTest20(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest21(Object word) {
+    private static ElementCountable processTest21(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("а") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest22(Object word) {
+    private static ElementCountable processTest22(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(5) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest23(Object word) {
+    private static ElementCountable processTest23(List words, int i, int end) {
+        String word = (String) words.get(i);
         return new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest24(Object word) {
+    private static ElementCountable processTest24(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("а") || word.equals("балкон") ? new ElementCountableImplTest(3) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest25(Object word) {
+    private static ElementCountable processTest25(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest26(Object word) {
+    private static ElementCountable processTest26(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest27(Object word) {
+    private static ElementCountable processTest27(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("мыл") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest28(Object word) {
+    private static ElementCountable processTest28(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest29(Object word) {
+    private static ElementCountable processTest29(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest30(Object word) {
+    private static ElementCountable processTest30(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Сережа") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest31(Object word) {
+    private static ElementCountable processTest31(List words, int i, int end) {
+        String word = (String) words.get(i);
         return  word.equals("Сережа") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
