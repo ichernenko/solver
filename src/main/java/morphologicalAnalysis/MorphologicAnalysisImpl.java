@@ -2,6 +2,7 @@ package morphologicalAnalysis;
 
 import java.util.*;
 
+import common.MethodRange;
 import common.RangeHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -16,8 +17,18 @@ import common.Range;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis {
     private static Map<String, WordProperty[]> dictionary;
+    private static int FRACTION_ELEMENTS_NUMBER = 2;
+    private static int INTEGER_ELEMENTS_NUMBER = 1;
+    private static int DICTIONARY_ELEMENTS_NUMBER = 1;
+    private static int UNKNOWN_ELEMENTS_NUMBER = 1;
 
-    // Метод определяет теги для слов и идиом в предложениях
+    private static MethodRange[] methodRanges = {
+            new MethodRange(FRACTION_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processFraction),
+            new MethodRange(INTEGER_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processInteger),
+            new MethodRange(DICTIONARY_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processDictionary),
+            new MethodRange(UNKNOWN_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processUnknown)
+    };
+
     @Override
     public List<Paragraph> getParagraphs(List<TextBlock> textBlocks) {
         List<Paragraph> paragraphs = new ArrayList<>();
@@ -30,16 +41,9 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
             // для этого в каждом методе должны добавляться найденные слова в список words
             // и изменяться диапазон поиска слов из расчета уже найденных
 
-            // Проверка слов, которые существуют независимо от других слов с другими знаками пунктуации
-//            findIndependentWordsWithPunctuation(textBlock, words);
-//            findDependentWordsWithPunctuation(textBlock, rawWordsRange, words);
-//            findWordsWithoutPunctuation(textBlock, words);
-
             RangeHandler rangeHandler = new RangeHandler(ranges, lexemes, words);
-            rangeHandler.processElements(MorphologicAnalysisImpl::processIndependentWordsWithPunctuation);
-            rangeHandler.processElements(MorphologicAnalysisImpl::processWordsFromDictionary);
-
-            addUnknownWords(textBlock, words);
+            rangeHandler.processElements(methodRanges);
+            //rangeHandler.processElements(MorphologicAnalysisImpl::processDictionary);
 
             Collections.sort(words);
             paragraphs.add(new Paragraph(words, textBlock.getTextBlockPunctuation()));
@@ -47,37 +51,43 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         return paragraphs;
     }
 
-    private static int FRACTION_ELEMENT_NUMBER = 2;
-
-    public static Word processIndependentWordsWithPunctuation(List lexemes, int i, int end) {
-        // После каждого метода необходимо проверять успешность
-        // Если метод успешен, то следующие за ним методы не выполняются!!!
-        // Это может быть массив методов, перебераемый в цикле.
-        // М-да еще важно помнить, что один метод может являться частью другого!!!
-        Lexeme lexeme1 = (Lexeme) lexemes.get(i);
-        LexemeDescriptor lexeme1Descriptor = lexeme1.getLexemeDescriptor();
-        if (lexeme1Descriptor.isHasDigit() && !lexeme1Descriptor.isHasLetter()) {
-            if (i + FRACTION_ELEMENT_NUMBER - 1 < end) {
-                Lexeme lexeme2 = (Lexeme) lexemes.get(i + 1);
-                LexemeDescriptor lexeme2Descriptor = lexeme2.getLexemeDescriptor();
-                if (lexeme2Descriptor.isHasDigit() && !lexeme2Descriptor.isHasLetter()) {
-                    if (",".equals(lexeme1.getPunctuation())) {
-                        String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
-                        WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
-                        Word word = new Word(lexeme1.getOrder(), lexemeString, wordTags, lexeme2.getPunctuation());
-                        word.setElementNumber(FRACTION_ELEMENT_NUMBER);
-                        return word;
-                    }
-                }
-            }
+    // Метод находит последовательность сиволов, состоящую только из цифр
+    // и создает морфологическую единицу как экземпляр класса Integer
+    private static Word processInteger(List lexemes, int i) {
+        Lexeme lexeme = (Lexeme) lexemes.get(i);
+        LexemeDescriptor lexemeDescriptor = lexeme.getLexemeDescriptor();
+        if (lexemeDescriptor.isHasDigit() && !lexemeDescriptor.isHasLetter()) {
             WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
-            return new Word(lexeme1.getOrder(), lexeme1.getLexeme(), wordTags, lexeme1.getPunctuation());
+            return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), INTEGER_ELEMENTS_NUMBER);
         }
         return null;
     }
 
+    // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
+    // и создает морфологическую единицу как экземпляр класса Integer
+    private static Word processFraction(List lexemes, int i) {
+        Lexeme lexeme1 = (Lexeme) lexemes.get(i);
+        LexemeDescriptor lexeme1Descriptor = lexeme1.getLexemeDescriptor();
+        if (lexeme1Descriptor.isHasDigit() && !lexeme1Descriptor.isHasLetter()) {
+            Lexeme lexeme2 = (Lexeme) lexemes.get(i + 1);
+            LexemeDescriptor lexeme2Descriptor = lexeme2.getLexemeDescriptor();
+            if (lexeme2Descriptor.isHasDigit() && !lexeme2Descriptor.isHasLetter()) {
+                if (",".equals(lexeme1.getPunctuation())) {
+                    String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
+                    WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
+                    return new Word(lexeme1.getOrder(), lexemeString, wordTags, lexeme2.getPunctuation(), FRACTION_ELEMENTS_NUMBER);
+                }
+            }
+        }
+        return null;
+    }
 
-    //TODO: сделать чтобы слова проверялись только те, которые еще неопределны!!!
+    private static Word processUnknown(List lexemes, int i) {
+        Lexeme lexeme = (Lexeme) lexemes.get(i);
+        WordTag[] wordTags = {new WordTag(-9999, "неизв", "")};
+        return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), UNKNOWN_ELEMENTS_NUMBER);
+    }
+
 //    private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Word> words) {
 //        List<Punctuation> punctuations = textBlock.getPunctuations();
 //        List<Lexeme> lexemes = textBlock.getLexemes();
@@ -113,45 +123,6 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 //        return findFractions(textBlock, lexemeOrder);
 //    }
 
-
-    private static void findWordsWithoutPunctuation(TextBlock textBlock, List<Word> words) {
-        //findIntegers(textBlock, words);
-    }
-
-    // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
-    // и создает морфологическую единицу как экземпляр класса Integer
-//    private static Word findFractions(TextBlock textBlock, int lexemeOrder) {
-//        List<Lexeme> lexemes = textBlock.getLexemes();
-//
-//        if (lexemeOrder <= -1 || lexemeOrder >= lexemes.size() - 1) {
-//            return null;
-//        }
-//
-//        Lexeme lexeme1 = lexemes.get(lexemeOrder);
-//        Lexeme lexeme2 = lexemes.get(lexemeOrder + 1);
-//
-//        if (lexeme1.getLexemeDescriptor().isHasDigit() && !lexeme1.getLexemeDescriptor().isHasLetter() &&
-//            lexeme2.getLexemeDescriptor().isHasDigit() && !lexeme2.getLexemeDescriptor().isHasLetter()) {
-//
-//            String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
-//            WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
-//            Word word = new Word(lexeme1.getOrder(), lexemeString, wordTags);
-//            word.setElementNumber(2);
-//            return word;
-//        }
-//        return null;
-//    }
-
-    // Метод находит последовательности сиволов, состоящие только из цифр
-    // и создает морфологическую единицу как экземпляр класса Integer
-    private static Word processIntegers(Object element) {
-        Lexeme lexeme = (Lexeme) element;
-        if (lexeme.getLexemeDescriptor().isHasDigit() && !lexeme.getLexemeDescriptor().isHasLetter()) {
-            WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
-            return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation());
-        }
-        return null;
-    }
 
 
     private static void findIdioms(TextBlock textBlock) {
@@ -195,17 +166,16 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
                 }
             }
         }
-
         return idiomTail.length() == idiomTailIndex;
     }
 
-    private static Word processWordsFromDictionary(List lexemes, int i, int maxRight) {
+    private static Word processDictionary(List lexemes, int i) {
         Lexeme lexeme = (Lexeme) lexemes.get(i);
         String lexemeString = lexeme.getLexeme();
         WordProperty[] wordProperties = dictionary.get(lexemeString);
         if (wordProperties != null) {
             WordTag[] wordTags = createWordTags(wordProperties);
-            return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation());
+            return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), DICTIONARY_ELEMENTS_NUMBER);
         }
         return null;
     }
@@ -222,20 +192,6 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
             wordTags[i] = new WordTag(wordProperties[i].getLemmaId(), wordProperties[i].getPartOfSpeech(), wordProperties[i].getTag());
         }
         return wordTags;
-    }
-
-    private static void addUnknownWords(TextBlock textBlock, List<Word> words) {
-        List<Lexeme> lexemes = textBlock.getLexemes();
-        List<Range> ranges = textBlock.getUnprocessedRanges();
-        for (Range range : ranges) {
-            int start = range.getStart();
-            int end = range.getEnd();
-            for (int i = start; i < end; i++) {
-                Lexeme lexeme = lexemes.get(i);
-                WordTag[] wordTags = {new WordTag(-9999, "неизв", "")};
-                words.add(new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation()));
-            }
-        }
     }
 
     // Метод возвращает строку, представляющую результат работы класса
