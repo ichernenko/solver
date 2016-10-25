@@ -2,31 +2,37 @@ package morphologicalAnalysis;
 
 import java.util.*;
 
-import common.MethodRange;
+import common.RangeElementProcessing;
 import common.RangeHandler;
+import dictionaryLoading.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import dictionaryLoading.DictionaryLoading;
-import dictionaryLoading.Lemma;
-import dictionaryLoading.WordProperty;
 import textAnalysis.Lexeme;
 import textAnalysis.LexemeDescriptor;
 import textAnalysis.TextBlock;
 import common.Range;
 
 public class MorphologicAnalysisImpl implements MorphologicAnalysis {
-    private static Map<String, WordProperty[]> dictionary;
+    private static Map<String, Homonym> wordDictionary;
+    private static Map<String, IdiomProperty[]> idiomDictionary;
+
     private static int FRACTION_ELEMENTS_NUMBER = 2;
     private static int INTEGER_ELEMENTS_NUMBER = 1;
     private static int DICTIONARY_ELEMENTS_NUMBER = 1;
     private static int UNKNOWN_ELEMENTS_NUMBER = 1;
 
-    private static MethodRange[] methodRanges = {
-            new MethodRange(FRACTION_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processFraction),
-            new MethodRange(INTEGER_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processInteger),
-            new MethodRange(DICTIONARY_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processDictionary),
-            new MethodRange(UNKNOWN_ELEMENTS_NUMBER, MorphologicAnalysisImpl::processUnknown)
+    private static RangeElementProcessing<Object, List, Integer> processFraction = MorphologicAnalysisImpl::processFraction;
+    private static RangeElementProcessing<Object, List, Integer> processInteger = MorphologicAnalysisImpl::processInteger;
+    private static RangeElementProcessing<Object, List, Integer> processDictionary = MorphologicAnalysisImpl::processDictionary;
+    private static RangeElementProcessing<Object, List, Integer> processIdiom = MorphologicAnalysisImpl::processIdiom;
+    private static RangeElementProcessing<Object, List, Integer> processUnknown = MorphologicAnalysisImpl::processUnknown;
+
+    private static RangeElementProcessing<Object, List, Integer>[] methods = new RangeElementProcessing[]{
+            processFraction,
+            processInteger,
+            processDictionary,
+            processUnknown
     };
 
     @Override
@@ -38,11 +44,11 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
             List<Lexeme> lexemes = textBlock.getLexemes();
             // Определяются слова, которые можно распознать по признаку - пунктуации
             // (значения из метода возвращаются через параметры, чтобы не городить огород
-            // для этого в каждом методе должны добавляться найденные слова в список words
+            // для этого в каждом методе должны добавляться найденные слова в список lexemes
             // и изменяться диапазон поиска слов из расчета уже найденных
 
             RangeHandler rangeHandler = new RangeHandler(ranges, lexemes, words);
-            rangeHandler.processElements(methodRanges);
+            rangeHandler.processElements(methods);
             //rangeHandler.processElements(MorphologicAnalysisImpl::processDictionary);
 
             Collections.sort(words);
@@ -53,42 +59,46 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 
     // Метод находит последовательность сиволов, состоящую только из цифр
     // и создает морфологическую единицу как экземпляр класса Integer
-    private static Word processInteger(List lexemes, int i) {
-        Lexeme lexeme = (Lexeme) lexemes.get(i);
-        LexemeDescriptor lexemeDescriptor = lexeme.getLexemeDescriptor();
-        if (lexemeDescriptor.isHasDigit() && !lexemeDescriptor.isHasLetter()) {
-            WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
-            return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), INTEGER_ELEMENTS_NUMBER);
+    private static Word processInteger(List lexemes, int i, int start, int end) {
+        if (i + INTEGER_ELEMENTS_NUMBER <= end) {
+            Lexeme lexeme = (Lexeme) lexemes.get(i);
+            LexemeDescriptor lexemeDescriptor = lexeme.getLexemeDescriptor();
+            if (lexemeDescriptor.isHasDigit() && !lexemeDescriptor.isHasLetter()) {
+                WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
+                return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), INTEGER_ELEMENTS_NUMBER);
+            }
         }
         return null;
     }
 
     // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
     // и создает морфологическую единицу как экземпляр класса Integer
-    private static Word processFraction(List lexemes, int i) {
-        Lexeme lexeme1 = (Lexeme) lexemes.get(i);
-        LexemeDescriptor lexeme1Descriptor = lexeme1.getLexemeDescriptor();
-        if (lexeme1Descriptor.isHasDigit() && !lexeme1Descriptor.isHasLetter()) {
-            Lexeme lexeme2 = (Lexeme) lexemes.get(i + 1);
-            LexemeDescriptor lexeme2Descriptor = lexeme2.getLexemeDescriptor();
-            if (lexeme2Descriptor.isHasDigit() && !lexeme2Descriptor.isHasLetter()) {
-                if (",".equals(lexeme1.getPunctuation())) {
-                    String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
-                    WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
-                    return new Word(lexeme1.getOrder(), lexemeString, wordTags, lexeme2.getPunctuation(), FRACTION_ELEMENTS_NUMBER);
+    private static Word processFraction(List lexemes, int i, int start, int end) {
+        if (i + FRACTION_ELEMENTS_NUMBER <= end) {
+            Lexeme lexeme1 = (Lexeme) lexemes.get(i);
+            LexemeDescriptor lexeme1Descriptor = lexeme1.getLexemeDescriptor();
+            if (lexeme1Descriptor.isHasDigit() && !lexeme1Descriptor.isHasLetter()) {
+                Lexeme lexeme2 = (Lexeme) lexemes.get(i + 1);
+                LexemeDescriptor lexeme2Descriptor = lexeme2.getLexemeDescriptor();
+                if (lexeme2Descriptor.isHasDigit() && !lexeme2Descriptor.isHasLetter()) {
+                    if (",".equals(lexeme1.getPunctuation())) {
+                        String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
+                        WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
+                        return new Word(lexeme1.getOrder(), lexemeString, wordTags, lexeme2.getPunctuation(), FRACTION_ELEMENTS_NUMBER);
+                    }
                 }
             }
         }
         return null;
     }
 
-    private static Word processUnknown(List lexemes, int i) {
+    private static Word processUnknown(List lexemes, int i, int start, int end) {
         Lexeme lexeme = (Lexeme) lexemes.get(i);
         WordTag[] wordTags = {new WordTag(-9999, "неизв", "")};
         return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), UNKNOWN_ELEMENTS_NUMBER);
     }
 
-//    private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Word> words) {
+//    private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Word> lexemes) {
 //        List<Punctuation> punctuations = textBlock.getPunctuations();
 //        List<Lexeme> lexemes = textBlock.getLexemes();
 //        class ddd {int i = 0;}
@@ -108,7 +118,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 //                }
 //            }
 //            if (word != null) {
-//                words.add(word);
+//                lexemes.add(word);
 //                // Быть может стоит поменять тип списка в lexemes на LinkedList,
 //                // и в методы передовать ссылку на текущий элемент списка
 //                lexemes.subList(punctuationOrder, punctuationOrder + word.getElementNumber()).clear();
@@ -119,38 +129,35 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 //        });
 //    }
 
-//    private static Word findComma(TextBlock textBlock, int lexemeOrder) {
-//        return findFractions(textBlock, lexemeOrder);
-//    }
 
-
-
-    private static void findIdioms(TextBlock textBlock) {
-//        // Находим идиому
-//        // Заменяем все участвующие слова на одно
-//        // Добавляем теги
+    // Метод находит последовательности слов, составляющие идиому
+    // и создает морфологическую единицу как экземпляр класса Idiom
+    private static Word processIdiom(List lexemes, int index, int start, int end) {
+        // Находим идиому
+        // Заменяем все участвующие слова на одно
+        // Добавляем теги
 //        StringBuilder sb = new StringBuilder();
 //        sb.setLength(0);
-//        List<Word> words = textBlock.getWords();
-//        for (int i = 0; i < words.size() - 1; i++) {
-//            String idiomHead = words.get(i).getWord() + ' ' + words.get(i + 1).getWord();
-//            IdiomProperty[] idiomProperties = DictionaryLoading.getIdiomDictionary().get(idiomHead);
+//        for (int i = 0; i < lexemes.size() - 1; i++) {
+//            String idiomHead = lexemes.get(i).getLexeme() + ' ' + lexemes.get(i + 1).getLexeme();
+//            IdiomProperty[] idiomProperties = idiomDictionary.get(idiomHead);
 //            if (idiomProperties != null) {
 //                // ключ совпал! проверяется остальная часть идиомы
 //                for (IdiomProperty idiomProperty : idiomProperties) {
-//                    if (idiomProperty.getIdiomTail() == null || isIdiom(words, i + 2, idiomProperty.getIdiomTail())) {
+//                    if (idiomProperty.getIdiomTail() == null || isIdiom(lexemes, i + 2, idiomProperty.getIdiomTail())) {
 //                        System.out.println("Идиома найдена: " + idiomHead);
 //                    }
 //                }
 //            }
 //        }
+        return null;
     }
 
     // Метод проверяет включает ли оставшаяся часть предложения хвостовую часть выбранной идиомы
-    private static boolean isIdiom(List<Word> words, int sentenceTailStartIndex, String idiomTail) {
+    private static boolean isIdiom(List<Lexeme> lexemes, int sentenceTailStartIndex, String idiomTail) {
         int idiomTailIndex = 0;
-        for (int i = sentenceTailStartIndex; i < words.size(); i++) {
-            String word = words.get(i).getWord();
+        for (int i = sentenceTailStartIndex; i < lexemes.size(); i++) {
+            String word = lexemes.get(i).getLexeme();
             for (int j = 0; j < word.length(); j++, idiomTailIndex++) {
                 if (word.charAt(j) != idiomTail.charAt(idiomTailIndex)) {
                     return false;
@@ -169,11 +176,17 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         return idiomTail.length() == idiomTailIndex;
     }
 
-    private static Word processDictionary(List lexemes, int i) {
+    private static Word processDictionary(List lexemes, int i, int start, int end) {
         Lexeme lexeme = (Lexeme) lexemes.get(i);
         String lexemeString = lexeme.getLexeme();
-        WordProperty[] wordProperties = dictionary.get(lexemeString);
+        WordProperty[] wordProperties = wordDictionary.get(lexemeString).getWordProperties();
         if (wordProperties != null) {
+            // Проверяется не является ли найденное слово идиомой
+            // Если признак идиомы отличен от нуля для данного слова, то производится поиск идиомы,
+            // в которой данное слово является начальным
+            if (processIdiom(lexemes, i, start, end) != null) {
+
+            }
             WordTag[] wordTags = createWordTags(wordProperties);
             return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), DICTIONARY_ELEMENTS_NUMBER);
         }
@@ -250,7 +263,8 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         if (DictionaryLoading.loadDictionary()) {
-            dictionary = DictionaryLoading.getWordDictionary();
+            wordDictionary = DictionaryLoading.getWordDictionary();
+            idiomDictionary = DictionaryLoading.getIdiomDictionary();
             System.out.println("Waiting for requests...");
         }
     }

@@ -1,5 +1,6 @@
 package common;
 
+import morphologicalAnalysis.MorphologicAnalysisImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,12 +19,14 @@ public class RangeHandlerTest {
         Range[] correctRanges;
         List<Range> ranges;
         RangeHandler rangeHandler;
+        RangeElementProcessing<Object, List, Integer> processTest;
 
         // 1. - (Мама, раму, балкон; 1) - (1,2),(3,6)
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest1)});
+        processTest = RangeHandlerTest::processTest1;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(1, 2), new Range(3, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -31,7 +34,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest2)});
+        processTest = RangeHandlerTest::processTest2;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(4, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -39,7 +43,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(3, RangeHandlerTest::processTest3)});
+        processTest = RangeHandlerTest::processTest3;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(3, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -47,7 +52,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(4, RangeHandlerTest::processTest4)});
+        processTest = RangeHandlerTest::processTest4;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(4, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -55,7 +61,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(5, RangeHandlerTest::processTest5)});
+        processTest = RangeHandlerTest::processTest5;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(5, 6)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -63,7 +70,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(6, RangeHandlerTest::processTest6)});
+        processTest = RangeHandlerTest::processTest6;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -71,7 +79,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(7, RangeHandlerTest::processTest7)});
+        processTest = RangeHandlerTest::processTest7;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -79,7 +88,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(8, RangeHandlerTest::processTest8)});
+        processTest = RangeHandlerTest::processTest8;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -87,7 +97,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest9)});
+        processTest = RangeHandlerTest::processTest9;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 4), new Range(5, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -95,7 +106,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest10)});
+        processTest = RangeHandlerTest::processTest10;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(3, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -103,7 +115,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest11)});
+        processTest = RangeHandlerTest::processTest11;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(3, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -111,7 +124,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(3, RangeHandlerTest::processTest12)});
+        processTest = RangeHandlerTest::processTest12;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(4, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -119,7 +133,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest13)});
+        processTest = RangeHandlerTest::processTest13;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 5)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -127,7 +142,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest14)});
+        processTest = RangeHandlerTest::processTest14;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 5)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -135,7 +151,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(0, RangeHandlerTest::processTest15)});
+        processTest = RangeHandlerTest::processTest15;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -143,7 +160,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest16)});
+        processTest = RangeHandlerTest::processTest16;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(1, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -151,7 +169,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(4, RangeHandlerTest::processTest17)});
+        processTest = RangeHandlerTest::processTest17;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(4, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -159,7 +178,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, inputList.size())};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(8, RangeHandlerTest::processTest18)});
+        processTest = RangeHandlerTest::processTest18;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -167,7 +187,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest19)});
+        processTest = RangeHandlerTest::processTest19;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(1, 2), new Range(3, 4)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -175,7 +196,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest20)});
+        processTest = RangeHandlerTest::processTest20;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(3, 5)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -183,7 +205,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest21)});
+        processTest = RangeHandlerTest::processTest21;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -191,7 +214,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(5, RangeHandlerTest::processTest22)});
+        processTest = RangeHandlerTest::processTest22;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 2), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -199,7 +223,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(0, RangeHandlerTest::processTest23)});
+        processTest = RangeHandlerTest::processTest23;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -207,7 +232,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(3, RangeHandlerTest::processTest24)});
+        processTest = RangeHandlerTest::processTest24;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -215,7 +241,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest25)});
+        processTest = RangeHandlerTest::processTest25;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 2), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -223,7 +250,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest26)});
+        processTest = RangeHandlerTest::processTest26;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(3, 5), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -231,7 +259,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 2), new Range(3, 4), new Range(5, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest27)});
+        processTest = RangeHandlerTest::processTest27;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 2), new Range(3, 4)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -239,7 +268,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest28)});
+        processTest = RangeHandlerTest::processTest28;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 3), new Range(4, 5), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -247,7 +277,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest29)});
+        processTest = RangeHandlerTest::processTest29;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 3), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -255,7 +286,8 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(1, RangeHandlerTest::processTest30)});
+        processTest = RangeHandlerTest::processTest30;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 4), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
 
@@ -263,161 +295,162 @@ public class RangeHandlerTest {
         inputRanges = new Range[]{new Range(0, 1), new Range(2, 5), new Range(6, 7)};
         ranges = new LinkedList<>(Arrays.asList(inputRanges));
         rangeHandler = new RangeHandler(ranges, inputList, outputList);
-        rangeHandler.processElements(new MethodRange[]{new MethodRange(2, RangeHandlerTest::processTest31)});
+        processTest = RangeHandlerTest::processTest31;
+        rangeHandler.processElements(new RangeElementProcessing[]{processTest});
         correctRanges = new Range[]{new Range(0, 1), new Range(2, 4), new Range(6, 7)};
         assertTrue(isEqualRanges(ranges, correctRanges));
     }
 
-    private static ElementCountable processTest1(List words, int i) {
+    private static ElementCountable processTest1(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest2(List words, int i) {
+    private static ElementCountable processTest2(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest3(List words, int i) {
+    private static ElementCountable processTest3(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(3) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest4(List words, int i) {
+    private static ElementCountable processTest4(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(4) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest5(List words, int i) {
+    private static ElementCountable processTest5(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(5) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest6(List words, int i) {
+    private static ElementCountable processTest6(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(6) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest7(List words, int i) {
+    private static ElementCountable processTest7(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(7) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest8(List words, int i) {
+    private static ElementCountable processTest8(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("балкон") ? new ElementCountableImplTest(8) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest9(List words, int i) {
+    private static ElementCountable processTest9(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("Сережа") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest10(List words, int i) {
+    private static ElementCountable processTest10(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("раму") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest11(List words, int i) {
+    private static ElementCountable processTest11(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("раму") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest12(List words, int i) {
+    private static ElementCountable processTest12(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("раму") ? new ElementCountableImplTest(3) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest13(List words, int i) {
+    private static ElementCountable processTest13(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыл") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest14(List words, int i) {
+    private static ElementCountable processTest14(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыл") || word.equals("балкон") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest15(List words, int i) {
+    private static ElementCountable processTest15(List words, int i, int start, int end) {
         return new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest16(List words, int i) {
+    private static ElementCountable processTest16(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest17(List words, int i) {
+    private static ElementCountable processTest17(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(4) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest18(List words, int i) {
+    private static ElementCountable processTest18(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(8) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest19(List words, int i) {
+    private static ElementCountable processTest19(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("раму") || word.equals("Сережа") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest20(List words, int i) {
+    private static ElementCountable processTest20(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыла") || word.equals("балкон") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest21(List words, int i) {
+    private static ElementCountable processTest21(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("а") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest22(List words, int i) {
+    private static ElementCountable processTest22(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(5) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest23(List words, int i) {
+    private static ElementCountable processTest23(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest24(List words, int i) {
+    private static ElementCountable processTest24(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") || word.equals("а") || word.equals("балкон") ? new ElementCountableImplTest(3) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest25(List words, int i) {
+    private static ElementCountable processTest25(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest26(List words, int i) {
+    private static ElementCountable processTest26(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Мама") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest27(List words, int i) {
+    private static ElementCountable processTest27(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("мыл") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest28(List words, int i) {
+    private static ElementCountable processTest28(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest29(List words, int i) {
+    private static ElementCountable processTest29(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("а") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest30(List words, int i) {
+    private static ElementCountable processTest30(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Сережа") ? new ElementCountableImplTest(1) : new ElementCountableImplTest(0);
     }
 
-    private static ElementCountable processTest31(List words, int i) {
+    private static ElementCountable processTest31(List words, int i, int start, int end) {
         String word = (String) words.get(i);
         return  word.equals("Сережа") ? new ElementCountableImplTest(2) : new ElementCountableImplTest(0);
     }

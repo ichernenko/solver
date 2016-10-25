@@ -13,7 +13,7 @@ public class RangeHandler {
         this.outputList = outputList;
     }
 
-    public List processElements(MethodRange[] methodRanges) {
+    public List processElements(RangeElementProcessing<Object, List, Integer>[] methods) {
         ListIterator<Range> iterator = ranges.listIterator();
         while (iterator.hasNext()) {
             Range range = iterator.next();
@@ -23,10 +23,8 @@ public class RangeHandler {
             while (i < end) {
 
                 Object outputElement = null;
-                for(int j = 0; j < methodRanges.length && outputElement == null; j++){
-                    if (i + methodRanges[j].getElementsNumber() <= end) {
-                        outputElement = methodRanges[j].getRangeElementProcessing().process(inputList, i);
-                    }
+                for (int j = 0; j < methods.length && outputElement == null; j++) {
+                    outputElement = methods[j].process(inputList, i, start, end);
                 }
 
                 int number;
