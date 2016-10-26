@@ -24,13 +24,14 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 
     private static RangeElementProcessing<Object, List, Integer> processFraction = MorphologicAnalysisImpl::processFraction;
     private static RangeElementProcessing<Object, List, Integer> processInteger = MorphologicAnalysisImpl::processInteger;
-    private static RangeElementProcessing<Object, List, Integer> processDictionaryWord = MorphologicAnalysisImpl::processDictionaryWord;
     private static RangeElementProcessing<Object, List, Integer> processDictionaryIdiom = MorphologicAnalysisImpl::processDictionaryIdiom;
+    private static RangeElementProcessing<Object, List, Integer> processDictionaryWord = MorphologicAnalysisImpl::processDictionaryWord;
     private static RangeElementProcessing<Object, List, Integer> processUnknown = MorphologicAnalysisImpl::processUnknown;
 
     private static RangeElementProcessing<Object, List, Integer>[] methods = new RangeElementProcessing[]{
             processFraction,
             processInteger,
+            processDictionaryIdiom,
             processDictionaryWord,
             processUnknown
     };
@@ -98,68 +99,48 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), UNKNOWN_ELEMENTS_NUMBER);
     }
 
-//    private void findIndependentWordsWithPunctuation(TextBlock textBlock, List<Word> lexemes) {
-//        List<Punctuation> punctuations = textBlock.getPunctuations();
-//        List<Lexeme> lexemes = textBlock.getLexemes();
-//        class ddd {int i = 0;}
-//        ddd fff = new ddd();
-//
-//        punctuations.removeIf(punctuation -> {
-//            Word word = null;
-//            punctuation.setOrder(punctuation.getOrder() - fff.i);
-//            int punctuationOrder = punctuation.getOrder();
-//
-//            if (punctuation.getPunctuation().length() == 1) {
-//                switch (punctuation.getPunctuation().charAt(0)) {
-//                        case ',': word = findComma(textBlock, punctuationOrder); break;
-////                        case '@': word = findAt(textBlock, punctuation.getOrder()); break;
-////                        case '$': word = findDollar(textBlock, punctuation.getOrder()); break;
-////                        case '&': word = findEt(textBlock, punctuation.getOrder()); break;
-//                }
-//            }
-//            if (word != null) {
-//                lexemes.add(word);
-//                // Быть может стоит поменять тип списка в lexemes на LinkedList,
-//                // и в методы передовать ссылку на текущий элемент списка
-//                lexemes.subList(punctuationOrder, punctuationOrder + word.getElementNumber()).clear();
-//                fff.i++;
-//                return true;
-//            }
-//            return false;
-//        });
-//    }
-
 
     // Метод находит последовательности слов, составляющие идиому
     // и создает морфологическую единицу как экземпляр класса Idiom
-    private static Word processDictionaryIdiom(List lexemes, int index, int start, int end) {
-        // Находим идиому
-        // Заменяем все участвующие слова на одно
-        // Добавляем теги
-//        StringBuilder sb = new StringBuilder();
-//        sb.setLength(0);
-//        for (int i = 0; i < lexemes.size() - 1; i++) {
-//            String idiomHead = lexemes.get(i).getLexeme() + ' ' + lexemes.get(i + 1).getLexeme();
-//            IdiomProperty[] idiomProperties = idiomDictionary.get(idiomHead);
-//            if (idiomProperties != null) {
-//                // ключ совпал! проверяется остальная часть идиомы
-//                for (IdiomProperty idiomProperty : idiomProperties) {
-//                    if (idiomProperty.getIdiomTail() == null || isIdiom(lexemes, i + 2, idiomProperty.getIdiomTail())) {
-//                        System.out.println("Идиома найдена: " + idiomHead);
-//                    }
-//                }
-//            }
-//        }
+    private static Word processDictionaryIdiom(List lexemes, int i, int start, int end) {
+        Lexeme lexeme1 = (Lexeme) lexemes.get(i);
+        String lexeme1String = lexeme1.getLexeme();
+        Homonym homonym = wordDictionary.get(lexeme1String);
+        if (homonym != null) {
+            int wordsNumber = homonym.getWordsNumber();
+            if (wordsNumber > 0 && i + wordsNumber <= end) {
+                Lexeme lexeme2 = (Lexeme) lexemes.get(i + 1);
+                String lexeme2String = lexeme2.getLexeme();
+                String idiomHead = lexeme1String + ' ' + lexeme2String;
+
+                IdiomProperty[] idiomProperties = idiomDictionary.get(idiomHead);
+                if (idiomProperties != null) {
+                    // ключ совпал! проверяется остальная часть идиомы
+                    int startIndex = i + 2;
+                    for (IdiomProperty idiomProperty : idiomProperties) {
+                        String idiomTail = idiomProperty.getIdiomTail();
+                        if (idiomTail == null || isIdiom(lexemes, startIndex, end, idiomTail)) {
+                            // Может быть несколько идиом с одинаковой длиной и строкой - обработать нужно все!!!
+                            System.out.println("Идиома найдена: " + idiomHead + (idiomTail != null ? ' ' + idiomTail : ""));
+
+                            // Когда метод заработает: Рассмотреть перенос из отдельного метода в тело цикла!
+                            // TODO: Не работают слова с тире!!!!
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 
     // Метод проверяет включает ли оставшаяся часть предложения хвостовую часть выбранной идиомы
-    private static boolean isIdiom(List<Lexeme> lexemes, int sentenceTailStartIndex, String idiomTail) {
+    private static boolean isIdiom(List<Lexeme> lexemes, int startIndex, int end, String idiomTail) {
         int idiomTailIndex = 0;
-        for (int i = sentenceTailStartIndex; i < lexemes.size(); i++) {
-            String word = lexemes.get(i).getLexeme();
-            for (int j = 0; j < word.length(); j++, idiomTailIndex++) {
-                if (word.charAt(j) != idiomTail.charAt(idiomTailIndex)) {
+        for (int i = startIndex; i < end; i++) {
+            String lexeme = lexemes.get(i).getLexeme();
+            int lexemeLength = lexeme.length();
+            for (int j = 0; j < lexemeLength; j++, idiomTailIndex++) {
+                if (lexeme.charAt(j) != idiomTail.charAt(idiomTailIndex)) {
                     return false;
                 }
             }
@@ -180,23 +161,12 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         Lexeme lexeme = (Lexeme) lexemes.get(i);
         String lexemeString = lexeme.getLexeme();
         Homonym homonym = wordDictionary.get(lexemeString);
-        int wordsNumber = homonym.getWordsNumber();
-
-        if (wordsNumber > 0) {
-
-        }
-
-        WordProperty[] wordProperties = wordDictionary.get(lexemeString).getWordProperties();
-
-        if (wordProperties != null) {
-            // Проверяется не является ли найденное слово идиомой
-            // Если признак идиомы отличен от нуля для данного слова, то производится поиск идиомы,
-            // в которой данное слово является начальным
-            if (processDictionaryIdiom(lexemes, i, start, end) != null) {
-
+        if (homonym != null) {
+            WordProperty[] wordProperties = homonym.getWordProperties();
+            if (wordProperties != null) {
+                WordTag[] wordTags = createWordTags(wordProperties);
+                return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), DICTIONARY_WORD_ELEMENTS_NUMBER);
             }
-            WordTag[] wordTags = createWordTags(wordProperties);
-            return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), DICTIONARY_WORD_ELEMENTS_NUMBER);
         }
         return null;
     }
