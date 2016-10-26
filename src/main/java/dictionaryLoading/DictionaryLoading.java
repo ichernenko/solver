@@ -5,9 +5,9 @@ import java.util.*;
 
 public class DictionaryLoading {
     private static Connection connection;
-    private static Map<String, Homonym> wordDictionary = null;
-    private static Map<String, IdiomProperty[]> idiomDictionary = null;
-    private static Lemma[] lemmaDictionary = null;
+    private static Map<String, Homonym> wordDictionary;
+    private static Map<String, IdiomProperty[]> idiomDictionary;
+    private static Lemma[] lemmaDictionary;
 
     public static boolean loadDictionary() {
         System.out.println("Dictionary are loading...");
@@ -36,14 +36,13 @@ public class DictionaryLoading {
 
     private static boolean isLoadedDictionary() {
         boolean sign = false;
-
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:db\\solverDB.s3db");
-            wordDictionary = createWordDictionary();
-            idiomDictionary = createIdiomDictionary();
-            lemmaDictionary = createLemmaDictionary();
-            addIdiomSignToWords();
-            printIdiomWords();
+            createWordDictionary();
+            createIdiomDictionary();
+            createLemmaDictionary();
+            markIdiomWords();
+//            printIdiomWords();
             sign = true;
         } catch (SQLException e) {
             System.out.println("Dictionary wasn't loaded!");
@@ -57,14 +56,19 @@ public class DictionaryLoading {
         return sign;
     }
 
-    private static void addIdiomSignToWords() {
+
+    // Метод перебирает все идиомы и ищет первое слово идиомы в словаре слов
+    // Если находит -> в словаре ставит признак, обозначающий, что с этого слова может начинаться идиома.
+    // Признак (wordsNumber) показывает наименьшее количество слов для ВСЕХ идиом, начинающихся с этого слова.
+    // Если не находит -> создает новое слово в словаре слов, начинающееся с первого слова идиомы.
+    private static void markIdiomWords() {
         idiomDictionary.keySet().forEach(key -> {
             for (IdiomProperty idiomProperty : idiomDictionary.get(key)) {
                 String idiomTail = idiomProperty.getIdiomTail();
                 int idiomWordsNumber = 2;
                 if (idiomTail != null) {
-                    int idiomLength = idiomTail.length();
-                    for (int i = 0; i < idiomLength; i++) {
+                    int idiomTailLength = idiomTail.length();
+                    for (int i = 0; i < idiomTailLength; i++) {
                         if (idiomTail.charAt(i) == ' ') {
                             idiomWordsNumber++;
                         }
@@ -75,40 +79,38 @@ public class DictionaryLoading {
                 Homonym homonym = wordDictionary.get(firstWord);
                 if (homonym != null) {
                     int wordsNumber = homonym.getWordsNumber();
-                    // !!! неправильно !!!
                     if (wordsNumber == 0 || wordsNumber > idiomWordsNumber) {
                         homonym.setWordsNumber(idiomWordsNumber);
                     }
                 } else {
-                    // TODO: Обработать слова, с которых начинается идиома, но в словаре таких слов нет! Как вариант, неопределенные слова проверять в словаре идиом!!!
-                    // Или НЕТ! Автоматически добавлять такие слова при поиске количества слов в словарь слов!!!
-                    // System.out.println(firstWord);
+                    homonym = new Homonym(new WordProperty[]{});
+                    homonym.setWordsNumber(idiomWordsNumber);
+                    wordDictionary.put(firstWord, homonym);
                 }
             }
         });
     }
 
     private static void printIdiomWords() {
+        int i = 0;
         for (String key : idiomDictionary.keySet()) {
             String firstWord = key.substring(0, key.indexOf(' '));
             Homonym homonym = wordDictionary.get(firstWord);
             if (homonym != null) {
                 int wordsNumber = homonym.getWordsNumber();
-                if (wordsNumber > 2) {
                     for (IdiomProperty idiomProperty : idiomDictionary.get(key)) {
                         String idiomTail = idiomProperty.getIdiomTail();
-                        System.out.println(key + "   *** " + idiomTail + " **** " + "--- |" + firstWord + "|   " + wordsNumber);
+                        System.out.println(++i + "  " + key + "   *** " + idiomTail + " **** " + "--- |" + firstWord + "|   " + wordsNumber);
                     }
                     System.out.println("------------------------------------------");
-                }
             }
         }
     }
 
 
-    // Метод создает и возвращает Map со словами из словаря (омонимы представлены одной записью), тегами и id леммы
-    private static Map<String, Homonym> createWordDictionary() throws SQLException {
-        Map<String, Homonym> wordMap = new HashMap<>(getWordCount());
+    // Метод создает Map со словами из словаря (омонимы представлены одной записью), тегами и id леммы
+    private static void createWordDictionary() throws SQLException {
+        wordDictionary = new HashMap<>(getWordCount());
         List<WordProperty> homonyms = new ArrayList<>();
 
         try (Statement st = connection.createStatement();
@@ -121,15 +123,14 @@ public class DictionaryLoading {
             while (rs.next()) {
                 word = rs.getString("word");
                 if (!word.equals(oldWord)) {
-                    wordMap.put(oldWord, new Homonym(homonyms.toArray(new WordProperty[homonyms.size()])));
+                    wordDictionary.put(oldWord, new Homonym(homonyms.toArray(new WordProperty[homonyms.size()])));
                     homonyms.clear();
                     oldWord = word;
                 }
                 homonyms.add(new WordProperty(rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             }
-            wordMap.put(word, new Homonym(homonyms.toArray(new WordProperty[homonyms.size()])));
+            wordDictionary.put(word, new Homonym(homonyms.toArray(new WordProperty[homonyms.size()])));
         }
-        return wordMap;
     }
 
     private static int getWordCount() throws SQLException {
@@ -143,7 +144,7 @@ public class DictionaryLoading {
         return wordCount;
     }
 
-    // Метод создает и возвращает Map с идиомами из словаря (омонимы представлены одной записью), тегами и id леммы
+    // Метод создает Map с идиомами из словаря (омонимы представлены одной записью), тегами и id леммы
     // Алгоритм работы: извлекаются из базы все записи, в которых есть пробелы - каждая идиома состоит из более одной словоформы, а значит, имеет пробел
     // Ключем Map определяется значение первых двух словоформ с пробелом по середине.
     // Это сделано для первичного отбора словоформ. На первом этапе отбираются последовательности слов, у которых первых две словоформы совпадают.
@@ -151,8 +152,8 @@ public class DictionaryLoading {
     // с места окончания двух взятых слов. В случае, если определено соответствие идиомы с последовательностью слов в тексте, далее при добавлении тегов проверяются только
     // точно такие же (на случай если одна и та же идиома имеет разные теги или является другой частью речи). Идиомы упорядочены по-убыванию, поэтому в начале проверяются идиомы с наибольшим количеством слов
     // Так как более длинная идиома может включать в себя идиому короче.
-    private static Map<String, IdiomProperty[]> createIdiomDictionary() throws SQLException {
-        Map<String, IdiomProperty[]> idiomMap = new HashMap<>(getIdiomCount());
+    private static void createIdiomDictionary() throws SQLException {
+        idiomDictionary = new HashMap<>(getIdiomCount());
         List<IdiomProperty> homonyms = new ArrayList<>();
 
         try (Statement st = connection.createStatement();
@@ -165,15 +166,14 @@ public class DictionaryLoading {
             while (rs.next()) {
                 idiomKey = rs.getString("idiom_head");
                 if (!idiomKey.equals(oldIdiomKey)) {
-                    idiomMap.put(oldIdiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
+                    idiomDictionary.put(oldIdiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
                     homonyms.clear();
                     oldIdiomKey = idiomKey;
                 }
                 homonyms.add(new IdiomProperty(rs.getString("idiom_tail"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             }
-            idiomMap.put(idiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
+            idiomDictionary.put(idiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
         }
-        return idiomMap;
     }
 
     private static int getIdiomCount() throws SQLException {
@@ -187,18 +187,17 @@ public class DictionaryLoading {
         return wordCount;
     }
 
-    // Метод создает и возвращает массив лемм с тегами
-    private static Lemma[] createLemmaDictionary() throws SQLException {
-        Lemma[] lemmas = new Lemma[getLemmaCount()];
+    // Метод создает массив лемм с тегами
+    private static void createLemmaDictionary() throws SQLException {
+        lemmaDictionary = new Lemma[getLemmaCount()];
 
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery("select lemma_id,part_of_speech,word,tag from dictionary where id=base_id")) {
 
             while (rs.next()) {
-                lemmas[rs.getInt("lemma_id") - 1] = new Lemma(rs.getString("word"), rs.getString("part_of_speech"), rs.getString("tag"));
+                lemmaDictionary[rs.getInt("lemma_id") - 1] = new Lemma(rs.getString("word"), rs.getString("part_of_speech"), rs.getString("tag"));
             }
         }
-        return lemmas;
     }
 
     private static int getLemmaCount() throws SQLException {
@@ -215,11 +214,9 @@ public class DictionaryLoading {
     public static Map<String, Homonym> getWordDictionary() {
         return wordDictionary;
     }
-
     public static Map<String, IdiomProperty[]> getIdiomDictionary() {
         return idiomDictionary;
     }
-
     public static Lemma[] getLemmaDictionary() {
         return lemmaDictionary;
     }

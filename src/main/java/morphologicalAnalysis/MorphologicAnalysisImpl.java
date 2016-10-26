@@ -19,19 +19,19 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 
     private static int FRACTION_ELEMENTS_NUMBER = 2;
     private static int INTEGER_ELEMENTS_NUMBER = 1;
-    private static int DICTIONARY_ELEMENTS_NUMBER = 1;
+    private static int DICTIONARY_WORD_ELEMENTS_NUMBER = 1;
     private static int UNKNOWN_ELEMENTS_NUMBER = 1;
 
     private static RangeElementProcessing<Object, List, Integer> processFraction = MorphologicAnalysisImpl::processFraction;
     private static RangeElementProcessing<Object, List, Integer> processInteger = MorphologicAnalysisImpl::processInteger;
-    private static RangeElementProcessing<Object, List, Integer> processDictionary = MorphologicAnalysisImpl::processDictionary;
-    private static RangeElementProcessing<Object, List, Integer> processIdiom = MorphologicAnalysisImpl::processIdiom;
+    private static RangeElementProcessing<Object, List, Integer> processDictionaryWord = MorphologicAnalysisImpl::processDictionaryWord;
+    private static RangeElementProcessing<Object, List, Integer> processDictionaryIdiom = MorphologicAnalysisImpl::processDictionaryIdiom;
     private static RangeElementProcessing<Object, List, Integer> processUnknown = MorphologicAnalysisImpl::processUnknown;
 
     private static RangeElementProcessing<Object, List, Integer>[] methods = new RangeElementProcessing[]{
             processFraction,
             processInteger,
-            processDictionary,
+            processDictionaryWord,
             processUnknown
     };
 
@@ -49,7 +49,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 
             RangeHandler rangeHandler = new RangeHandler(ranges, lexemes, words);
             rangeHandler.processElements(methods);
-            //rangeHandler.processElements(MorphologicAnalysisImpl::processDictionary);
+            //rangeHandler.processElements(MorphologicAnalysisImpl::processDictionaryWord);
 
             Collections.sort(words);
             paragraphs.add(new Paragraph(words, textBlock.getTextBlockPunctuation()));
@@ -132,7 +132,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 
     // Метод находит последовательности слов, составляющие идиому
     // и создает морфологическую единицу как экземпляр класса Idiom
-    private static Word processIdiom(List lexemes, int index, int start, int end) {
+    private static Word processDictionaryIdiom(List lexemes, int index, int start, int end) {
         // Находим идиому
         // Заменяем все участвующие слова на одно
         // Добавляем теги
@@ -176,19 +176,27 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
         return idiomTail.length() == idiomTailIndex;
     }
 
-    private static Word processDictionary(List lexemes, int i, int start, int end) {
+    private static Word processDictionaryWord(List lexemes, int i, int start, int end) {
         Lexeme lexeme = (Lexeme) lexemes.get(i);
         String lexemeString = lexeme.getLexeme();
+        Homonym homonym = wordDictionary.get(lexemeString);
+        int wordsNumber = homonym.getWordsNumber();
+
+        if (wordsNumber > 0) {
+
+        }
+
         WordProperty[] wordProperties = wordDictionary.get(lexemeString).getWordProperties();
+
         if (wordProperties != null) {
             // Проверяется не является ли найденное слово идиомой
             // Если признак идиомы отличен от нуля для данного слова, то производится поиск идиомы,
             // в которой данное слово является начальным
-            if (processIdiom(lexemes, i, start, end) != null) {
+            if (processDictionaryIdiom(lexemes, i, start, end) != null) {
 
             }
             WordTag[] wordTags = createWordTags(wordProperties);
-            return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), DICTIONARY_ELEMENTS_NUMBER);
+            return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), DICTIONARY_WORD_ELEMENTS_NUMBER);
         }
         return null;
     }
