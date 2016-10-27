@@ -1,6 +1,8 @@
 package common;
 
+import java.util.List;
+
 @FunctionalInterface
-public interface RangeElementProcessing<O, L, I> {
-    O process(L l, I i, I s, I e);
+public interface RangeElementProcessing<O, I> {
+    Object process(int i);
 }
