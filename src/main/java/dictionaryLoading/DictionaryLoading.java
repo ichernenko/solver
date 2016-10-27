@@ -162,7 +162,8 @@ public class DictionaryLoading {
             rs.next();
             String idiomKey = rs.getString("idiom_head");
             String oldIdiomKey = idiomKey;
-            homonyms.add(new IdiomProperty(rs.getString("idiom_tail"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
+            String idiomTail = rs.getString("idiom_tail");
+            homonyms.add(new IdiomProperty(idiomTail, getIdiomTailLexemesNumber(idiomTail), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             while (rs.next()) {
                 idiomKey = rs.getString("idiom_head");
                 if (!idiomKey.equals(oldIdiomKey)) {
@@ -170,7 +171,8 @@ public class DictionaryLoading {
                     homonyms.clear();
                     oldIdiomKey = idiomKey;
                 }
-                homonyms.add(new IdiomProperty(rs.getString("idiom_tail"), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
+                idiomTail = rs.getString("idiom_tail");
+                homonyms.add(new IdiomProperty(idiomTail, getIdiomTailLexemesNumber(idiomTail), rs.getInt("lemma_id"), rs.getString("part_of_speech"), rs.getString("tag")));
             }
             idiomDictionary.put(idiomKey, homonyms.toArray(new IdiomProperty[homonyms.size()]));
         }
@@ -185,6 +187,22 @@ public class DictionaryLoading {
             wordCount = rs.getInt("count");
         }
         return wordCount;
+    }
+
+    // Метод подсчитывает количество лексем в хвосте идиомы
+    private static int getIdiomTailLexemesNumber(String idiomTail) {
+        if (idiomTail == null) {
+            return 0;
+        }
+
+        int idiomTailLexemesNumber = 1;
+        int idiomTailLength = idiomTail.length();
+        for (int i = 0; i < idiomTailLength; i++) {
+            if (idiomTail.charAt(i) == ' ') {
+                idiomTailLexemesNumber++;
+            }
+        }
+        return idiomTailLexemesNumber;
     }
 
     // Метод создает массив лемм с тегами

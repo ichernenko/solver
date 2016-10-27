@@ -9,6 +9,7 @@ import dictionaryLoading.WordProperty;
 import textAnalysis.Lexeme;
 import textAnalysis.LexemeDescriptor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +18,14 @@ public class MorphologicProcessing implements ProcessingStage {
     private static Map<String, Homonym> wordDictionary = DictionaryLoading.getWordDictionary();
     private static Map<String, IdiomProperty[]> idiomDictionary = DictionaryLoading.getIdiomDictionary();
 
+    private static int INTEGER_LEMMA_ID = -1;
+    private static int FRACTION_LEMMA_ID = -2;
+    private static int UNKNOWN_LEMMA_ID = -9999;
+
     private static int FRACTION_ELEMENTS_NUMBER = 2;
     private static int INTEGER_ELEMENTS_NUMBER = 1;
     private static int DICTIONARY_WORD_ELEMENTS_NUMBER = 1;
+    private static int DICTIONARY_IDIOM_ELEMENTS_NUMBER = 2;
     private static int UNKNOWN_ELEMENTS_NUMBER = 1;
 
     private RangeElementProcessing<Object, Integer>[] methods;
@@ -34,7 +40,7 @@ public class MorphologicProcessing implements ProcessingStage {
             Lexeme lexeme = lexemes.get(i);
             LexemeDescriptor lexemeDescriptor = lexeme.getLexemeDescriptor();
             if (lexemeDescriptor.isHasDigit() && !lexemeDescriptor.isHasLetter()) {
-                WordTag[] wordTags = {new WordTag(-1, "целое_число", "кол им")};
+                WordTag[] wordTags = {new WordTag(INTEGER_LEMMA_ID, "целое_число", "кол им")};
                 return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), INTEGER_ELEMENTS_NUMBER);
             }
         }
@@ -43,7 +49,7 @@ public class MorphologicProcessing implements ProcessingStage {
 
 
     // Метод находит последовательности сиволов, состоящие только из цифр, затем следующую запятую, и снова последовательность цифр
-    // и создает морфологическую единицу как экземпляр класса Integer
+    // и создает морфологическую единицу как экземпляр класса Fraction
     Word processFraction(int i) {
         if (i + FRACTION_ELEMENTS_NUMBER <= end) {
             Lexeme lexeme1 = lexemes.get(i);
@@ -54,7 +60,7 @@ public class MorphologicProcessing implements ProcessingStage {
                 if (lexeme2Descriptor.isHasDigit() && !lexeme2Descriptor.isHasLetter()) {
                     if (",".equals(lexeme1.getPunctuation())) {
                         String lexemeString = lexeme1.getLexeme() + ',' + lexeme2.getLexeme();
-                        WordTag[] wordTags = {new WordTag(-2, "дробное_число", "кол им")};
+                        WordTag[] wordTags = {new WordTag(FRACTION_LEMMA_ID, "дробное_число", "кол им")};
                         return new Word(lexeme1.getOrder(), lexemeString, wordTags, lexeme2.getPunctuation(), FRACTION_ELEMENTS_NUMBER);
                     }
                 }
@@ -64,15 +70,19 @@ public class MorphologicProcessing implements ProcessingStage {
     }
 
 
+    // Метод создает из ранее неопределенного слова морфологическую единицу как экземпляр класса Unknown
     Word processUnknown(int i) {
         Lexeme lexeme = lexemes.get(i);
-        WordTag[] wordTags = {new WordTag(-9999, "неизв", "")};
+        WordTag[] wordTags = {new WordTag(UNKNOWN_LEMMA_ID, "неизв", "")};
         return new Word(lexeme.getOrder(), lexeme.getLexeme(), wordTags, lexeme.getPunctuation(), UNKNOWN_ELEMENTS_NUMBER);
     }
 
 
     // Метод находит последовательности слов, составляющие идиому
-    // и создает морфологическую единицу как экземпляр класса Idiom
+    // и создает морфологическую единицу как экземпляр класса который представляет эта идиома
+    // TODO: Не работают слова с тире!!!!
+    // Пока метод находит идиому наибольшей длины со всеми возможными тегами
+    // В дальнейшем это решение может быть пересмотрено!!!
     Word processDictionaryIdiom(int i) {
         Lexeme lexeme1 = lexemes.get(i);
         String lexeme1String = lexeme1.getLexeme();
@@ -88,14 +98,59 @@ public class MorphologicProcessing implements ProcessingStage {
                 if (idiomProperties != null) {
                     // ключ совпал! проверяется остальная часть идиомы
                     int startIndex = i + 2;
-                    for (IdiomProperty idiomProperty : idiomProperties) {
-                        String idiomTail = idiomProperty.getIdiomTail();
-                        if (idiomTail == null || isIdiom(startIndex, idiomTail)) {
-                            // Может быть несколько идиом с одинаковой длиной и строкой - обработать нужно все!!!
-                            System.out.println("Идиома найдена: " + idiomHead + (idiomTail != null ? ' ' + idiomTail : ""));
+                    List<WordTag> wordTags = new ArrayList<>();
+                    for (int j = 0, idiomPropertiesLength = idiomProperties.length; j < idiomPropertiesLength; j++) {
+                        IdiomProperty idiomProperty = idiomProperties[j];
+                        int idiomTailLexemesNumber = idiomProperty.getIdiomTailLexemesNumber();
+                        if (i + idiomTailLexemesNumber <= end) {
+                            if (idiomTailLexemesNumber == 0) {
+                                // Формируется лексема
+                                String lexemeString = lexeme1String + (lexeme1.getPunctuation().isEmpty() ? " " : lexeme1.getPunctuation()) + lexeme2String;
+                                // Формируется список тегов
+                                wordTags.add(new WordTag(idiomProperty.getLemmaId(), idiomProperty.getPartOfSpeech(), idiomProperty.getTag()));
+                                j++;
+                                while (j < idiomPropertiesLength) {
+                                    idiomProperty = idiomProperties[j];
+                                    wordTags.add(new WordTag(idiomProperty.getLemmaId(), idiomProperty.getPartOfSpeech(), idiomProperty.getTag()));
+                                    j++;
+                                }
+                                return new Word(lexeme1.getOrder(), lexemeString, wordTags.toArray(new WordTag[wordTags.size()]), lexeme2.getPunctuation(), DICTIONARY_IDIOM_ELEMENTS_NUMBER);
 
-                            // Когда метод заработает: Рассмотреть перенос из отдельного метода в тело цикла!
-                            // TODO: Не работают слова с тире!!!!
+                            } else {
+                                String idiomTail = idiomProperty.getIdiomTail();
+                                int count = isIdiom(startIndex, idiomTail);
+                                if (count > 0) {
+                                    // Формируется лексема
+                                    StringBuilder lexemeStringBuilder = new StringBuilder(lexeme1String);
+                                    lexemeStringBuilder.append(lexeme1.getPunctuation().isEmpty() ? " " : lexeme1.getPunctuation());
+                                    lexemeStringBuilder.append(lexeme2String);
+                                    lexemeStringBuilder.append(lexeme2.getPunctuation().isEmpty() ? " " : lexeme2.getPunctuation());
+
+                                    Lexeme lexemeN;
+                                    int k = startIndex;
+                                    while (k < count - 1) {
+                                        lexemeN = lexemes.get(k);
+                                        lexemeStringBuilder.append(lexemeN.getLexeme());
+                                        lexemeStringBuilder.append(lexemeN.getPunctuation().isEmpty() ? " " : lexemeN.getPunctuation());
+                                        k++;
+                                    }
+                                    lexemeN = lexemes.get(k);
+                                    lexemeStringBuilder.append(lexemeN.getLexeme());
+
+                                    // Формируется список тегов
+                                    wordTags.add(new WordTag(idiomProperty.getLemmaId(), idiomProperty.getPartOfSpeech(), idiomProperty.getTag()));
+                                    j++;
+                                    while (j < idiomPropertiesLength) {
+                                        idiomProperty = idiomProperties[j];
+                                        if (!idiomTail.equals(idiomProperty.getIdiomTail())) {
+                                            break;
+                                        }
+                                        wordTags.add(new WordTag(idiomProperty.getLemmaId(), idiomProperty.getPartOfSpeech(), idiomProperty.getTag()));
+                                        j++;
+                                    }
+                                    return new Word(lexeme1.getOrder(), lexemeStringBuilder.toString(), wordTags.toArray(new WordTag[wordTags.size()]), lexemeN.getPunctuation(), count - startIndex + DICTIONARY_IDIOM_ELEMENTS_NUMBER);
+                                }
+                            }
                         }
                     }
                 }
@@ -105,29 +160,43 @@ public class MorphologicProcessing implements ProcessingStage {
     }
 
     // Метод проверяет включает ли оставшаяся часть предложения хвостовую часть выбранной идиомы
-    private boolean isIdiom(int startIndex, String idiomTail) {
+    private int isIdiom(int startIndex, String idiomTail) {
         int idiomTailIndex = 0;
-        for (int i = startIndex; i < end; i++) {
+        int idiomTailLength = idiomTail.length();
+        int i = startIndex;
+        int currentLexemeLength = 0;
+        while (i < end) {
             String lexeme = lexemes.get(i).getLexeme();
             int lexemeLength = lexeme.length();
+            currentLexemeLength += lexemeLength;
+
+            if (currentLexemeLength > idiomTailLength) {
+                return 0;
+            }
+
             for (int j = 0; j < lexemeLength; j++, idiomTailIndex++) {
                 if (lexeme.charAt(j) != idiomTail.charAt(idiomTailIndex)) {
-                    return false;
+                    return 0;
                 }
             }
+            i++;
             if (idiomTail.length() == idiomTailIndex) {
-                return true;
+                return i;
             } else {
                 if (idiomTail.charAt(idiomTailIndex) != ' ') {
-                    return false;
+                    return 0;
                 } else {
                     idiomTailIndex++;
-                }
+                    currentLexemeLength++;                }
             }
         }
-        return idiomTail.length() == idiomTailIndex;
+        // TODO: НЕКРАСИВО!
+        // Попадаем сюда, когда есть идиома длинее чем текст!!!
+        return idiomTail.length() == idiomTailIndex ? i - 1: 0;
     }
 
+    // Метод находит слово в словаре
+    // и создает морфологическую единицу как экземпляр класса, который представляет это слово
     Word processDictionaryWord(int i) {
         Lexeme lexeme = lexemes.get(i);
         String lexemeString = lexeme.getLexeme();
