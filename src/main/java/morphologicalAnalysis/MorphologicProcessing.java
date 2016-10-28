@@ -190,9 +190,8 @@ public class MorphologicProcessing implements ProcessingStage {
                     currentLexemeLength++;                }
             }
         }
-        // TODO: НЕКРАСИВО!
-        // Попадаем сюда, когда есть идиома длинее чем текст!!!
-        return idiomTail.length() == idiomTailIndex ? i - 1: 0;
+        // Когда существует короткая идиома и такая же идиома с продолжением в виде дополнительного слова.
+        return idiomTail.length() == idiomTailIndex ? i: 0;
     }
 
     // Метод находит слово в словаре
