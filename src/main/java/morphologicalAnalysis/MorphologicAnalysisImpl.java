@@ -25,6 +25,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
             morphologicProcessing.setMethods(new RangeElementProcessing[]{
                     morphologicProcessing::processFraction,
                     morphologicProcessing::processInteger,
+                    morphologicProcessing::processNameRu,
                     morphologicProcessing::processDictionaryIdiom,
                     morphologicProcessing::processDictionaryWord,
                     morphologicProcessing::processUnknown

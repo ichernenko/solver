@@ -8,6 +8,7 @@ public class DictionaryLoading {
     private static Map<String, Homonym> wordDictionary;
     private static Map<String, IdiomProperty[]> idiomDictionary;
     private static Lemma[] lemmaDictionary;
+    private static Map<String, NameProperty> nameRuDictionary;
 
     public static boolean loadDictionary() {
         System.out.println("Dictionary are loading...");
@@ -41,6 +42,7 @@ public class DictionaryLoading {
             createWordDictionary();
             createIdiomDictionary();
             createLemmaDictionary();
+            createNameRuDictionary();
             markIdiomWords();
 //            printIdiomWords();
             sign = true;
@@ -55,58 +57,6 @@ public class DictionaryLoading {
         }
         return sign;
     }
-
-
-    // Метод перебирает все идиомы и ищет первое слово идиомы в словаре слов
-    // Если находит -> в словаре ставит признак, обозначающий, что с этого слова может начинаться идиома.
-    // Признак (wordsNumber) показывает наименьшее количество слов для ВСЕХ идиом, начинающихся с этого слова.
-    // Если не находит -> создает новое слово в словаре слов, начинающееся с первого слова идиомы.
-    private static void markIdiomWords() {
-        idiomDictionary.keySet().forEach(key -> {
-            for (IdiomProperty idiomProperty : idiomDictionary.get(key)) {
-                String idiomTail = idiomProperty.getIdiomTail();
-                int idiomWordsNumber = 2;
-                if (idiomTail != null) {
-                    int idiomTailLength = idiomTail.length();
-                    for (int i = 0; i < idiomTailLength; i++) {
-                        if (idiomTail.charAt(i) == ' ') {
-                            idiomWordsNumber++;
-                        }
-                    }
-                    idiomWordsNumber++;
-                }
-                String firstWord = key.substring(0, key.indexOf(' '));
-                Homonym homonym = wordDictionary.get(firstWord);
-                if (homonym != null) {
-                    int wordsNumber = homonym.getWordsNumber();
-                    if (wordsNumber == 0 || wordsNumber > idiomWordsNumber) {
-                        homonym.setWordsNumber(idiomWordsNumber);
-                    }
-                } else {
-                    homonym = new Homonym(new WordProperty[]{});
-                    homonym.setWordsNumber(idiomWordsNumber);
-                    wordDictionary.put(firstWord, homonym);
-                }
-            }
-        });
-    }
-
-    private static void printIdiomWords() {
-        int i = 0;
-        for (String key : idiomDictionary.keySet()) {
-            String firstWord = key.substring(0, key.indexOf(' '));
-            Homonym homonym = wordDictionary.get(firstWord);
-            if (homonym != null) {
-                int wordsNumber = homonym.getWordsNumber();
-                    for (IdiomProperty idiomProperty : idiomDictionary.get(key)) {
-                        String idiomTail = idiomProperty.getIdiomTail();
-                        System.out.println(++i + "  " + key + "   *** " + idiomTail + " **** " + "--- |" + firstWord + "|   " + wordsNumber);
-                    }
-                    System.out.println("------------------------------------------");
-            }
-        }
-    }
-
 
     // Метод создает Map со словами из словаря (омонимы представлены одной записью), тегами и id леммы
     private static void createWordDictionary() throws SQLException {
@@ -133,6 +83,7 @@ public class DictionaryLoading {
         }
     }
 
+    // Метод возвращает количество слов в словаре dictionary
     private static int getWordCount() throws SQLException {
         int wordCount;
         try (Statement st = connection.createStatement();
@@ -178,6 +129,7 @@ public class DictionaryLoading {
         }
     }
 
+    // Метод возвращает количество идиом в таблице dictionary
     private static int getIdiomCount() throws SQLException {
         int wordCount;
         try (Statement st = connection.createStatement();
@@ -205,6 +157,42 @@ public class DictionaryLoading {
         return idiomTailLexemesNumber;
     }
 
+
+    // Метод перебирает все идиомы и ищет первое слово идиомы в словаре слов
+    // Если находит -> в словаре ставит признак, обозначающий, что с этого слова может начинаться идиома.
+    // Признак (wordsNumber) показывает наименьшее количество слов для ВСЕХ идиом, начинающихся с этого слова.
+    // Если не находит -> создает новое слово в словаре слов, начинающееся с первого слова идиомы.
+    private static void markIdiomWords() {
+        idiomDictionary.keySet().forEach(key -> {
+            for (IdiomProperty idiomProperty : idiomDictionary.get(key)) {
+                String idiomTail = idiomProperty.getIdiomTail();
+                int idiomWordsNumber = 2;
+                if (idiomTail != null) {
+                    int idiomTailLength = idiomTail.length();
+                    for (int i = 0; i < idiomTailLength; i++) {
+                        if (idiomTail.charAt(i) == ' ') {
+                            idiomWordsNumber++;
+                        }
+                    }
+                    idiomWordsNumber++;
+                }
+                String firstWord = key.substring(0, key.indexOf(' '));
+                Homonym homonym = wordDictionary.get(firstWord);
+                if (homonym != null) {
+                    int wordsNumber = homonym.getWordsNumber();
+                    if (wordsNumber == 0 || wordsNumber > idiomWordsNumber) {
+                        homonym.setWordsNumber(idiomWordsNumber);
+                    }
+                } else {
+                    homonym = new Homonym(new WordProperty[]{});
+                    homonym.setWordsNumber(idiomWordsNumber);
+                    wordDictionary.put(firstWord, homonym);
+                }
+            }
+        });
+    }
+
+
     // Метод создает массив лемм с тегами
     private static void createLemmaDictionary() throws SQLException {
         lemmaDictionary = new Lemma[getLemmaCount()];
@@ -218,10 +206,37 @@ public class DictionaryLoading {
         }
     }
 
+    // Метод возвращает количество строк в таблице dic_lemmas
     private static int getLemmaCount() throws SQLException {
         int lemmaCount;
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery("select max(id) count from dic_lemmas")) {
+
+            rs.next();
+            lemmaCount = rs.getInt("count");
+        }
+        return lemmaCount;
+    }
+
+
+    // Метод создает Map с русскими именами из словаря и полами (M - мужской; F - женский; B - оба)
+    private static void createNameRuDictionary() throws SQLException {
+        nameRuDictionary = new HashMap<>(getNameRuCount());
+
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery("select name,sex from dic_names_ru")) {
+
+            while (rs.next()) {
+                nameRuDictionary.put(rs.getString("name").toLowerCase(), new NameProperty(rs.getString("sex").charAt(0)));
+            }
+        }
+    }
+
+    // Метод возвращает количество строк в таблице dic_names_ru
+    private static int getNameRuCount() throws SQLException {
+        int lemmaCount;
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery("select count(id) count from dic_names_ru")) {
 
             rs.next();
             lemmaCount = rs.getInt("count");
@@ -237,5 +252,8 @@ public class DictionaryLoading {
     }
     public static Lemma[] getLemmaDictionary() {
         return lemmaDictionary;
+    }
+    public static Map<String, NameProperty> getNameRuDictionary() {
+        return nameRuDictionary;
     }
 }

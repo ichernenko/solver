@@ -2,10 +2,7 @@ package morphologicalAnalysis;
 
 import common.ProcessingStage;
 import common.RangeElementProcessing;
-import dictionaryLoading.DictionaryLoading;
-import dictionaryLoading.Homonym;
-import dictionaryLoading.IdiomProperty;
-import dictionaryLoading.WordProperty;
+import dictionaryLoading.*;
 import textAnalysis.Lexeme;
 import textAnalysis.LexemeDescriptor;
 
@@ -17,13 +14,16 @@ import java.util.Map;
 public class MorphologicProcessing implements ProcessingStage {
     private static Map<String, Homonym> wordDictionary = DictionaryLoading.getWordDictionary();
     private static Map<String, IdiomProperty[]> idiomDictionary = DictionaryLoading.getIdiomDictionary();
+    private static Map<String, NameProperty> nameRuDictionary = DictionaryLoading.getNameRuDictionary();
 
     private static int INTEGER_LEMMA_ID = -1;
     private static int FRACTION_LEMMA_ID = -2;
+    private static int NAME_RU_ID = -3;
     private static int UNKNOWN_LEMMA_ID = -9999;
 
     private static int FRACTION_ELEMENTS_NUMBER = 2;
     private static int INTEGER_ELEMENTS_NUMBER = 1;
+    private static int NAME_RU_ELEMENTS_NUMBER = 1;
     private static int DICTIONARY_WORD_ELEMENTS_NUMBER = 1;
     private static int DICTIONARY_IDIOM_ELEMENTS_NUMBER = 2;
     private static int UNKNOWN_ELEMENTS_NUMBER = 1;
@@ -229,6 +229,22 @@ public class MorphologicProcessing implements ProcessingStage {
         this.lexemes = lexemes;
         this.start = start;
         this.end = end;
+    }
+
+    // Метод находит имя в словаре
+    // и создает морфологическую единицу как экземпляр класса NameRu
+    Word processNameRu(int i) {
+            Lexeme lexeme = lexemes.get(i);
+            LexemeDescriptor lexemeDescriptor = lexeme.getLexemeDescriptor();
+            if (!lexemeDescriptor.isHasDigit() && lexemeDescriptor.isHasLetter() && lexemeDescriptor.isHasFirstUpperCase() && lexemeDescriptor.isHasRussian() && !lexemeDescriptor.isHasLatin() && !lexemeDescriptor.isHasOther()) {
+                String lexemeString = lexeme.getLexeme();
+                NameProperty nameProperty = nameRuDictionary.get(lexemeString);
+                if (nameProperty != null) {
+                    WordTag[] wordTags = {new WordTag(NAME_RU_ID, "чел_имя", "" + nameProperty.getSex())};
+                    return new Word(lexeme.getOrder(), lexemeString, wordTags, lexeme.getPunctuation(), NAME_RU_ELEMENTS_NUMBER);
+                }
+            }
+        return null;
     }
 
     @Override

@@ -20,7 +20,6 @@ public class RangeHandlerTest {
         Range[] correctRanges;
         List<Range> ranges;
         RangeHandler rangeHandler;
-        RangeElementProcessing<Object, Integer> processTest;
         MorphologicProcessing morphologicProcessing = new MorphologicProcessing();
 
         // 1. - (Мама, раму, балкон; 1) - (1,2),(3,6)

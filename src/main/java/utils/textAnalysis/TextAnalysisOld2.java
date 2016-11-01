@@ -1,4 +1,4 @@
-package utils;
+package utils.textAnalysis;
 
 public class TextAnalysisOld2 {
 

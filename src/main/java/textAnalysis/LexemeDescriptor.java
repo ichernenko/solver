@@ -14,6 +14,21 @@ public class LexemeDescriptor implements Serializable {
             hasLatin = false,
             hasOther = false;
 
+    public LexemeDescriptor() {
+    }
+
+    // Конструктор временный - необходим для тестирования класса MorphologicProcessing!
+    public LexemeDescriptor(boolean hasDigit, boolean hasLetter, boolean hasFirstUpperCase, boolean hasLowerCase, boolean hasUpperCase, boolean hasRussian, boolean hasLatin, boolean hasOther) {
+        this.hasDigit = hasDigit;
+        this.hasLetter = hasLetter;
+        this.hasFirstUpperCase = hasFirstUpperCase;
+        this.hasLowerCase = hasLowerCase;
+        this.hasUpperCase = hasUpperCase;
+        this.hasRussian = hasRussian;
+        this.hasLatin = hasLatin;
+        this.hasOther = hasOther;
+    }
+
     char analyze(char ch) {
         char newCh;
         if (Character.isDigit(ch)) {

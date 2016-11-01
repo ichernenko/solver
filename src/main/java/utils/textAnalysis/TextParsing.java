@@ -1,4 +1,4 @@
-package utils;
+package utils.textAnalysis;
 
 import preliminaryTextProcessing.PreliminaryTextProcessing;
 

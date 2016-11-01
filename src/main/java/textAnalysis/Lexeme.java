@@ -8,7 +8,7 @@ public class Lexeme implements Serializable {
     private LexemeDescriptor lexemeDescriptor;
     private String punctuation;
 
-    Lexeme(int order, String lexeme, LexemeDescriptor lexemeDescriptor, String punctuation) {
+    public Lexeme(int order, String lexeme, LexemeDescriptor lexemeDescriptor, String punctuation) {
         this.order = order;
         this.lexeme = lexeme;
         this.lexemeDescriptor = lexemeDescriptor;

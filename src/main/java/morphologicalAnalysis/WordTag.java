@@ -1,6 +1,7 @@
 package morphologicalAnalysis;
 
 import morphologicalAnalysis.morphologicalGroups.Integer;
+import morphologicalAnalysis.morphologicalGroups.NameRu;
 import morphologicalAnalysis.morphologicalGroups.Unknown;
 import morphologicalAnalysis.partsOfSpeech.*;
 import morphologicalAnalysis.morphologicalGroups.Fraction;
@@ -35,6 +36,7 @@ public class WordTag implements Serializable{
             case "целое_число"    : partOfSpeech = new Integer(grammemes); break;
             case "дробное_число"  : partOfSpeech = new Fraction(grammemes); break;
             // для неизвестных
+            case "чел_имя"  : partOfSpeech = new NameRu(grammemes); break;
             case "неизв"  : partOfSpeech = new Unknown(grammemes); break;
         }
     }
