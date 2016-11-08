@@ -148,7 +148,6 @@ class NeoloveWomanName {
             if(rs.next()) {
                 id = rs.getInt("max_id");
             }
-            ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
