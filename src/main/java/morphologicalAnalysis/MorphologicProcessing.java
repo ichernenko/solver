@@ -2,7 +2,8 @@ package morphologicalAnalysis;
 
 import common.ProcessingStage;
 import common.RangeElementProcessing;
-import dictionaryLoading.*;
+import loading.Loading;
+import loading.dictionary.*;
 import textAnalysis.Lexeme;
 import textAnalysis.LexemeDescriptor;
 
@@ -12,9 +13,9 @@ import java.util.Map;
 
 
 public class MorphologicProcessing implements ProcessingStage {
-    private static Map<String, Homonym> wordDictionary = DictionaryLoading.getWordDictionary();
-    private static Map<String, IdiomProperty[]> idiomDictionary = DictionaryLoading.getIdiomDictionary();
-    private static Map<String, NameProperty> nameRuDictionary = DictionaryLoading.getNameRuDictionary();
+    private static Map<String, Homonym> wordDictionary = Loading.getWordDictionary();
+    private static Map<String, IdiomProperty[]> idiomDictionary = Loading.getIdiomDictionary();
+    private static Map<String, NameProperty> nameRuDictionary = Loading.getNameRuDictionary();
 
     private static int INTEGER_LEMMA_ID = -1;
     private static int FRACTION_LEMMA_ID = -2;

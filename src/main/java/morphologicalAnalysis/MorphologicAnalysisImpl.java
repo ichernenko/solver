@@ -4,7 +4,9 @@ import java.util.*;
 
 import common.RangeElementProcessing;
 import common.RangeHandler;
-import dictionaryLoading.*;
+import loading.Loading;
+import loading.dictionary.Dictionary;
+import loading.dictionary.Lemma;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -45,7 +47,7 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
     @Override
     public String getResult(List<Paragraph> paragraphs) {
         StringBuilder sb = new StringBuilder();
-        Lemma[] dictionary = DictionaryLoading.getLemmaDictionary();
+        Lemma[] dictionary = Dictionary.getLemmaDictionary();
         paragraphs.forEach(paragraph -> {
             sb.append("<span class=\"task-solution-textBlock-font\">");
             sb.append(paragraph.getParagraph());
@@ -95,8 +97,6 @@ public class MorphologicAnalysisImpl implements MorphologicAnalysis {
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        if (DictionaryLoading.loadDictionary()) {
-            System.out.println("Waiting for requests...");
-        }
+        Loading.load();
     }
 }

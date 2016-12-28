@@ -1,61 +1,36 @@
-package dictionaryLoading;
+package loading.dictionary;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class DictionaryLoading {
+public class Dictionary {
+    volatile private static boolean isCreatedDictionary = false;
     private static Connection connection;
     private static Map<String, Homonym> wordDictionary;
     private static Map<String, IdiomProperty[]> idiomDictionary;
     private static Lemma[] lemmaDictionary;
     private static Map<String, NameProperty> nameRuDictionary;
 
-    public static boolean loadDictionary() {
-        System.out.println("Dictionary are loading...");
-        long startTime = System.currentTimeMillis();
-        if (isLoadedDBDriver()) {
-            if (isLoadedDictionary()) {
-                long finishTime = System.currentTimeMillis();
-                System.out.println("Dictionary are loaded!");
-                System.out.println("Loading time: " + String.format("%,5d", (finishTime - startTime) / 1000) + " s");
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private static boolean isLoadedDBDriver() {
-        boolean sign = false;
-        try {
-            Class.forName("org.sqlite.JDBC");
-            sign = true;
-        } catch (ClassNotFoundException e) {
-            System.out.println("DB driver wasn't loaded!");
-        }
-        return sign;
-    }
+    synchronized public static void create(Connection connection) throws SQLException {
+        if (!isCreatedDictionary) {
+            Dictionary.connection = connection;
 
-    private static boolean isLoadedDictionary() {
-        boolean sign = false;
-        try {
-            connection = DriverManager.getConnection("jdbc:sqlite:db\\solverDB.s3db");
             createWordDictionary();
             createIdiomDictionary();
             createLemmaDictionary();
             createNameRuDictionary();
             markIdiomWords();
-//            printIdiomWords();
-            sign = true;
-        } catch (SQLException e) {
-            System.out.println("Dictionary wasn't loaded!");
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                System.out.println("Connection wasn't closed!");
-            }
+            // printIdiomWords();
+
+            isCreatedDictionary = true;
         }
-        return sign;
     }
 
     // Метод создает Map со словами из словаря (омонимы представлены одной записью), тегами и id леммы
@@ -256,4 +231,5 @@ public class DictionaryLoading {
     public static Map<String, NameProperty> getNameRuDictionary() {
         return nameRuDictionary;
     }
+
 }
